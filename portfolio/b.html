@@ -20,6 +20,7 @@
   <a class="skip-link" href="#walls">Skip to the photographs</a>
   <noscript><p style="padding:6rem 2rem;text-align:center;font-family:Georgia,serif">This portfolio needs JavaScript to hang its prints — please enable it.</p></noscript>
 
+  <div class="page-frame" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
   <div class="cursor-label" id="cursorLabel" aria-hidden="true">VIEW</div>
 
@@ -49,13 +50,14 @@
         <span class="cover__line"><em id="coverLine2">viewing.</em></span>
       </h1>
       <p class="cover__sub" data-bind="hero.sub"></p>
+      <p class="cover__sig" aria-hidden="true" id="coverSig"></p>
       <a class="cover__enter" href="#walls"><span>Enter</span><i aria-hidden="true">↓</i></a>
     </section>
 
     <!-- ============ 02 · THE WALLS ============ -->
     <section class="walls" id="walls">
-      <header class="room-head">
-        <span class="room-head__no" aria-hidden="true">Room 01</span>
+      <header class="room-head" data-numeral="I">
+        <span class="room-head__no" aria-hidden="true">Room I</span>
         <h2 class="room-head__title">The <em>walls</em></h2>
         <p class="room-head__hint" id="wallsCount" aria-hidden="true"></p>
       </header>
@@ -68,8 +70,8 @@
 
     <!-- ============ 03 · EXHIBITIONS ============ -->
     <section class="shows" id="shows">
-      <header class="room-head">
-        <span class="room-head__no" aria-hidden="true">Room 02</span>
+      <header class="room-head" data-numeral="II">
+        <span class="room-head__no" aria-hidden="true">Room II</span>
         <h2 class="room-head__title">The <em>exhibitions</em></h2>
         <p class="room-head__hint" data-bind="credits.sub"></p>
       </header>
@@ -82,8 +84,8 @@
 
     <!-- ============ 04 · THE PHOTOGRAPHER ============ -->
     <section class="her" id="her">
-      <header class="room-head">
-        <span class="room-head__no" aria-hidden="true">Room 03</span>
+      <header class="room-head" data-numeral="III">
+        <span class="room-head__no" aria-hidden="true">Room III</span>
         <h2 class="room-head__title">The <em>photographer</em></h2>
       </header>
       <div class="her__grid">
@@ -103,8 +105,8 @@
 
     <!-- ============ 05 · YOUR VISIT ============ -->
     <section class="visit" id="visit">
-      <header class="room-head">
-        <span class="room-head__no" aria-hidden="true">Room 04</span>
+      <header class="room-head" data-numeral="IV">
+        <span class="room-head__no" aria-hidden="true">Room IV</span>
         <h2 class="room-head__title">Your <em>visit</em></h2>
       </header>
       <ol class="visit__steps" id="visitSteps"></ol>

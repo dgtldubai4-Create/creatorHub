@@ -281,20 +281,30 @@
   }
   function stopPeek() { clearInterval(peekCycle); hoverPeek.classList.remove("is-on"); }
 
-  /* ---------- cursor label ---------- */
+  /* ---------- cursor label (rAF-throttled, transform-only, no layout reads) ---------- */
   const cursorLabel = $("cursorLabel");
+  let peekW = 200, peekH = 266;                 /* cached; refreshed when the peek shows */
+  new ResizeObserver(en => {
+    if (en[0]) { peekW = en[0].contentRect.width; peekH = en[0].contentRect.height; }
+  }).observe(hoverPeek);
+  let ptrX = 0, ptrY = 0, ptrTarget = null, ptrQueued = false;
   document.addEventListener("pointermove", e => {
-    cursorLabel.style.left = e.clientX + "px";
-    cursorLabel.style.top = e.clientY + "px";
-    let label = null;
-    if (e.target.closest(".wall__print, .roomview__print")) label = "ZOOM";
-    else if (e.target.closest("button.show-row")) label = "ENTER";
-    if (label) cursorLabel.textContent = label;
-    cursorLabel.classList.toggle("is-on", !!label && zoom.hidden);
-    const px = Math.min(e.clientX + 36, innerWidth - hoverPeek.offsetWidth - 16);
-    const py = Math.min(Math.max(e.clientY - hoverPeek.offsetHeight / 2, 16), innerHeight - hoverPeek.offsetHeight - 16);
-    hoverPeek.style.transform = `translate(${px}px, ${py}px)`;
-  });
+    ptrX = e.clientX; ptrY = e.clientY; ptrTarget = e.target;
+    if (ptrQueued) return;
+    ptrQueued = true;
+    requestAnimationFrame(() => {
+      ptrQueued = false;
+      let label = null;
+      if (ptrTarget.closest?.(".wall__print, .roomview__print")) label = "ZOOM";
+      else if (ptrTarget.closest?.("button.show-row")) label = "ENTER";
+      if (label) cursorLabel.textContent = label;
+      cursorLabel.classList.toggle("is-on", !!label && zoom.hidden);
+      cursorLabel.style.transform = `translate3d(${ptrX}px, ${ptrY}px, 0) translate(-50%, -50%)`;
+      const px = Math.min(ptrX + 36, innerWidth - peekW - 16);
+      const py = Math.min(Math.max(ptrY - peekH / 2, 16), innerHeight - peekH - 16);
+      hoverPeek.style.transform = `translate3d(${px}px, ${py}px, 0)`;
+    });
+  }, { passive: true });
 
   /* ---------- rail active room ---------- */
   const roomIO = new IntersectionObserver(es => {
@@ -350,6 +360,7 @@
     $("instagramLink").href = `https://instagram.com/${cfg.site.instagram}`;
     $("coverLine1").textContent = pr.coverLine1;
     $("coverLine2").textContent = pr.coverLine2;
+    $("coverSig").textContent = `\u2014 ${cfg.site.name}`;
 
     /* cover photo + plate */
     const featured = photosNow.filter(p => p.featured);
