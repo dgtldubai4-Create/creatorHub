@@ -58,6 +58,8 @@ server action (`src/actions/*`) with Zod validation — the UI is never the secu
 
 ## Deploying (Vercel / Netlify)
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgtldubai4-Create%2FcreatorHub&env=DATABASE_URL,NEXTAUTH_SECRET&envDescription=Postgres%20connection%20string%20and%20a%20random%2032-byte%20auth%20secret&project-name=dabur-creator-hub)
+
 The backend is intentionally simple — server actions + Prisma, no separate API service.
 
 1. Provision a hosted Postgres (Neon, Supabase, or Vercel Postgres).
