@@ -1,48 +1,73 @@
 # Between the Frames — Photography Portfolio
 
-A hand-crafted, single-page portfolio for an event / fashion / sports
-photographer based in Dubai. No frameworks, no build step, no dependencies —
-just `index.html`, `styles.css`, `script.js`, and one config file you edit.
+A hand-crafted portfolio for an event photographer in Dubai (comedy shows,
+concerts, galas — plus fashion and sports). No frameworks, no build step:
+`index.html`, `styles.css`, `script.js`, `admin.js` and one config file.
 
-## Add your photos (the only step that matters)
+## Edit everything with the admin panel
 
-Open **`photos.js`**. Every image on the site comes from that file.
+Open the site with `#admin` at the end of the URL:
 
-1. In Google Drive, right-click a photo → **Share** → set *General access*
-   to **Anyone with the link**.
-2. Copy the share link (`https://drive.google.com/file/d/FILE_ID/view?...`).
-3. Paste it into the `drive` field of an entry in `photos.js`.
+```
+index.html#admin          (locally)
+https://your-site.com/#admin   (once deployed)
+```
 
-The site extracts the file ID and loads the image through Google's
-high-resolution thumbnail endpoint (`drive.google.com/thumbnail?id=…&sz=w2000`),
-which works for any publicly shared Drive file — no downloads, no re-uploading.
+An **"✎ Edit site"** button appears. It opens a panel where you can change
+every detail — your name and contact links, all headlines and paragraphs,
+the venues & artists lists, stats, photos, Drive folders, and the whole
+color scheme (four presets plus per-color pickers). Changes apply live
+and are remembered in your browser.
 
-Until a frame has a link, it renders as an art-directed placeholder so the
+**To publish your edits**: press **Export config.js** in the panel and
+replace the `config.js` file in this folder with the downloaded one
+(then redeploy / re-upload). That's the whole publishing step.
+
+## Connect Google Drive (one-time, ~5 minutes)
+
+Your galleries are Drive folders — the site loads every image in the
+folders listed in `config.js` automatically. Google requires a free API
+key for folder listing:
+
+1. Go to [console.cloud.google.com](https://console.cloud.google.com) and
+   sign in with the Google account of your choice (any account works —
+   the key only reads *publicly shared* files).
+2. Create a project (top bar → "New project", any name).
+3. Menu → **APIs & Services → Library** → search **Google Drive API** → Enable.
+4. Menu → **APIs & Services → Credentials** → **Create credentials → API key**.
+5. Recommended: click the key → under "API restrictions" choose
+   **Restrict key → Google Drive API**; under "Website restrictions" add
+   your site's domain once deployed.
+6. Paste the key into the admin panel → "Google Drive galleries" →
+   **Google API key** (or into `drive.apiKey` in `config.js`).
+
+Make sure each folder is shared as **"Anyone with the link"** (right-click
+folder in Drive → Share → General access). Individual photos can also be
+added one at a time in the admin panel's Photos section — those don't
+need the API key, just a share link.
+
+Until photos are connected, frames show art-directed placeholders so the
 layout always looks finished.
-
-Also in `photos.js`: set your **name, email, WhatsApp, Instagram** in the
-`SITE` object at the bottom.
 
 ## Preview locally
 
-Open `index.html` in a browser — that's it. (Or `npx serve portfolio` if you
-prefer a local server.)
+Open `index.html` in a browser — that's it. (Or `npx serve portfolio`.)
 
 ## Deploy
 
-Any static host works:
+Any static host:
 
 - **Vercel** — `npx vercel portfolio` or drag the folder into vercel.com/new
 - **Netlify** — drag the `portfolio` folder into app.netlify.com/drop
-- **GitHub Pages** — serve the `portfolio/` folder from your repo settings
+- **GitHub Pages** — serve the `portfolio/` folder from repo settings
 
 ## Design notes
 
-- **Concept**: a photographer's contact sheet meets a fashion editorial —
-  film-strip reel, frame numbers, darkroom palette with Dubai-dusk gold.
-- **Type**: Fraunces (editorial serif) + Space Grotesk (technical sans),
-  loaded from Google Fonts.
-- **Interactions**: kinetic hero type, cursor-following image peek,
-  drag-to-scroll film strip, filterable contact-sheet grid, full-screen
-  lightbox with keyboard navigation, scroll-driven reveals, film grain.
+- **Concept**: a photographer's contact sheet meets a quiet editorial —
+  ivory gallery base, one dark film-strip band, grease-pencil hover marks,
+  frame numbers as wayfinding.
+- **Type**: Fraunces (editorial serif) + Space Grotesk (technical sans).
+- **Interactions**: rotating headline word, cursor-following photo peek,
+  drag-to-scroll film strip, filterable contact sheet, keyboard-navigable
+  lightbox, counter preloader, live Dubai clock, film grain.
 - Fully responsive; honors `prefers-reduced-motion`.

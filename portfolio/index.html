@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Between the Frames — Photographer, Dubai</title>
-  <meta name="description" content="Event, fashion and sports photographer based in Dubai. Honest frames of the moments between the moments." />
+  <title>Event Photographer — Dubai</title>
+  <meta name="description" content="Event photographer based in Dubai. Quiet, documentary coverage of galas, weddings, conferences and concerts — plus fashion and sports." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..600&display=swap" rel="stylesheet" />
@@ -23,12 +23,12 @@
   <header class="nav" id="nav">
     <a class="nav__brand" href="#top">
       <span class="nav__mark" aria-hidden="true">◉</span>
-      <span class="nav__name" id="brandName">Your Name</span>
+      <span class="nav__name" data-bind="site.name">Your Name</span>
     </a>
     <nav class="nav__links" aria-label="Primary">
       <a href="#work">Work</a>
+      <a href="#credits">Venues</a>
       <a href="#about">About</a>
-      <a href="#process">Process</a>
       <a href="#contact" class="nav__cta">Book me</a>
     </nav>
     <div class="nav__frame" aria-hidden="true">
@@ -40,32 +40,15 @@
 
     <!-- ===================== HERO ===================== -->
     <section class="hero" id="hero">
-      <div class="hero__meta hero__meta--left" aria-hidden="true">
-        <span>25.2048° N</span>
-        <span>55.2708° E</span>
-        <span>DUBAI · UAE</span>
-      </div>
-      <div class="hero__meta hero__meta--right" aria-hidden="true">
-        <span>ISO 400</span>
-        <span>f/1.8</span>
-        <span>1/2000 s</span>
-      </div>
+      <p class="hero__eyebrow" data-bind="hero.eyebrow">Event photography · Dubai</p>
 
       <h1 class="hero__title">
-        <span class="hero__line"><span class="hero__word">The moments</span></span>
-        <span class="hero__line"><span class="hero__word hero__word--italic">between</span></span>
-        <span class="hero__line">
-          <span class="hero__word">the <span class="hero__rotator" id="rotator">
-            <span class="is-active">events</span><span>runways</span><span>finish&nbsp;lines</span><span>portraits</span>
-          </span></span>
-        </span>
+        <span class="hero__line"><span class="hero__word"><span data-bind="hero.lineStart">Your</span>
+          <span class="hero__rotator" id="rotator"></span></span></span>
+        <span class="hero__line"><span class="hero__word hero__word--italic" data-bind="hero.lineEnd">remembered as it felt.</span></span>
       </h1>
 
-      <p class="hero__sub">
-        A photographer's job isn't the posed shot everyone expects —
-        it's the split second nobody saw coming. I shoot those.
-        <em>Based in Dubai, at home anywhere with good light.</em>
-      </p>
+      <p class="hero__sub" data-bind="hero.sub"></p>
 
       <!-- cursor-following peek image -->
       <div class="hero__peek" id="heroPeek" aria-hidden="true">
@@ -80,17 +63,12 @@
 
     <!-- ===================== TICKER ===================== -->
     <div class="ticker" aria-hidden="true">
-      <div class="ticker__track" id="tickerTrack">
-        <span>Events</span><i>◉</i><span>Fashion</span><i>◉</i><span>Sports</span><i>◉</i>
-        <span>Portraits</span><i>◉</i><span>Weddings</span><i>◉</i><span>Conferences</span><i>◉</i>
-        <span>Galas</span><i>◉</i><span>Backstage</span><i>◉</i>
-      </div>
+      <div class="ticker__track" id="tickerTrack"></div>
     </div>
 
     <!-- ===================== FEATURED REEL ===================== -->
     <section class="reel" id="reel">
       <div class="section-head">
-        <span class="section-head__index" aria-hidden="true">01</span>
         <h2 class="section-head__title">Selected <em>frames</em></h2>
         <p class="section-head__hint" aria-hidden="true">drag&nbsp;→ or scroll sideways</p>
       </div>
@@ -102,34 +80,38 @@
       </div>
     </section>
 
+    <!-- ===================== VENUES & ARTISTS ===================== -->
+    <section class="credits" id="credits">
+      <div class="section-head">
+        <h2 class="section-head__title" id="creditsHeading">Rooms I've <em>worked</em></h2>
+        <p class="section-head__hint" data-bind="credits.sub"></p>
+      </div>
+      <div class="credits__cols">
+        <div class="credits__col reveal">
+          <h3 class="credits__label" data-bind="credits.venuesTitle">Venues &amp; stages</h3>
+          <ul class="credits__list" id="venuesList"></ul>
+        </div>
+        <div class="credits__col reveal">
+          <h3 class="credits__label" data-bind="credits.artistsTitle">Artists &amp; performers</h3>
+          <ul class="credits__list credits__list--quiet" id="artistsList"></ul>
+        </div>
+      </div>
+    </section>
+
     <!-- ===================== ABOUT ===================== -->
     <section class="about" id="about">
       <div class="about__grid">
         <figure class="about__portrait">
           <div class="about__portrait-frame" id="aboutPortrait">
-            <span class="about__portrait-note">your portrait here —<br/>photos.js → category "portrait"</span>
+            <span class="about__portrait-note">your portrait here —<br/>add a "portrait" photo</span>
           </div>
-          <figcaption class="about__caption">the one usually behind the camera</figcaption>
+          <figcaption class="about__caption" data-bind="about.portraitCaption"></figcaption>
         </figure>
 
         <div class="about__text">
-          <span class="section-head__index" aria-hidden="true">02</span>
-          <h2 class="about__heading">A woman with a camera<br/><em>sees the room differently.</em></h2>
-          <p>
-            I started with events — the champagne blur of Dubai galas, conferences,
-            weddings — because events are where people forget the camera exists.
-            That's where honest photographs live.
-          </p>
-          <p>
-            The same instinct travels: to fashion weeks where the best frame is
-            backstage, not on the runway; to sports where a race is decided in a
-            two-thousandth of a second; to portraits where the real face appears
-            only after the "official" one.
-          </p>
-          <blockquote class="about__quote">
-            “Anyone can photograph what a moment looked like.
-            I photograph what it <em>felt</em> like.”
-          </blockquote>
+          <h2 class="about__heading" data-bind="about.heading"></h2>
+          <div id="aboutParagraphs"></div>
+          <blockquote class="about__quote reveal" id="aboutQuote"></blockquote>
         </div>
       </div>
 
@@ -140,7 +122,6 @@
     <!-- ===================== WORK / CONTACT SHEET ===================== -->
     <section class="work" id="work">
       <div class="section-head">
-        <span class="section-head__index" aria-hidden="true">03</span>
         <h2 class="section-head__title">The contact <em>sheet</em></h2>
         <p class="section-head__hint" aria-hidden="true">click a frame to enlarge</p>
       </div>
@@ -159,53 +140,33 @@
     <!-- ===================== PROCESS ===================== -->
     <section class="process" id="process">
       <div class="section-head">
-        <span class="section-head__index" aria-hidden="true">04</span>
-        <h2 class="section-head__title">How it <em>works</em></h2>
+        <h2 class="section-head__title" id="processHeading">How it <em>works</em></h2>
       </div>
-      <ol class="process__steps">
-        <li class="process__step">
-          <span class="process__num" aria-hidden="true">①</span>
-          <h3>We talk, briefly.</h3>
-          <p>A call or WhatsApp voice note. You tell me the occasion, the venue,
-             what matters most. I tell you exactly how I'd cover it.</p>
-        </li>
-        <li class="process__step">
-          <span class="process__num" aria-hidden="true">②</span>
-          <h3>I disappear into your event.</h3>
-          <p>Quiet shoes, two bodies, no flash unless the room demands it.
-             Your guests won't perform for the camera — that's the point.</p>
-        </li>
-        <li class="process__step">
-          <span class="process__num" aria-hidden="true">③</span>
-          <h3>Frames, fast.</h3>
-          <p>A same-night teaser for your socials, the full edited gallery within
-             48 hours, delivered as a private link you can share with everyone.</p>
-        </li>
-      </ol>
+      <ol class="process__steps" id="processSteps"></ol>
     </section>
 
     <!-- ===================== CONTACT ===================== -->
     <section class="contact" id="contact">
-      <p class="contact__eyebrow">Currently booking · <span id="dubaiClock">--:--</span> in Dubai</p>
+      <p class="contact__eyebrow"><span data-bind="contact.eyebrow">Currently booking</span> · <span id="dubaiClock">--:--</span> in Dubai</p>
       <h2 class="contact__title">
-        <span>Let's make something</span>
-        <span><em>worth keeping.</em></span>
+        <span data-bind="contact.titleLine1"></span>
+        <span><em data-bind="contact.titleLine2"></em></span>
       </h2>
       <div class="contact__actions">
         <a class="contact__btn contact__btn--primary" id="emailLink" href="#">Email me</a>
         <a class="contact__btn" id="whatsappLink" href="#" target="_blank" rel="noopener">WhatsApp</a>
         <a class="contact__btn" id="instagramLink" href="#" target="_blank" rel="noopener">Instagram</a>
       </div>
-      <p class="contact__note">Replies within a day — usually much faster.</p>
+      <p class="contact__note" data-bind="contact.note"></p>
     </section>
 
   </main>
 
   <!-- ===================== FOOTER ===================== -->
   <footer class="footer">
-    <span id="footerName">© Your Name</span>
-    <span>Dubai, UAE — will travel for good light</span>
-    <span>All photographs are mine. Please ask before using them.</span>
+    <span id="footerName">©</span>
+    <span data-bind="footer.tag"></span>
+    <span data-bind="footer.rights"></span>
   </footer>
 
   <!-- ===================== LIGHTBOX ===================== -->
@@ -223,7 +184,26 @@
     <button class="lightbox__arrow lightbox__arrow--next" id="lightboxNext" aria-label="Next photograph">→</button>
   </div>
 
-  <script src="photos.js"></script>
+  <!-- ===================== ADMIN PANEL (open with #admin) ===================== -->
+  <div class="admin" id="admin" hidden>
+    <div class="admin__scrim" id="adminScrim"></div>
+    <aside class="admin__panel" role="dialog" aria-label="Site editor">
+      <header class="admin__head">
+        <h2>Site editor</h2>
+        <p>Changes apply instantly and are saved in this browser. Press <strong>Export</strong> to download your updated <code>config.js</code>, then replace the file in your site folder to publish.</p>
+        <button class="admin__close" id="adminClose" aria-label="Close editor">✕</button>
+      </header>
+      <div class="admin__body" id="adminBody"><!-- built by admin.js --></div>
+      <footer class="admin__foot">
+        <button class="admin__btn admin__btn--primary" id="adminExport">Export config.js</button>
+        <button class="admin__btn" id="adminCopy">Copy JSON</button>
+        <button class="admin__btn admin__btn--danger" id="adminReset">Reset all edits</button>
+      </footer>
+    </aside>
+  </div>
+
+  <script src="config.js"></script>
   <script src="script.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>
