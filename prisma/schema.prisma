@@ -1,0 +1,125 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Dabur Creator Hub — shared data model (MVP module)
+//
+// IDs are permanent cuid()s shared with future modules (Grading, Sentiment,
+// Brand Books) which will attach to Creator / Campaign / Asset.
+//
+// SQLite (local dev) does not support native Prisma enums or Json columns, so
+// enum-like fields are `String` and JSON payloads are stringified `String`s.
+// Every value is enforced by Zod at the boundary (see src/lib/validators.ts),
+// and TS union types in src/lib/constants.ts keep the app fully type-safe.
+//
+// Swapping to Postgres for production:
+//   1. datasource provider = "postgresql", DATABASE_URL = postgres://...
+//   2. (optional) promote the String fields to native enums / Json to Jsonb —
+//      the value sets below are the enum definitions, verbatim.
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // swap to "postgresql" for production
+  url      = env("DATABASE_URL")
+}
+
+// Roles: CREATOR | MARKETER | BRAND_LEAD | ADMIN
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         String   @default("CREATOR")
+  region       String? // scopes MARKETER users; null = all regions
+  name         String
+  createdAt    DateTime @default(now())
+
+  // A CREATOR user is linked 1:1 to their Creator profile.
+  creator   Creator? @relation(fields: [creatorId], references: [id])
+  creatorId String?  @unique
+
+  decisions JoinRequest[] @relation("decidedBy")
+
+  @@index([role, region])
+}
+
+model Creator {
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  handles         String   @default("{}") // JSON: { platform: handle }
+  primaryPlatform String // INSTAGRAM | TIKTOK | YOUTUBE | SNAPCHAT
+  followerTier    String // NANO | MICRO | MACRO | MEGA
+  region          String // UAE | KSA | KUWAIT | QATAR | OMAN | BAHRAIN | EGYPT
+  category        String // HAIR | ORAL | HEALTH_OTC | SKIN
+  collabType      String // BARTER | PAID | BOTH
+  status          String   @default("PROSPECT") // PROSPECT | ACTIVE | PAUSED
+  tags            String   @default("[]") // JSON: string[]
+  avgScore        Float? // reserved — written by the future Grading module
+  createdAt       DateTime @default(now())
+
+  user         User?
+  joinRequests JoinRequest[]
+  assets       Asset[]
+
+  @@index([region, category])
+  @@index([status, followerTier])
+}
+
+model Campaign {
+  id             String   @id @default(cuid())
+  name           String
+  brand          String // DABUR_AMLA | VATIKA | HAJMOLA | DABUR_HERBL | REAL
+  region         String
+  objective      String
+  startDate      DateTime
+  endDate        DateTime
+  status         String   @default("PLANNING") // PLANNING | LIVE | CLOSED
+  openToCreators Boolean  @default(false)
+  kpis           String   @default("{}") // JSON: { metric: target }
+  createdAt      DateTime @default(now())
+
+  joinRequests JoinRequest[]
+  assets       Asset[]
+
+  @@index([status, openToCreators])
+  @@index([region])
+}
+
+model JoinRequest {
+  id            String   @id @default(cuid())
+  creatorId     String
+  campaignId    String
+  type          String   @default("JOIN") // JOIN | BARTER
+  proposedTerms String? // barter pitch: deliverables + requested product/perk
+  status        String   @default("PENDING") // PENDING | APPROVED | REJECTED
+  decisionReason String?
+  decidedById   String?
+  createdAt     DateTime @default(now())
+
+  creator   Creator  @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  campaign  Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  decidedBy User?    @relation("decidedBy", fields: [decidedById], references: [id])
+
+  @@unique([creatorId, campaignId]) // one request per creator per campaign
+  @@index([status])
+}
+
+model Asset {
+  id         String   @id @default(cuid())
+  creatorId  String
+  campaignId String
+  type       String // REEL | STORY | UGC | POST
+  url        String
+  caption    String
+  status     String   @default("SUBMITTED") // SUBMITTED | UNDER_REVIEW | APPROVED | REJECTED | LIVE
+  feedback   String? // marketer feedback shown inline to the creator
+  score      Float? // reserved — written by the future Grading module
+  createdAt  DateTime @default(now())
+
+  creator  Creator  @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([creatorId])
+}
