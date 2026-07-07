@@ -17,6 +17,10 @@
    B) SINGLE PHOTOS: right-click a photo in Drive → Share →
       "Anyone with the link", and paste the link into a photo's
       "drive" field in the photos list at the bottom.
+
+   ARTISTS — give a folder (or photo) an "artist" name and it
+   links to the Artists list: visitors click the artist's name
+   to see only their frames.
    ============================================================ */
 
 const CONFIG = {
@@ -35,12 +39,13 @@ const CONFIG = {
   theme: {
     preset: "ivory",
     bg:      "#f5f0e6",   // page background
-    bgSoft:  "#ebe4d3",   // alternate section background
-    ink:     "#231d14",   // main text
-    muted:   "#7e7460",   // secondary text
-    line:    "#d8cfba",   // hairlines & borders
-    accent:  "#96662e",   // links, highlights, italic words
-    accent2: "#b98a4e",   // lighter accent (tags, hovers)
+    bgSoft:  "#ece5d4",   // alternate section background
+    ink:     "#1f1a12",   // main text
+    ink2:    "#494130",   // paragraphs & secondary text
+    muted:   "#71674f",   // small labels
+    line:    "#d5cbb4",   // hairlines & borders
+    accent:  "#8d5f28",   // links, highlights, italic words
+    accent2: "#a97f42",   // lighter accent (tags, hovers)
     mark:    "#c4442a",   // grease-pencil hover mark
     reelBg:  "#171310",   // the dark film-strip band
     reelInk: "#efe8da",   // text on the film strip
@@ -48,48 +53,48 @@ const CONFIG = {
 
   /* ---- gallery categories (the filter chips, in order) ---- */
   categories: [
-    { key: "comedy",   label: "Comedy shows" },
-    { key: "concerts", label: "Concerts" },
     { key: "events",   label: "Events" },
-    { key: "fashion",  label: "Fashion" },
+    { key: "concerts", label: "Concerts" },
+    { key: "comedy",   label: "Comedy" },
     { key: "sports",   label: "Sports" },
   ],
 
   /* ---- Google Drive folders — your galleries ----
-     apiKey: paste your free Google API key here (README explains
-     how to get one in ~5 minutes). Until then the site shows
-     placeholder frames, and single-photo links still work.
+     apiKey:   your free Google API key (README explains the
+               5-minute setup). Until then placeholders show.
+     artist:   type the performer/show name to link the folder's
+               photos to the Artists list below.
      featured: how many photos from that folder go into the
-     film-strip reel on the homepage. */
+               film-strip reel on the homepage. */
   drive: {
     apiKey: "",
     folders: [
-      { link: "https://drive.google.com/drive/folders/1eQXXUinyqs1hZE5JcKvY_USPXaO9dH50", category: "comedy",   label: "Comedy show",  year: "2025", featured: 2 },
-      { link: "https://drive.google.com/drive/folders/15y2PAqoNo2vWeToYe_WkQ-9WNdV5gpBW", category: "comedy",   label: "Comedy show",  year: "2025", featured: 1 },
-      { link: "https://drive.google.com/drive/folders/1ztURSIDo-Eq5gNWYbjqH_e0yjGGDw3Rh", category: "concerts", label: "Live concert", year: "2025", featured: 1 },
-      { link: "https://drive.google.com/drive/folders/1RZ_DPFrNnrxtBWrOpdIBAeu0h_8HTznS", category: "concerts", label: "Live concert", year: "2025", featured: 1 },
-      { link: "https://drive.google.com/drive/folders/15_vXI0zPailEh653-csRBaL6W6_AWBCY", category: "concerts", label: "Live concert", year: "2025", featured: 1 },
-      { link: "https://drive.google.com/drive/folders/1tpDb4j3boeSQi5nm-P-s3YCf_wMagn_b", category: "concerts", label: "Live concert", year: "2024", featured: 1 },
-      { link: "https://drive.google.com/drive/folders/1HfsiVvwl79--3r6glNNQqb9J9AkdkUJk", category: "concerts", label: "Live concert", year: "2024", featured: 0 },
-      { link: "https://drive.google.com/drive/folders/1tf-2FyvfKvhy_bFHn0jyy-DpMvAV68OS", category: "concerts", label: "Live concert", year: "2024", featured: 0 },
-      { link: "https://drive.google.com/drive/folders/1EYtv2ndAhO5Yf5MTh7WllITPEwWvDmld", category: "concerts", label: "Live concert", year: "2024", featured: 0 },
-      { link: "https://drive.google.com/drive/folders/1tKrE840f3k9F8SViR3TK-HJ65y_ecs8u", category: "concerts", label: "Live concert", year: "2024", featured: 0 },
+      { link: "https://drive.google.com/drive/folders/1eQXXUinyqs1hZE5JcKvY_USPXaO9dH50", category: "comedy",   label: "Comedy show",  artist: "", year: "2025", featured: 1 },
+      { link: "https://drive.google.com/drive/folders/15y2PAqoNo2vWeToYe_WkQ-9WNdV5gpBW", category: "comedy",   label: "Comedy show",  artist: "", year: "2025", featured: 1 },
+      { link: "https://drive.google.com/drive/folders/1ztURSIDo-Eq5gNWYbjqH_e0yjGGDw3Rh", category: "concerts", label: "Live concert", artist: "", year: "2025", featured: 1 },
+      { link: "https://drive.google.com/drive/folders/1RZ_DPFrNnrxtBWrOpdIBAeu0h_8HTznS", category: "concerts", label: "Live concert", artist: "", year: "2025", featured: 1 },
+      { link: "https://drive.google.com/drive/folders/15_vXI0zPailEh653-csRBaL6W6_AWBCY", category: "concerts", label: "Live concert", artist: "", year: "2025", featured: 1 },
+      { link: "https://drive.google.com/drive/folders/1tpDb4j3boeSQi5nm-P-s3YCf_wMagn_b", category: "concerts", label: "Live concert", artist: "", year: "2024", featured: 1 },
+      { link: "https://drive.google.com/drive/folders/1HfsiVvwl79--3r6glNNQqb9J9AkdkUJk", category: "concerts", label: "Live concert", artist: "", year: "2024", featured: 0 },
+      { link: "https://drive.google.com/drive/folders/1tf-2FyvfKvhy_bFHn0jyy-DpMvAV68OS", category: "concerts", label: "Live concert", artist: "", year: "2024", featured: 0 },
+      { link: "https://drive.google.com/drive/folders/1EYtv2ndAhO5Yf5MTh7WllITPEwWvDmld", category: "concerts", label: "Live concert", artist: "", year: "2024", featured: 0 },
+      { link: "https://drive.google.com/drive/folders/1tKrE840f3k9F8SViR3TK-HJ65y_ecs8u", category: "concerts", label: "Live concert", artist: "", year: "2024", featured: 0 },
     ],
   },
 
   hero: {
     eyebrow: "Event photography · Dubai",
     lineStart: "Your",
-    rotator: ["comedy night", "concert", "gala", "conference"],
+    rotator: ["event", "concert", "gala", "comedy night"],
     lineEnd: "remembered as it felt.",
-    sub: "I photograph live events across Dubai — comedy shows, concerts, galas and launches — with a quiet, documentary approach. No interruptions, no stiff line-ups; just an honest record of the night.",
+    sub: "I photograph live events across Dubai — concerts, galas, launches and comedy nights — with a quiet, documentary approach. No interruptions, no stiff line-ups; just an honest record of the night.",
   },
 
   about: {
     heading: "Hello — it's lovely to meet you.",
     paragraphs: [
-      "I'm an event photographer based in Dubai. Most weeks you'll find me side-stage at a comedy night or in the pit at a concert — the kind of evenings that pass in a blur for everyone involved, which is exactly why the photographs matter.",
-      "Clients often tell me guests and performers relax more quickly with a woman behind the camera. For women-only gatherings and behind-the-scenes moments, that comfort isn't a bonus — it's the whole job. And when the brief moves to a runway or a finish line, the same instinct applies: find the honest frame.",
+      "I'm an event photographer based in Dubai. Most weeks you'll find me side-stage or in the pit — at concerts, galas and comedy nights, the kind of evenings that pass in a blur for everyone involved, which is exactly why the photographs matter.",
+      "Clients often tell me guests and performers relax more quickly with a woman behind the camera. For women-only gatherings and behind-the-scenes moments, that comfort isn't a bonus — it's the whole job. And when the brief moves to a finish line or a keynote stage, the same instinct applies: find the honest frame.",
     ],
     quote: "My favourite photographs are the ones nobody remembers being taken.",
     portraitCaption: "usually the one behind the camera",
@@ -102,11 +107,20 @@ const CONFIG = {
     { number: "70%",  label: "repeat clients" },
   ],
 
-  /* ---- venues & artists — EXAMPLES below, replace with your own
-          real list in the admin panel before publishing ---- */
+  /* ---- artists & venues — EXAMPLES below, replace with your own
+          real names in the admin panel before publishing.
+          An artist whose name matches photos (via the "artist"
+          field on folders or photos) becomes clickable. ---- */
   credits: {
-    heading: "Rooms I've worked",
-    sub: "A few of the venues and stages that have trusted me with their evenings.",
+    heading: "Artists & stages",
+    sub: "The performers and rooms that have trusted me with their nights — click an artist to see their frames.",
+    artistsTitle: "Artists & performers",
+    artists: [
+      { name: "Arena headliner",       note: "international tour stop" },
+      { name: "The stand-up special",  note: "comedy night" },
+      { name: "Festival main stage",   note: "DJ sets & live acts" },
+      { name: "Symphony gala",         note: "orchestra night" },
+    ],
     venuesTitle: "Venues & stages",
     venues: [
       "Coca-Cola Arena",
@@ -117,18 +131,9 @@ const CONFIG = {
       "Expo City Dubai",
       "DIFC Gate Village",
     ],
-    artistsTitle: "Artists & performers",
-    artists: [
-      "Touring stand-up headliners",
-      "International music acts",
-      "Regional comedy collectives",
-      "Festival main-stage DJs",
-      "Symphony orchestra — gala night",
-      "Spoken-word & poetry nights",
-    ],
   },
 
-  ticker: ["Comedy nights", "Concerts", "Galas", "Conferences", "Award nights", "Brand launches", "Fashion", "Sports"],
+  ticker: ["Concerts", "Galas", "Award nights", "Conferences", "Comedy nights", "Brand launches", "Weddings", "Sports"],
 
   process: {
     heading: "How it works",
@@ -148,6 +153,13 @@ const CONFIG = {
     ],
   },
 
+  /* ---- kind words — EXAMPLES, replace with real ones ---- */
+  testimonials: [
+    { quote: "She was everywhere and nowhere — we never noticed her working, and somehow she caught everything.", name: "Events manager", role: "arena show" },
+    { quote: "The same-night selection saved our social team. The full gallery arrived before the venue invoice did.", name: "Brand producer", role: "product launch" },
+    { quote: "Guests keep asking who took the photos. That's the review.", name: "Private client", role: "gala dinner" },
+  ],
+
   contact: {
     eyebrow: "Currently booking",
     titleLine1: "Planning something?",
@@ -163,17 +175,19 @@ const CONFIG = {
   /* ---- individually-added photographs ----
      These render alongside the Drive folders above. Entries with
      no link act as placeholders and step aside automatically once
-     a folder fills their category. */
+     a folder fills their category. The "artist" field links a
+     photo to the Artists list. */
   photos: [
-    { drive: "", src: "", title: "Headliner, mid-punchline",            category: "comedy",   year: "2025", wide: true,  featured: true  },
-    { drive: "", src: "", title: "Front row, mid-laugh",                category: "comedy",   year: "2025", wide: false, featured: true  },
-    { drive: "", src: "", title: "Encore, from the pit",                category: "concerts", year: "2025", wide: false, featured: true  },
-    { drive: "", src: "", title: "Crowd under the lights",              category: "concerts", year: "2024", wide: true,  featured: true  },
-    { drive: "", src: "", title: "Golden-hour arrivals — private gala", category: "events",   year: "2025", wide: false, featured: true  },
-    { drive: "", src: "", title: "Confetti, mid-air",                   category: "events",   year: "2025", wide: false, featured: false },
-    { drive: "", src: "", title: "Silk against sandstone — Alserkal",   category: "fashion",  year: "2025", wide: false, featured: true  },
-    { drive: "", src: "", title: "Backstage, three minutes to call",    category: "fashion",  year: "2024", wide: false, featured: false },
-    { drive: "", src: "", title: "The finish line, 1/2000s",            category: "sports",   year: "2025", wide: false, featured: false },
-    { drive: "", src: "", title: "Dust and horsepower — desert rally",  category: "sports",   year: "2024", wide: true,  featured: false },
+    { drive: "", src: "", title: "Golden-hour arrivals — private gala", category: "events",   artist: "",                     year: "2025", wide: true,  featured: true  },
+    { drive: "", src: "", title: "Confetti, mid-air",                   category: "events",   artist: "",                     year: "2025", wide: false, featured: true  },
+    { drive: "", src: "", title: "The quiet minute before doors open",  category: "events",   artist: "",                     year: "2024", wide: false, featured: false },
+    { drive: "", src: "", title: "Encore, from the pit",                category: "concerts", artist: "Arena headliner",      year: "2025", wide: false, featured: true  },
+    { drive: "", src: "", title: "Crowd under the lights",              category: "concerts", artist: "Arena headliner",      year: "2024", wide: true,  featured: true  },
+    { drive: "", src: "", title: "Strings, half a beat before",         category: "concerts", artist: "Symphony gala",        year: "2024", wide: false, featured: false },
+    { drive: "", src: "", title: "Main stage, blue hour",               category: "concerts", artist: "Festival main stage",  year: "2025", wide: false, featured: true  },
+    { drive: "", src: "", title: "Headliner, mid-punchline",            category: "comedy",   artist: "The stand-up special", year: "2025", wide: true,  featured: true  },
+    { drive: "", src: "", title: "Front row, mid-laugh",                category: "comedy",   artist: "The stand-up special", year: "2025", wide: false, featured: false },
+    { drive: "", src: "", title: "The finish line, 1/2000s",            category: "sports",   artist: "",                     year: "2025", wide: false, featured: false },
+    { drive: "", src: "", title: "Dust and horsepower — desert rally",  category: "sports",   artist: "",                     year: "2024", wide: true,  featured: false },
   ],
 };

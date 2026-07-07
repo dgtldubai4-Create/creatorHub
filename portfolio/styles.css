@@ -7,12 +7,13 @@
 
 :root {
   --bg: #f5f0e6;
-  --bg-soft: #ebe4d3;
-  --ink: #231d14;
-  --muted: #7e7460;
-  --line: #d8cfba;
-  --accent: #96662e;
-  --accent-2: #b98a4e;
+  --bg-soft: #ece5d4;
+  --ink: #1f1a12;
+  --ink-2: #494130;
+  --muted: #71674f;
+  --line: #d5cbb4;
+  --accent: #8d5f28;
+  --accent-2: #a97f42;
   --mark: #c4442a;
   --reel-bg: #171310;
   --reel-ink: #efe8da;
@@ -30,7 +31,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--sans);
-  font-weight: 300;
+  font-weight: 380;
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -41,6 +42,28 @@ body {
 img { max-width: 100%; display: block; }
 
 a { color: inherit; }
+
+.skip-link {
+  position: fixed;
+  top: -4rem;
+  left: 1rem;
+  z-index: 130;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0.7em 1.2em;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  transition: top 0.25s;
+}
+.skip-link:focus { top: 1rem; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
 
 /* ---------- film grain ---------- */
 .grain {
@@ -219,9 +242,10 @@ a { color: inherit; }
 
 .hero__sub {
   margin-top: 2.2rem;
-  max-width: 36em;
-  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
-  color: var(--muted);
+  max-width: 34em;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  line-height: 1.7;
+  color: var(--ink-2);
   animation: fade-up 1s var(--ease-out) 0.5s backwards;
 }
 @keyframes fade-up {
@@ -297,7 +321,7 @@ a { color: inherit; }
   font-family: var(--serif);
   font-style: italic;
   font-size: clamp(1rem, 2vw, 1.4rem);
-  color: var(--muted);
+  color: var(--ink-2);
   white-space: nowrap;
 }
 .ticker__track i { color: var(--accent-2); font-style: normal; font-size: 0.6em; }
@@ -398,6 +422,7 @@ a { color: inherit; }
 .credits__cols {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  align-items: start;
   gap: clamp(2rem, 5vw, 4rem);
   padding: 0 var(--gutter);
   max-width: 1250px;
@@ -414,32 +439,103 @@ a { color: inherit; }
 }
 .credits__list { list-style: none; }
 .credits__list li {
-  font-family: var(--serif);
-  font-weight: 350;
-  font-size: clamp(1.25rem, 2.4vw, 1.8rem);
-  line-height: 1.3;
-  padding: 0.55em 0;
   border-bottom: 1px solid var(--line);
+}
+
+/* artists — the headline act: clickable rows that open their frames */
+.artist-row {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.4rem, 2.8vw, 2.1rem);
+  line-height: 1.25;
+  color: var(--ink);
+  padding: 0.55em 0;
   display: flex;
   align-items: baseline;
   gap: 0.9rem;
   transition: padding-left 0.35s var(--ease-out), color 0.25s;
 }
-.credits__list li:hover { padding-left: 0.6rem; color: var(--accent); }
-.credits__list li::before {
+.artist-row:hover { padding-left: 0.6rem; color: var(--accent); }
+.artist-row__count {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--bg);
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 0.35em 0.85em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-0.25em);
+}
+.artist-row__note {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-left: auto;
+  text-align: right;
+}
+.artist-row__arrow {
+  color: var(--accent-2);
+  font-size: 0.75em;
+  transition: transform 0.3s var(--ease-out);
+}
+.artist-row:hover .artist-row__arrow { transform: translateX(0.35em); }
+@media (max-width: 640px) {
+  .artist-row { flex-wrap: wrap; row-gap: 0.15rem; }
+  .artist-row__note { margin-left: 1.6rem; width: 100%; text-align: left; order: 4; }
+}
+/* artists without linked photos read as plain credits */
+.artist-row--static { cursor: default; }
+.artist-row--static:hover { padding-left: 0; color: var(--ink); }
+
+/* venues — the quiet column */
+.credits__list--quiet li {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 340;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  color: var(--ink-2);
+  padding: 0.6em 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+}
+.credits__list--quiet li::before {
   content: "\25c9";
   font-size: 0.45em;
   color: var(--accent-2);
   flex: 0 0 auto;
   transform: translateY(-0.35em);
 }
-.credits__list--quiet li {
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(1.05rem, 2vw, 1.4rem);
-  color: var(--muted);
+
+/* floating photo peek that follows the cursor over artist names */
+.hover-peek {
+  position: fixed;
+  top: 0; left: 0;
+  width: clamp(150px, 16vw, 240px);
+  aspect-ratio: 3 / 4;
+  pointer-events: none;
+  z-index: 85;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 45px rgba(31, 26, 18, 0.25);
+  filter: saturate(0.92);
 }
-.credits__list--quiet li:hover { color: var(--accent); }
+.hover-peek.is-on { opacity: 1; }
+@media (hover: none) { .hover-peek { display: none; } }
 
 /* ============================================================
    ABOUT — soft section
@@ -501,11 +597,11 @@ a { color: inherit; }
   text-wrap: balance;
 }
 .about__text p {
-  max-width: 36em;
+  max-width: 34em;
   margin-bottom: 1.2em;
-  color: var(--ink);
-  opacity: 0.82;
-  font-size: clamp(0.95rem, 1.3vw, 1.06rem);
+  color: var(--ink-2);
+  font-size: clamp(1rem, 1.35vw, 1.1rem);
+  line-height: 1.75;
 }
 .about__quote {
   margin-top: 2.2rem;
@@ -643,6 +739,14 @@ a { color: inherit; }
 .sheet-frame:hover .sheet-frame__bar { opacity: 1; }
 .sheet-frame__num { color: var(--accent-2); font-variant-numeric: tabular-nums; }
 
+.work__empty {
+  padding: 3rem var(--gutter);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--muted);
+}
+
 /* placeholder frames (before Drive links are added) */
 .ph {
   display: grid;
@@ -707,10 +811,46 @@ a { color: inherit; }
   margin-bottom: 0.7rem;
 }
 .process__step p {
-  color: var(--muted);
-  font-size: 0.92rem;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  line-height: 1.7;
   max-width: 30em;
 }
+
+/* ============================================================
+   KIND WORDS
+   ============================================================ */
+.words { padding-bottom: clamp(2rem, 5vw, 4rem); }
+.words__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: clamp(1.4rem, 3vw, 2.5rem);
+  padding: 0 var(--gutter);
+  max-width: 1250px;
+}
+.words__card {
+  border-top: 2px solid var(--ink);
+  padding-top: 1.4rem;
+}
+.words__quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 350;
+  font-size: clamp(1.1rem, 1.9vw, 1.35rem);
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 1.1rem;
+}
+.words__quote::before { content: "\201c"; color: var(--accent-2); }
+.words__quote::after { content: "\201d"; color: var(--accent-2); }
+.words__who {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 450;
+}
+.words__who b { color: var(--ink-2); font-weight: 500; }
 
 /* ============================================================
    CONTACT
@@ -764,8 +904,8 @@ a { color: inherit; }
 .contact__btn--primary:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 .contact__note {
   margin-top: 1.6rem;
-  font-size: 0.78rem;
-  color: var(--muted);
+  font-size: 0.82rem;
+  color: var(--ink-2);
 }
 
 /* ============================================================

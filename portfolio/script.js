@@ -87,6 +87,7 @@
               src: "",
               title: f.label ? `${f.label} — frame ${String(i + 1).padStart(2, "0")}` : file.name.replace(/\.[a-z0-9]+$/i, ""),
               category: f.category || "events",
+              artist: f.artist || "",
               year: f.year || "",
               wide: ratio > 1.7,
               featured: i < (f.featured ?? 0),
@@ -139,7 +140,7 @@
 
   /* ---------- theme ---------- */
   const THEME_VARS = {
-    bg: "--bg", bgSoft: "--bg-soft", ink: "--ink", muted: "--muted", line: "--line",
+    bg: "--bg", bgSoft: "--bg-soft", ink: "--ink", ink2: "--ink-2", muted: "--muted", line: "--line",
     accent: "--accent", accent2: "--accent-2", mark: "--mark", reelBg: "--reel-bg", reelInk: "--reel-ink",
   };
   function applyTheme(theme) {
@@ -152,6 +153,8 @@
   const $ = id => document.getElementById(id);
   const getPath = (obj, path) => path.split(".").reduce((o, k) => (o ? o[k] : undefined), obj);
   const catLabel = key => (cfg.categories.find(c => c.key === key) || {}).label || key;
+  const norm = s => (s || "").trim().toLowerCase();
+  const artistPhotosOf = name => photosNow.filter(p => norm(p.artist) === norm(name));
 
   /* ---------- preloader (counter as branding) ---------- */
   const loader = document.createElement("div");
@@ -192,9 +195,7 @@
   const lb = $("lightbox");
   let lbIndex = 0;
   function visibleIndices() {
-    const active = document.querySelector(".chip.is-active");
-    const filter = active ? active.dataset.filter : "all";
-    return photosNow.map((p, i) => i).filter(i => filter === "all" || photosNow[i].category === filter);
+    return photosNow.map((p, i) => i).filter(i => photoVisible(photosNow[i]));
   }
   function renderLightbox() {
     const photo = photosNow[lbIndex];
@@ -242,6 +243,53 @@
     if (e.key === "ArrowLeft") stepLightbox(-1);
     if (e.key === "ArrowRight") stepLightbox(1);
   });
+
+  /* ---------- gallery filter state ---------- */
+  const filterState = { cat: "all", artist: null };
+
+  function renderFilters() {
+    const filters = document.querySelector(".work__filters");
+    filters.innerHTML =
+      `<button class="chip${filterState.cat === "all" && !filterState.artist ? " is-active" : ""}" data-filter="all" role="tab">All</button>` +
+      cfg.categories.map(c =>
+        `<button class="chip${filterState.cat === c.key && !filterState.artist ? " is-active" : ""}" data-filter="${c.key}" role="tab">${c.label}</button>`
+      ).join("") +
+      (filterState.artist
+        ? `<button class="chip is-active" data-artist-clear="1" role="tab" title="Show everything again">${filterState.artist}&nbsp;&nbsp;✕</button>`
+        : "");
+    filters.querySelectorAll(".chip").forEach(chip => {
+      chip.setAttribute("aria-selected", chip.classList.contains("is-active") ? "true" : "false");
+      chip.addEventListener("click", () => {
+        if (chip.dataset.artistClear) { filterState.artist = null; }
+        else { filterState.cat = chip.dataset.filter; filterState.artist = null; }
+        renderFilters();
+        applyGridFilter();
+      });
+    });
+  }
+
+  function photoVisible(p) {
+    if (filterState.artist) return norm(p.artist) === norm(filterState.artist);
+    return filterState.cat === "all" || p.category === filterState.cat;
+  }
+
+  function applyGridFilter() {
+    let shown = 0;
+    $("workGrid").querySelectorAll(".sheet-frame").forEach(cell => {
+      const show = photoVisible(photosNow[+cell.dataset.index]);
+      cell.classList.toggle("is-hidden", !show);
+      if (show) { shown++; requestAnimationFrame(() => cell.classList.add("is-in")); }
+    });
+    $("workEmpty").hidden = shown > 0;
+  }
+
+  function showArtist(name) {
+    filterState.artist = name;
+    filterState.cat = "all";
+    renderFilters();
+    applyGridFilter();
+    $("work").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+  }
 
   /* ---------- render everything from config ---------- */
   let rotatorTimer = null;
@@ -313,7 +361,28 @@
 
     /* credits lists */
     $("venuesList").innerHTML = cfg.credits.venues.map(v => `<li>${v}</li>`).join("");
-    $("artistsList").innerHTML = cfg.credits.artists.map(a => `<li>${a}</li>`).join("");
+    const artistsList = $("artistsList");
+    artistsList.innerHTML = "";
+    cfg.credits.artists.forEach(a => {
+      const entry = typeof a === "string" ? { name: a, note: "" } : a;
+      const li = document.createElement("li");
+      const shots = artistPhotosOf(entry.name);
+      const row = document.createElement(shots.length ? "button" : "div");
+      row.className = "artist-row" + (shots.length ? "" : " artist-row--static");
+      row.innerHTML =
+        `<span class="artist-row__arrow" aria-hidden="true">\u25c9</span>` +
+        `<span class="artist-row__name">${entry.name}</span>` +
+        (entry.note ? `<span class="artist-row__note">${entry.note}</span>` : "") +
+        (shots.length ? `<span class="artist-row__count">${shots.length} fr</span>` : "");
+      if (shots.length) {
+        row.setAttribute("aria-label", `Show ${shots.length} photographs of ${entry.name}`);
+        row.addEventListener("click", () => showArtist(entry.name));
+        row.addEventListener("pointerenter", () => startArtistPeek(entry.name));
+        row.addEventListener("pointerleave", stopArtistPeek);
+      }
+      li.appendChild(row);
+      artistsList.appendChild(li);
+    });
 
     /* about */
     $("aboutParagraphs").innerHTML = cfg.about.paragraphs.map(p => `<p>${p}</p>`).join("");
@@ -328,25 +397,8 @@
       .map(s => `<div class="stats__cell reveal"><span class="stats__num">${s.number}</span><span class="stats__label">${s.label}</span></div>`)
       .join("");
 
-    /* filters (from config categories) */
-    const filters = document.querySelector(".work__filters");
-    filters.innerHTML =
-      `<button class="chip is-active" data-filter="all" role="tab" aria-selected="true">All</button>` +
-      cfg.categories.map(c => `<button class="chip" data-filter="${c.key}" role="tab" aria-selected="false">${c.label}</button>`).join("");
-    filters.querySelectorAll(".chip").forEach(chip =>
-      chip.addEventListener("click", () => {
-        filters.querySelectorAll(".chip").forEach(c => {
-          c.classList.toggle("is-active", c === chip);
-          c.setAttribute("aria-selected", c === chip ? "true" : "false");
-        });
-        const filter = chip.dataset.filter;
-        $("workGrid").querySelectorAll(".sheet-frame").forEach(cell => {
-          const show = filter === "all" || cell.dataset.category === filter;
-          cell.classList.toggle("is-hidden", !show);
-          if (show) requestAnimationFrame(() => cell.classList.add("is-in"));
-        });
-      })
-    );
+    /* filters (from config categories + artist deep-filter) */
+    renderFilters();
 
     /* contact sheet grid */
     const grid = $("workGrid");
@@ -356,6 +408,7 @@
       const cell = document.createElement("figure");
       cell.className = "sheet-frame" + (photo.wide ? " sheet-frame--wide" : "");
       cell.dataset.category = photo.category;
+      cell.dataset.index = idx;
       cell.appendChild(frameMedia(photo, idx, 1000));
       const bar = document.createElement("figcaption");
       bar.className = "sheet-frame__bar";
@@ -364,6 +417,15 @@
       cell.addEventListener("click", () => openLightbox(idx));
       grid.appendChild(cell);
     });
+    applyGridFilter();
+
+    /* kind words */
+    const words = cfg.testimonials || [];
+    $("words").style.display = words.length ? "" : "none";
+    $("wordsGrid").innerHTML = words.map(w =>
+      `<div class="words__card reveal"><p class="words__quote">${w.quote}</p>` +
+      `<p class="words__who"><b>${w.name}</b>${w.role ? " \u00b7 " + w.role : ""}</p></div>`
+    ).join("");
 
     /* process steps */
     $("processSteps").innerHTML = cfg.process.steps
@@ -440,13 +502,69 @@
     })();
   }
 
-  /* "VIEW" cursor label over gallery frames */
+  /* floating photo peek over artist names (cycles their frames) */
+  const hoverPeek = document.createElement("div");
+  hoverPeek.className = "hover-peek";
+  hoverPeek.setAttribute("aria-hidden", "true");
+  document.body.appendChild(hoverPeek);
+  let peekCycle = null;
+  function startArtistPeek(name) {
+    if (reduceMotion || !matchMedia("(hover: hover)").matches) return;
+    const shots = artistPhotosOf(name).filter(p => imageUrl(p, 600));
+    let i = 0;
+    const show = () => {
+      const url = shots.length ? imageUrl(shots[i % shots.length], 600) : null;
+      hoverPeek.style.backgroundImage = url
+        ? `url("${url}")`
+        : `linear-gradient(150deg, hsl(28 25% 32%), hsl(20 18% 14%))`;
+      i++;
+    };
+    show();
+    clearInterval(peekCycle);
+    peekCycle = setInterval(show, 900);
+    hoverPeek.classList.add("is-on");
+  }
+  function stopArtistPeek() {
+    clearInterval(peekCycle);
+    hoverPeek.classList.remove("is-on");
+  }
+
+  /* vertical wheel drives the film strip sideways while hovering it */
+  strip.addEventListener("wheel", e => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault();
+      strip.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+
+  /* clicking the hero opens the photo the peek is showing */
+  hero.addEventListener("click", e => {
+    if (e.target.closest("a, button")) return;
+    if (!matchMedia("(hover: hover)").matches) return;
+    const pool = peekPhotos();
+    if (!pool.length) return;
+    const photo = pool[((peekShot % pool.length) + pool.length) % pool.length];
+    const idx = photosNow.indexOf(photo);
+    if (idx >= 0) openLightbox(idx);
+  });
+
+  /* context-aware cursor label over gallery frames */
   const cursorLabel = $("cursorLabel");
   document.addEventListener("pointermove", e => {
     cursorLabel.style.left = e.clientX + "px";
     cursorLabel.style.top = e.clientY + "px";
     const overFrame = e.target.closest(".sheet-frame, .reel__frame");
-    cursorLabel.classList.toggle("is-on", !!overFrame && lb.hidden);
+    const overArtist = e.target.closest(".artist-row:not(.artist-row--static)");
+    const overHero = e.target.closest(".hero") && !e.target.closest("a, button");
+    let label = null;
+    if (overFrame) label = "VIEW";
+    else if (overArtist) label = "FRAMES";
+    else if (overHero) label = "OPEN";
+    if (label) cursorLabel.textContent = label;
+    cursorLabel.classList.toggle("is-on", !!label && lb.hidden);
+    const px = Math.min(e.clientX + 36, innerWidth - hoverPeek.offsetWidth - 16);
+    const py = Math.min(Math.max(e.clientY - hoverPeek.offsetHeight / 2, 16), innerHeight - hoverPeek.offsetHeight - 16);
+    hoverPeek.style.transform = `translate(${px}px, ${py}px)`;
   });
 
   /* frame counter = scroll progress */

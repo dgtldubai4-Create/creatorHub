@@ -120,23 +120,23 @@
   const PRESETS = {
     ivory: {
       label: "Ivory & Clay",
-      theme: { preset: "ivory", bg: "#f5f0e6", bgSoft: "#ebe4d3", ink: "#231d14", muted: "#7e7460", line: "#d8cfba", accent: "#96662e", accent2: "#b98a4e", mark: "#c4442a", reelBg: "#171310", reelInk: "#efe8da" },
+      theme: { preset: "ivory", bg: "#f5f0e6", bgSoft: "#ece5d4", ink: "#1f1a12", ink2: "#494130", muted: "#71674f", line: "#d5cbb4", accent: "#8d5f28", accent2: "#a97f42", mark: "#c4442a", reelBg: "#171310", reelInk: "#efe8da" },
     },
     gallery: {
       label: "Gallery White",
-      theme: { preset: "gallery", bg: "#fbfaf7", bgSoft: "#f1efe9", ink: "#1c1d1b", muted: "#83817a", line: "#e0ded6", accent: "#3d5c50", accent2: "#6f8f81", mark: "#c4442a", reelBg: "#161715", reelInk: "#eceae4" },
+      theme: { preset: "gallery", bg: "#fbfaf7", bgSoft: "#f1efe9", ink: "#191a18", ink2: "#43453f", muted: "#6e6f68", line: "#dedcd3", accent: "#3d5c50", accent2: "#688a7c", mark: "#c4442a", reelBg: "#161715", reelInk: "#eceae4" },
     },
     darkroom: {
       label: "Darkroom",
-      theme: { preset: "darkroom", bg: "#14110e", bgSoft: "#1e1a16", ink: "#f1eadd", muted: "#8d8474", line: "#2c261e", accent: "#c9a26b", accent2: "#e4c186", mark: "#d9482b", reelBg: "#0c0a08", reelInk: "#efe8da" },
+      theme: { preset: "darkroom", bg: "#14110e", bgSoft: "#1e1a16", ink: "#f1eadd", ink2: "#c6bca7", muted: "#948b78", line: "#2c261e", accent: "#c9a26b", accent2: "#e4c186", mark: "#d9482b", reelBg: "#0c0a08", reelInk: "#efe8da" },
     },
     dusk: {
       label: "Dubai Dusk",
-      theme: { preset: "dusk", bg: "#f4ece8", bgSoft: "#eadfd8", ink: "#2b2026", muted: "#8d7a72", line: "#dcccc2", accent: "#96455c", accent2: "#bd7a6b", mark: "#b3382e", reelBg: "#221a1e", reelInk: "#f2e8e2" },
+      theme: { preset: "dusk", bg: "#f4ece8", bgSoft: "#eadfd8", ink: "#271d22", ink2: "#54444c", muted: "#84706a", line: "#d9c8be", accent: "#8e4156", accent2: "#b3705f", mark: "#b3382e", reelBg: "#221a1e", reelInk: "#f2e8e2" },
     },
   };
   const THEME_TOKENS = [
-    ["bg", "Background"], ["bgSoft", "Soft background"], ["ink", "Text"], ["muted", "Muted text"],
+    ["bg", "Background"], ["bgSoft", "Soft background"], ["ink", "Headlines"], ["ink2", "Body text"], ["muted", "Small labels"],
     ["line", "Hairlines"], ["accent", "Accent"], ["accent2", "Accent light"], ["mark", "Hover mark"],
     ["reelBg", "Film strip"], ["reelInk", "Film-strip text"],
   ];
@@ -171,6 +171,7 @@
     };
     row.appendChild(mkInput("Google Drive link (or leave empty)", "drive"));
     row.appendChild(mkInput("Caption", "title"));
+    row.appendChild(mkInput("Artist / performer (optional)", "artist"));
 
     const g2 = el("div", "admin-row__grid2");
     const catField = el("div", "admin-field");
@@ -261,6 +262,7 @@
       };
       row.appendChild(mkInput("Drive folder link", "link"));
       row.appendChild(mkInput("Caption label (e.g. the show's name)", "label"));
+      row.appendChild(mkInput("Artist / performer (links to the Artists list)", "artist"));
 
       const g2 = el("div", "admin-row__grid2");
       const catField = el("div", "admin-field");
@@ -357,13 +359,47 @@
     inner.appendChild(field("Intro paragraph", "hero.sub", { long: true }));
     body.appendChild(sec);
 
-    [sec, inner] = section("Venues & artists");
+    [sec, inner] = section("Artists & venues");
     inner.appendChild(field("Section heading", "credits.heading"));
     inner.appendChild(field("Section subtitle", "credits.sub"));
-    inner.appendChild(field("Left column title", "credits.venuesTitle"));
+    inner.appendChild(field("Artists column title", "credits.artistsTitle"));
+    const artistsEd = el("div", "admin-field");
+    artistsEd.appendChild(el("label", "", "Artists & performers"));
+    const at = el("textarea");
+    at.rows = Math.min(9, cfg().credits.artists.length + 2);
+    at.value = cfg().credits.artists
+      .map(a => (typeof a === "string" ? a : a.note ? `${a.name} | ${a.note}` : a.name))
+      .join("\n");
+    at.addEventListener("input", () => {
+      cfg().credits.artists = at.value.split("\n").map(l => l.trim()).filter(Boolean).map(l => {
+        const [name, note] = l.split("|").map(x => x.trim());
+        return { name, note: note || "" };
+      });
+      commit();
+    });
+    artistsEd.appendChild(at);
+    artistsEd.appendChild(el("div", "admin-field__hint",
+      "One per line: Name | note. An artist becomes clickable when photos or folders carry the same name in their \u201cartist\u201d field."));
+    inner.appendChild(artistsEd);
+    inner.appendChild(field("Venues column title", "credits.venuesTitle"));
     inner.appendChild(listEditor("Venues & stages", "credits.venues"));
-    inner.appendChild(field("Right column title", "credits.artistsTitle"));
-    inner.appendChild(listEditor("Artists & performers", "credits.artists"));
+    body.appendChild(sec);
+
+    [sec, inner] = section("Kind words");
+    (cfg().testimonials || []).forEach((t, i) => {
+      inner.appendChild(field(`Quote ${i + 1}`, `testimonials.${i}.quote`, { long: true }));
+      const g = el("div", "admin-row__grid2");
+      g.appendChild(field("From", `testimonials.${i}.name`));
+      g.appendChild(field("Context", `testimonials.${i}.role`));
+      inner.appendChild(g);
+    });
+    const addT = el("button", "admin-add", "+ Add quote");
+    addT.addEventListener("click", () => {
+      (cfg().testimonials = cfg().testimonials || []).push({ quote: "", name: "", role: "" });
+      commit();
+      build();
+    });
+    inner.appendChild(addT);
     body.appendChild(sec);
 
     [sec, inner] = section("About");

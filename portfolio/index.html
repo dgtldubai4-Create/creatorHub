@@ -4,7 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Event Photographer — Dubai</title>
-  <meta name="description" content="Event photographer based in Dubai. Quiet, documentary coverage of galas, weddings, conferences and concerts — plus fashion and sports." />
+  <meta name="description" content="Event photographer based in Dubai. Quiet, documentary coverage of concerts, galas, launches and comedy nights." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Event Photographer — Dubai" />
+  <meta property="og:description" content="Quiet, documentary coverage of concerts, galas, launches and comedy nights across Dubai." />
+  <meta name="theme-color" content="#f5f0e6" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..600&display=swap" rel="stylesheet" />
@@ -12,6 +16,9 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◉</text></svg>" />
 </head>
 <body>
+
+  <a class="skip-link" href="#work">Skip to the photographs</a>
+  <noscript><p style="padding:6rem 2rem;text-align:center;font-family:Georgia,serif">This portfolio needs JavaScript to load its galleries — please enable it.</p></noscript>
 
   <!-- film grain overlay -->
   <div class="grain" aria-hidden="true"></div>
@@ -27,7 +34,7 @@
     </a>
     <nav class="nav__links" aria-label="Primary">
       <a href="#work">Work</a>
-      <a href="#credits">Venues</a>
+      <a href="#credits">Artists</a>
       <a href="#about">About</a>
       <a href="#contact" class="nav__cta">Book me</a>
     </nav>
@@ -87,13 +94,13 @@
         <p class="section-head__hint" data-bind="credits.sub"></p>
       </div>
       <div class="credits__cols">
-        <div class="credits__col reveal">
-          <h3 class="credits__label" data-bind="credits.venuesTitle">Venues &amp; stages</h3>
-          <ul class="credits__list" id="venuesList"></ul>
+        <div class="credits__col credits__col--artists reveal">
+          <h3 class="credits__label" data-bind="credits.artistsTitle">Artists &amp; performers</h3>
+          <ul class="credits__list" id="artistsList"></ul>
         </div>
         <div class="credits__col reveal">
-          <h3 class="credits__label" data-bind="credits.artistsTitle">Artists &amp; performers</h3>
-          <ul class="credits__list credits__list--quiet" id="artistsList"></ul>
+          <h3 class="credits__label" data-bind="credits.venuesTitle">Venues &amp; stages</h3>
+          <ul class="credits__list credits__list--quiet" id="venuesList"></ul>
         </div>
       </div>
     </section>
@@ -135,6 +142,7 @@
       </div>
 
       <div class="work__grid" id="workGrid"><!-- injected --></div>
+      <p class="work__empty" id="workEmpty" hidden>No frames here yet — they're coming.</p>
     </section>
 
     <!-- ===================== PROCESS ===================== -->
@@ -143,6 +151,14 @@
         <h2 class="section-head__title" id="processHeading">How it <em>works</em></h2>
       </div>
       <ol class="process__steps" id="processSteps"></ol>
+    </section>
+
+    <!-- ===================== KIND WORDS ===================== -->
+    <section class="words" id="words">
+      <div class="section-head">
+        <h2 class="section-head__title">Kind <em>words</em></h2>
+      </div>
+      <div class="words__grid" id="wordsGrid"></div>
     </section>
 
     <!-- ===================== CONTACT ===================== -->
