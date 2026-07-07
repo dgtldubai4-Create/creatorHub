@@ -197,9 +197,13 @@
   function visibleIndices() {
     return photosNow.map((p, i) => i).filter(i => photoVisible(photosNow[i]));
   }
+  function lightboxSize() {
+    const px = Math.min(2200, Math.ceil(innerWidth * (devicePixelRatio || 1)));
+    return px <= 900 ? 900 : px <= 1300 ? 1300 : px <= 1700 ? 1700 : 2200;
+  }
   function renderLightbox() {
     const photo = photosNow[lbIndex];
-    const url = imageUrl(photo, 2200);
+    const url = imageUrl(photo, lightboxSize());
     const img = $("lightboxImg");
     const wrap = img.parentElement;
     wrap.querySelector(".ph")?.remove();
@@ -242,6 +246,14 @@
     if (e.key === "Escape") closeLightbox();
     if (e.key === "ArrowLeft") stepLightbox(-1);
     if (e.key === "ArrowRight") stepLightbox(1);
+    if (e.key === "Tab") { /* keep focus cycling inside the dialog */
+      const focusables = lb.querySelectorAll("button");
+      const list = [...focusables];
+      const i = list.indexOf(document.activeElement);
+      e.preventDefault();
+      const next = e.shiftKey ? (i <= 0 ? list.length - 1 : i - 1) : (i >= list.length - 1 ? 0 : i + 1);
+      list[next].focus();
+    }
   });
 
   /* ---------- gallery filter state ---------- */
@@ -260,8 +272,9 @@
     filters.querySelectorAll(".chip").forEach(chip => {
       chip.setAttribute("aria-selected", chip.classList.contains("is-active") ? "true" : "false");
       chip.addEventListener("click", () => {
-        if (chip.dataset.artistClear) { filterState.artist = null; }
-        else { filterState.cat = chip.dataset.filter; filterState.artist = null; }
+        if (chip.dataset.artistClear) { filterState.artist = null; setArtistHash(null); }
+        else { filterState.cat = chip.dataset.filter; filterState.artist = null; setArtistHash(null); }
+        gridLimit = GRID_BATCH;
         renderFilters();
         applyGridFilter();
       });
@@ -273,22 +286,57 @@
     return filterState.cat === "all" || p.category === filterState.cat;
   }
 
+  const GRID_BATCH = 36;
+  let gridLimit = GRID_BATCH;
+
   function applyGridFilter() {
-    let shown = 0;
-    $("workGrid").querySelectorAll(".sheet-frame").forEach(cell => {
-      const show = photoVisible(photosNow[+cell.dataset.index]);
-      cell.classList.toggle("is-hidden", !show);
-      if (show) { shown++; requestAnimationFrame(() => cell.classList.add("is-in")); }
-    });
-    $("workEmpty").hidden = shown > 0;
+    renderGrid();
   }
 
-  function showArtist(name) {
+  function renderGrid() {
+    const grid = $("workGrid");
+    grid.innerHTML = "";
+    grid.parentElement.querySelector(".work__more")?.remove();
+    const matches = photosNow.map((p, i) => i).filter(i => photoVisible(photosNow[i]));
+    matches.slice(0, gridLimit).forEach(idx => {
+      const photo = photosNow[idx];
+      const cell = document.createElement("figure");
+      cell.className = "sheet-frame" + (photo.wide ? " sheet-frame--wide" : "");
+      cell.dataset.category = photo.category;
+      cell.dataset.index = idx;
+      cell.appendChild(frameMedia(photo, idx, 1000));
+      const bar = document.createElement("figcaption");
+      bar.className = "sheet-frame__bar";
+      bar.innerHTML = `<span>${photo.title || ""}</span><span class="sheet-frame__num">FR ${String(idx + 1).padStart(3, "0")}</span>`;
+      cell.appendChild(bar);
+      cell.addEventListener("click", () => openLightbox(idx));
+      grid.appendChild(cell);
+      io.observe(cell);
+    });
+    if (matches.length > gridLimit) {
+      const more = document.createElement("button");
+      more.className = "work__more";
+      more.textContent = `Load ${Math.min(GRID_BATCH, matches.length - gridLimit)} more frames (${matches.length - gridLimit} left)`;
+      more.addEventListener("click", () => { gridLimit += GRID_BATCH; renderGrid(); });
+      grid.parentElement.appendChild(more);
+    }
+    $("workEmpty").hidden = matches.length > 0;
+  }
+
+  function setArtistHash(name) {
+    const keep = location.hash.replace("#", "").split("&").filter(p => p && !p.startsWith("artist="));
+    if (name) keep.push("artist=" + encodeURIComponent(name));
+    history.replaceState(null, "", keep.length ? "#" + keep.join("&") : location.pathname + location.search);
+  }
+
+  function showArtist(name, scroll = true) {
     filterState.artist = name;
     filterState.cat = "all";
+    gridLimit = GRID_BATCH;
+    setArtistHash(name);
     renderFilters();
     applyGridFilter();
-    $("work").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    if (scroll) $("work").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
   }
 
   /* ---------- render everything from config ---------- */
@@ -400,24 +448,8 @@
     /* filters (from config categories + artist deep-filter) */
     renderFilters();
 
-    /* contact sheet grid */
-    const grid = $("workGrid");
-    grid.innerHTML = "";
-    photosNow.forEach((photo, idx) => {
-      if (photo.category === "portrait" && photo.hideFromGrid) return;
-      const cell = document.createElement("figure");
-      cell.className = "sheet-frame" + (photo.wide ? " sheet-frame--wide" : "");
-      cell.dataset.category = photo.category;
-      cell.dataset.index = idx;
-      cell.appendChild(frameMedia(photo, idx, 1000));
-      const bar = document.createElement("figcaption");
-      bar.className = "sheet-frame__bar";
-      bar.innerHTML = `<span>${photo.title || ""}</span><span class="sheet-frame__num">FR ${String(idx + 1).padStart(3, "0")}</span>`;
-      cell.appendChild(bar);
-      cell.addEventListener("click", () => openLightbox(idx));
-      grid.appendChild(cell);
-    });
-    applyGridFilter();
+    /* contact sheet grid (batched — folders can hold hundreds of frames) */
+    renderGrid();
 
     /* kind words */
     const words = cfg.testimonials || [];
@@ -586,7 +618,14 @@
 
   /* ---------- boot + admin bridge ---------- */
   render();
-  loadFolders().then(() => { if (dynamicPhotos.length) render(); });
+  function applyArtistDeepLink() {
+    const p = location.hash.replace("#", "").split("&").find(x => x.startsWith("artist="));
+    if (!p) return;
+    const name = decodeURIComponent(p.slice(7));
+    if (artistPhotosOf(name).length) showArtist(name, false);
+  }
+  applyArtistDeepLink();
+  loadFolders().then(() => { if (dynamicPhotos.length) { render(); applyArtistDeepLink(); } });
 
   window.BTF = {
     get config() { return cfg; },

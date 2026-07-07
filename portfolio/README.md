@@ -1,8 +1,18 @@
 # Between the Frames — Photography Portfolio
 
-A hand-crafted portfolio for an event photographer in Dubai (comedy shows,
-concerts, galas — plus fashion and sports). No frameworks, no build step:
-`index.html`, `styles.css`, `script.js`, `admin.js` and one config file.
+A hand-crafted portfolio for an event photographer in Dubai (concerts,
+galas, comedy nights, sports). No frameworks, no build step, one shared
+config file — and **two complete designs**:
+
+| | Design A — “The Contact Sheet” | Design B — “The Print Room” |
+|---|---|---|
+| File | `index.html` | `b.html` |
+| Feel | editorial contact-sheet, filterable grid | museum hang, one print per wall, exhibitions |
+| Artists | click a name → filtered grid | click a name → walk into their room |
+
+Both read the same `config.js`, share the same saved edits, and have the
+same admin panel — edit once, both designs update. Deploy whichever you
+prefer as your homepage (rename it `index.html`), or keep both.
 
 ## Edit everything with the admin panel
 

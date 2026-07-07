@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Print Room — Event Photographer, Dubai</title>
+  <meta name="description" content="Event photographer based in Dubai. A private viewing of concerts, galas, launches and comedy nights." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="The Print Room — Event Photographer, Dubai" />
+  <meta property="og:description" content="A private viewing: concerts, galas, launches and comedy nights across Dubai." />
+  <meta name="theme-color" content="#f5f0e6" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="b.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>▣</text></svg>" />
+</head>
+<body>
+
+  <a class="skip-link" href="#walls">Skip to the photographs</a>
+  <noscript><p style="padding:6rem 2rem;text-align:center;font-family:Georgia,serif">This portfolio needs JavaScript to hang its prints — please enable it.</p></noscript>
+
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor-label" id="cursorLabel" aria-hidden="true">VIEW</div>
+
+  <!-- ============ RAIL (desktop) / TOPBAR (mobile) ============ -->
+  <header class="rail" id="rail">
+    <a class="rail__brand" href="#cover"><span class="rail__mark" aria-hidden="true">▣</span><span id="railName" class="rail__name">Your Name</span></a>
+    <nav class="rail__index" aria-label="Rooms">
+      <a href="#cover"   data-room="cover"><i></i><span>Entrance</span></a>
+      <a href="#walls"   data-room="walls"><i></i><span>The walls</span></a>
+      <a href="#shows"   data-room="shows"><i></i><span>Exhibitions</span></a>
+      <a href="#her"     data-room="her"><i></i><span>The photographer</span></a>
+      <a href="#visit"   data-room="visit"><i></i><span>Your visit</span></a>
+    </nav>
+    <div class="rail__foot" aria-hidden="true"><span id="railClock">--:--</span><span>DXB</span></div>
+  </header>
+
+  <main class="rooms">
+
+    <!-- ============ 01 · ENTRANCE ============ -->
+    <section class="cover" id="cover">
+      <div class="cover__photo" id="coverPhoto" aria-hidden="true"></div>
+      <div class="cover__scrim" aria-hidden="true"></div>
+      <p class="cover__eyebrow"><span data-bind="hero.eyebrow">Event photography · Dubai</span></p>
+      <div class="cover__plate" id="coverPlate" aria-hidden="true"></div>
+      <h1 class="cover__title">
+        <span class="cover__line"><span data-bind="contact.eyebrowIgnore" id="coverLine1">A private</span></span>
+        <span class="cover__line"><em id="coverLine2">viewing.</em></span>
+      </h1>
+      <p class="cover__sub" data-bind="hero.sub"></p>
+      <a class="cover__enter" href="#walls"><span>Enter</span><i aria-hidden="true">↓</i></a>
+    </section>
+
+    <!-- ============ 02 · THE WALLS ============ -->
+    <section class="walls" id="walls">
+      <header class="room-head">
+        <span class="room-head__no" aria-hidden="true">Room 01</span>
+        <h2 class="room-head__title">The <em>walls</em></h2>
+        <p class="room-head__hint" id="wallsCount" aria-hidden="true"></p>
+      </header>
+      <div class="walls__track" id="wallsTrack" tabindex="0" aria-label="Featured prints, horizontally scrollable"></div>
+      <div class="walls__nav" aria-hidden="true">
+        <button class="walls__arrow" id="wallsPrev" aria-label="Previous wall">←</button>
+        <button class="walls__arrow" id="wallsNext" aria-label="Next wall">→</button>
+      </div>
+    </section>
+
+    <!-- ============ 03 · EXHIBITIONS ============ -->
+    <section class="shows" id="shows">
+      <header class="room-head">
+        <span class="room-head__no" aria-hidden="true">Room 02</span>
+        <h2 class="room-head__title">The <em>exhibitions</em></h2>
+        <p class="room-head__hint" data-bind="credits.sub"></p>
+      </header>
+      <ol class="shows__list" id="showsList"></ol>
+      <div class="shows__venues">
+        <h3 class="shows__venues-label" data-bind="credits.venuesTitle">Venues &amp; stages</h3>
+        <p class="shows__venues-flow" id="venuesFlow"></p>
+      </div>
+    </section>
+
+    <!-- ============ 04 · THE PHOTOGRAPHER ============ -->
+    <section class="her" id="her">
+      <header class="room-head">
+        <span class="room-head__no" aria-hidden="true">Room 03</span>
+        <h2 class="room-head__title">The <em>photographer</em></h2>
+      </header>
+      <div class="her__grid">
+        <figure class="her__portrait">
+          <div class="her__portrait-frame" id="herPortrait"><span class="her__portrait-note">your portrait —<br/>add a "portrait" photo</span></div>
+          <figcaption data-bind="about.portraitCaption"></figcaption>
+        </figure>
+        <div class="her__text">
+          <h3 class="her__heading" data-bind="about.heading"></h3>
+          <div id="herParagraphs"></div>
+          <blockquote class="her__quote" id="herQuote"></blockquote>
+          <dl class="her__stats" id="herStats"></dl>
+        </div>
+      </div>
+      <div class="her__words" id="herWords" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ 05 · YOUR VISIT ============ -->
+    <section class="visit" id="visit">
+      <header class="room-head">
+        <span class="room-head__no" aria-hidden="true">Room 04</span>
+        <h2 class="room-head__title">Your <em>visit</em></h2>
+      </header>
+      <ol class="visit__steps" id="visitSteps"></ol>
+      <div class="visit__book">
+        <p class="visit__eyebrow"><span data-bind="contact.eyebrow">Currently booking</span> · <span id="dubaiClock">--:--</span> in Dubai</p>
+        <h3 class="visit__title"><span data-bind="contact.titleLine1"></span> <em data-bind="contact.titleLine2"></em></h3>
+        <div class="visit__actions">
+          <a class="visit__btn visit__btn--primary" id="emailLink" href="#">Email me</a>
+          <a class="visit__btn" id="whatsappLink" href="#" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="visit__btn" id="instagramLink" href="#" target="_blank" rel="noopener">Instagram</a>
+        </div>
+        <p class="visit__note" data-bind="contact.note"></p>
+      </div>
+      <footer class="visit__footer">
+        <span id="footerName">©</span>
+        <span data-bind="footer.tag"></span>
+        <span data-bind="footer.rights"></span>
+      </footer>
+    </section>
+
+  </main>
+
+  <!-- ============ EXHIBITION ROOM OVERLAY ============ -->
+  <div class="roomview" id="roomview" role="dialog" aria-modal="true" hidden>
+    <header class="roomview__head">
+      <div>
+        <p class="roomview__eyebrow" id="roomviewNote">Exhibition</p>
+        <h2 class="roomview__name" id="roomviewName">Artist</h2>
+      </div>
+      <button class="roomview__close" id="roomviewClose" aria-label="Leave this room">✕ Leave room</button>
+    </header>
+    <div class="roomview__track" id="roomviewTrack" tabindex="0" aria-label="Exhibition prints, horizontally scrollable"></div>
+    <p class="roomview__hint" aria-hidden="true">drag → · scroll · arrow keys</p>
+  </div>
+
+  <!-- ============ ZOOM VIEW ============ -->
+  <div class="zoom" id="zoom" role="dialog" aria-modal="true" aria-label="Photograph" hidden>
+    <button class="zoom__close" id="zoomClose" aria-label="Close">✕</button>
+    <img id="zoomImg" alt="" />
+    <p class="zoom__plate" id="zoomPlate"></p>
+  </div>
+
+  <!-- ============ ADMIN PANEL (open with #admin) ============ -->
+  <div class="admin" id="admin" hidden>
+    <div class="admin__scrim" id="adminScrim"></div>
+    <aside class="admin__panel" role="dialog" aria-label="Site editor">
+      <header class="admin__head">
+        <h2>Site editor</h2>
+        <p>Changes apply instantly and are saved in this browser. Press <strong>Export</strong> to download your updated <code>config.js</code>, then replace the file in your site folder to publish.</p>
+        <p style="color:#a4713a;margin-top:0.5rem"><strong>Before you publish:</strong> the artists, venues, quotes and stats are example content — replace them with your real ones.</p>
+        <button class="admin__close" id="adminClose" aria-label="Close editor">✕</button>
+      </header>
+      <div class="admin__body" id="adminBody"></div>
+      <footer class="admin__foot">
+        <button class="admin__btn admin__btn--primary" id="adminExport">Export config.js</button>
+        <button class="admin__btn" id="adminCopy">Copy JSON</button>
+        <button class="admin__btn admin__btn--danger" id="adminReset">Reset all edits</button>
+      </footer>
+    </aside>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="b.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

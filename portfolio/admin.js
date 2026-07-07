@@ -58,9 +58,13 @@
 
   /* ---------- state helpers ---------- */
   const cfg = () => window.BTF.config;
+  let commitTimer;
   function commit() {
-    window.BTF.update(cfg());
-    window.BTF.save();
+    clearTimeout(commitTimer);
+    commitTimer = setTimeout(() => {
+      window.BTF.update(cfg());
+      window.BTF.save();
+    }, 140);
   }
   const setPath = (path, value) => {
     const keys = path.split(".");
