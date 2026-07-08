@@ -122,6 +122,10 @@
 
   /* ---------- theme presets ---------- */
   const PRESETS = {
+    porcelain: {
+      label: "Porcelain (crisp)",
+      theme: { preset: "porcelain", bg: "#fbfaf6", bgSoft: "#f1efe7", ink: "#161410", ink2: "#3a362c", muted: "#5f5a4a", line: "#e0ddd1", accent: "#7a4f1d", accent2: "#996f37", mark: "#c0392b", reelBg: "#141210", reelInk: "#f0ede5" },
+    },
     ivory: {
       label: "Ivory & Clay",
       theme: { preset: "ivory", bg: "#f5f0e6", bgSoft: "#ece5d4", ink: "#1f1a12", ink2: "#494130", muted: "#71674f", line: "#d5cbb4", accent: "#8d5f28", accent2: "#a97f42", mark: "#c4442a", reelBg: "#171310", reelInk: "#efe8da" },

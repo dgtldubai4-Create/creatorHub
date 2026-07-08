@@ -37,18 +37,18 @@ const CONFIG = {
   /* ---- color scheme (edit per-token in the admin panel,
           or pick a preset there: Ivory, Gallery, Darkroom, Dusk) ---- */
   theme: {
-    preset: "ivory",
-    bg:      "#f5f0e6",   // page background
-    bgSoft:  "#ece5d4",   // alternate section background
-    ink:     "#1f1a12",   // main text
-    ink2:    "#494130",   // paragraphs & secondary text
-    muted:   "#71674f",   // small labels
-    line:    "#d5cbb4",   // hairlines & borders
-    accent:  "#8d5f28",   // links, highlights, italic words
-    accent2: "#a97f42",   // lighter accent (tags, hovers)
-    mark:    "#c4442a",   // grease-pencil hover mark
-    reelBg:  "#171310",   // the dark film-strip band
-    reelInk: "#efe8da",   // text on the film strip
+    preset: "porcelain",
+    bg:      "#fbfaf6",   // page background — near-white, maximum readability
+    bgSoft:  "#f1efe7",   // alternate section background
+    ink:     "#161410",   // main text — near-black
+    ink2:    "#3a362c",   // paragraphs & secondary text
+    muted:   "#5f5a4a",   // small labels
+    line:    "#e0ddd1",   // hairlines & borders
+    accent:  "#7a4f1d",   // links, highlights, italic words — deep bronze
+    accent2: "#996f37",   // lighter accent (tags, hovers)
+    mark:    "#c0392b",   // collector's red
+    reelBg:  "#141210",   // the dark film-strip band
+    reelInk: "#f0ede5",   // text on the film strip
   },
 
   /* ---- gallery categories (the filter chips, in order) ---- */

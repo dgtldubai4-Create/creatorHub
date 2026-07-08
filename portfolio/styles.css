@@ -6,17 +6,17 @@
    ============================================================ */
 
 :root {
-  --bg: #f5f0e6;
-  --bg-soft: #ece5d4;
-  --ink: #1f1a12;
-  --ink-2: #494130;
-  --muted: #71674f;
-  --line: #d5cbb4;
-  --accent: #8d5f28;
-  --accent-2: #a97f42;
-  --mark: #c4442a;
-  --reel-bg: #171310;
-  --reel-ink: #efe8da;
+  --bg: #fbfaf6;
+  --bg-soft: #f1efe7;
+  --ink: #161410;
+  --ink-2: #3a362c;
+  --muted: #5f5a4a;
+  --line: #e0ddd1;
+  --accent: #7a4f1d;
+  --accent-2: #996f37;
+  --mark: #c0392b;
+  --reel-bg: #141210;
+  --reel-ink: #f0ede5;
   --serif: "Fraunces", "Georgia", serif;
   --sans: "Space Grotesk", "Helvetica Neue", sans-serif;
   --gutter: clamp(1.25rem, 4vw, 4rem);

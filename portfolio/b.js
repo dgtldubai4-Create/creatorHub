@@ -209,7 +209,11 @@
 
   /* ---------- zoom ---------- */
   const zoom = $("zoom");
+  let zoomPhoto = null, zoomFr = 1;
   function openZoom(photo, idx) {
+    zoomPhoto = photo;
+    zoomFr = Math.max(1, photosNow.indexOf(photo) + 1);
+    refreshZoomCollect();
     const url = imageUrl(photo, Math.min(2200, Math.ceil(innerWidth * (devicePixelRatio || 1))));
     const img = $("zoomImg");
     zoom.querySelector(".ph")?.remove();
@@ -223,6 +227,20 @@
     $("zoomPlate").textContent = plateText(photo);
     zoom.hidden = false;
   }
+  function refreshZoomCollect() {
+    if (!zoomPhoto) return;
+    const on = collected.has(photoKey(zoomPhoto));
+    $("zoomCollect").textContent = on ? "\u25cf Collected \u2014 return it" : "\u25cf Collect this frame";
+    $("zoomCollect").classList.toggle("is-on", on);
+  }
+  $("zoomCollect").addEventListener("click", () => {
+    if (!zoomPhoto) return;
+    toggleCollect(zoomPhoto);
+    refreshZoomCollect();
+  });
+  $("zoomPostcard").addEventListener("click", () => {
+    if (zoomPhoto) makePostcard(zoomPhoto, zoomFr);
+  });
   $("zoomClose").addEventListener("click", () => { zoom.hidden = true; });
   zoom.addEventListener("click", e => { if (e.target === zoom) zoom.hidden = true; });
 
@@ -360,26 +378,188 @@
     eggTimer = setTimeout(() => egg.classList.remove("is-on"), ms);
   }
 
-  /* 1 · collector's red dot on the plates */
+  /* 1 · the collector's red dot — plates, zoom button, and the tray */
+  function persistCollected() {
+    try { localStorage.setItem("btf-collected", JSON.stringify([...collected])); } catch {}
+  }
+  function syncPlates(key) {
+    document.querySelectorAll(`.wall__plate[data-key]`).forEach(p => {
+      if (p.dataset.key === key) p.classList.toggle("is-collected", collected.has(key));
+    });
+  }
+  function toggleCollect(photo, quiet) {
+    const key = photoKey(photo);
+    if (collected.has(key)) {
+      collected.delete(key);
+      if (!quiet) whisper("Returned to the wall.");
+    } else {
+      collected.add(key);
+      const n = collected.size;
+      if (!quiet) whisper(n === 1
+        ? "A red dot — this frame is yours now."
+        : `Collected. ${n} frames in your private collection.`);
+    }
+    persistCollected();
+    syncPlates(key);
+    refreshDock();
+    return collected.has(key);
+  }
   function armPlate(plate, photo) {
     const key = photoKey(photo);
+    plate.dataset.key = key;
     if (collected.has(key)) plate.classList.add("is-collected");
-    plate.title = "";
-    plate.addEventListener("click", () => {
-      if (collected.has(key)) {
-        collected.delete(key);
-        plate.classList.remove("is-collected");
-        whisper("Returned to the wall.");
-      } else {
-        collected.add(key);
-        plate.classList.add("is-collected");
-        const n = collected.size;
-        whisper(n === 1
-          ? "A red dot — this frame is yours now."
-          : `Collected. ${n} frames in your private collection.`);
-      }
-      try { localStorage.setItem("btf-collected", JSON.stringify([...collected])); } catch {}
+    plate.addEventListener("click", () => toggleCollect(photo));
+  }
+
+  /* ---- the collection tray: what visitors take away ---- */
+  const dock = document.createElement("button");
+  dock.className = "collect-dock";
+  dock.hidden = true;
+  document.body.appendChild(dock);
+  const tray = document.createElement("div");
+  tray.className = "tray";
+  tray.setAttribute("role", "dialog");
+  tray.setAttribute("aria-label", "Your collection");
+  tray.hidden = true;
+  tray.innerHTML = `
+    <div class="tray__card">
+      <header class="tray__head">
+        <h3>Your collection</h3>
+        <p class="tray__sub">Send me your picks and I'll prepare the full-resolution frames for you.</p>
+        <button class="tray__close" aria-label="Close">✕</button>
+      </header>
+      <ul class="tray__list"></ul>
+      <footer class="tray__foot">
+        <a class="tray__btn tray__btn--primary" target="_blank" rel="noopener" data-send="wa">WhatsApp my picks</a>
+        <a class="tray__btn" data-send="mail">Email my picks</a>
+        <button class="tray__btn tray__btn--ghost" data-clear>Return all</button>
+      </footer>
+    </div>`;
+  document.body.appendChild(tray);
+  tray.addEventListener("click", e => { if (e.target === tray) tray.hidden = true; });
+  tray.querySelector(".tray__close").addEventListener("click", () => { tray.hidden = true; });
+  dock.addEventListener("click", () => { buildTray(); tray.hidden = false; });
+
+  function collectedPhotos() {
+    return photosNow
+      .map((p, i) => ({ photo: p, fr: i + 1 }))
+      .filter(x => collected.has(photoKey(x.photo)));
+  }
+  function refreshDock() {
+    const n = collected.size;
+    dock.hidden = n === 0;
+    dock.innerHTML = `<i></i>${n} frame${n === 1 ? "" : "s"} collected — view`;
+    if (!tray.hidden) buildTray();
+  }
+  function picksMessage() {
+    const items = collectedPhotos().map(x => `FR ${String(x.fr).padStart(3, "0")} — ${x.photo.title || "Untitled"}`);
+    return `Hello ${cfg.site.name}! From your gallery I'd love these frames:%0A%0A` +
+      items.map(t => encodeURIComponent(t)).join("%0A");
+  }
+  function buildTray() {
+    const list = tray.querySelector(".tray__list");
+    const picks = collectedPhotos();
+    list.innerHTML = picks.length ? "" : `<li class="tray__empty">Nothing collected yet — click a print's label plate.</li>`;
+    picks.forEach(({ photo, fr }) => {
+      const li = document.createElement("li");
+      const url = imageUrl(photo, 300);
+      li.innerHTML =
+        `<span class="tray__thumb" style="${url ? `background-image:url('${url}')` : "background:linear-gradient(150deg,hsl(28 25% 30%),hsl(20 18% 12%))"}"></span>` +
+        `<span class="tray__meta"><b>FR ${String(fr).padStart(3, "0")}</b>${photo.title || "Untitled"}</span>`;
+      const rm = document.createElement("button");
+      rm.className = "tray__rm";
+      rm.setAttribute("aria-label", `Return FR ${fr}`);
+      rm.textContent = "✕";
+      rm.addEventListener("click", () => toggleCollect(photo, true));
+      li.appendChild(rm);
+      list.appendChild(li);
     });
+    tray.querySelector('[data-send="wa"]').href = `https://wa.me/${cfg.site.whatsapp}?text=${picksMessage()}`;
+    tray.querySelector('[data-send="mail"]').href =
+      `mailto:${cfg.site.email}?subject=${encodeURIComponent("My picks from your gallery")}&body=${picksMessage().replace(/%0A/g, "%0D%0A")}`;
+  }
+  tray.querySelector("[data-clear]").addEventListener("click", () => {
+    collected.clear();
+    persistCollected();
+    document.querySelectorAll(".wall__plate.is-collected").forEach(p => p.classList.remove("is-collected"));
+    refreshDock();
+    buildTray();
+    whisper("Every frame returned to the wall.");
+  });
+  refreshDock();
+
+  /* ---- the postcard: a souvenir any visitor can leave with ---- */
+  async function makePostcard(photo, fr) {
+    const W = 1500, H = 1060;
+    const cv = document.createElement("canvas");
+    cv.width = W; cv.height = H;
+    const x = cv.getContext("2d");
+    const t = cfg.theme;
+    /* card + gilded double border */
+    x.fillStyle = t.bg || "#fbfaf6";
+    x.fillRect(0, 0, W, H);
+    x.strokeStyle = t.accent || "#7a4f1d";
+    x.lineWidth = 3;
+    x.strokeRect(34, 34, W - 68, H - 68);
+    x.lineWidth = 1;
+    x.strokeRect(48, 48, W - 96, H - 96);
+    /* the print: dark frame + white matte */
+    const px = 150, py = 110, pw = W - 300, ph = 620;
+    x.fillStyle = "#2a231a";
+    x.fillRect(px - 16, py - 16, pw + 32, ph + 32);
+    x.fillStyle = "#ffffff";
+    x.fillRect(px, py, pw, ph);
+    const ix = px + 26, iy = py + 26, iw = pw - 52, ih = ph - 52;
+    const url = imageUrl(photo, 1300);
+    let drawn = false;
+    if (url) {
+      try {
+        const img = await new Promise((res, rej) => {
+          const im = new Image();
+          im.crossOrigin = "anonymous";
+          im.onload = () => res(im);
+          im.onerror = rej;
+          im.src = url;
+        });
+        const scale = Math.max(iw / img.width, ih / img.height);
+        const sw = iw / scale, sh = ih / scale;
+        x.drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, ix, iy, iw, ih);
+        drawn = true;
+      } catch {}
+    }
+    if (!drawn) {
+      const g = x.createLinearGradient(ix, iy, ix + iw, iy + ih);
+      g.addColorStop(0, "hsl(28 24% 26%)");
+      g.addColorStop(1, "hsl(215 20% 12%)");
+      x.fillStyle = g;
+      x.fillRect(ix, iy, iw, ih);
+      x.fillStyle = "rgba(241,234,221,0.75)";
+      x.font = "italic 300 44px Fraunces, Georgia, serif";
+      x.textAlign = "center";
+      x.fillText("awaiting film", ix + iw / 2, iy + ih / 2);
+    }
+    /* the plate text */
+    x.textAlign = "center";
+    x.fillStyle = t.accent || "#7a4f1d";
+    x.font = "600 24px 'Space Grotesk', sans-serif";
+    x.fillText(`FR ${String(fr).padStart(3, "0")} · ${(photo.artist || photo.category || "").toUpperCase()}`, W / 2, py + ph + 88);
+    x.fillStyle = t.ink || "#161410";
+    x.font = "italic 400 42px Fraunces, Georgia, serif";
+    x.fillText(photo.title || "Untitled", W / 2, py + ph + 148, W - 320);
+    x.fillStyle = t.muted || "#5f5a4a";
+    x.font = "300 26px 'Space Grotesk', sans-serif";
+    x.fillText(`${cfg.site.name} \u2014 The Print Room, Dubai \u00b7 @${cfg.site.instagram}`, W / 2, py + ph + 210);
+    try {
+      const blob = await new Promise(res => cv.toBlob(res, "image/png"));
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `postcard-fr-${String(fr).padStart(3, "0")}.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      whisper("Your postcard is in your downloads \u2014 send it to someone.");
+    } catch {
+      whisper("The postcard printer jammed \u2014 try another frame.");
+    }
   }
 
   /* 2 · press "f" for flash — 3 · type noir / ivory to rehang */
