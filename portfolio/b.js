@@ -124,12 +124,17 @@
   const norm = s => (s || "").trim().toLowerCase();
   let photosNow = [];
   const artistPhotosOf = name => photosNow.filter(p => norm(p.artist) === norm(name));
+  let collected = new Set();
+  try { collected = new Set(JSON.parse(localStorage.getItem("btf-collected") || "[]")); } catch {}
+  const photoKey = photo => photo.drive || photo.src || photo.title || "untitled";
   const plateText = photo => {
     const bits = [photo.title || "Untitled", photo.year, printroom().medium].filter(Boolean);
     return bits.join(" · ");
   };
 
-  /* ---------- preloader ---------- */
+  /* ---------- preloader (first visit per session only) ---------- */
+  let seenLoader = false;
+  try { seenLoader = sessionStorage.getItem("btf-visited") === "1"; sessionStorage.setItem("btf-visited", "1"); } catch {}
   const loader = document.createElement("div");
   loader.setAttribute("aria-hidden", "true");
   loader.style.cssText =
@@ -139,7 +144,7 @@
   document.body.prepend(loader);
   {
     const num = loader.querySelector("#ldn");
-    const t0 = performance.now(), dur = reduceMotion ? 1 : 1100;
+    const t0 = performance.now(), dur = (reduceMotion || seenLoader) ? 1 : 1100;
     (function tick(now) {
       const p = Math.min(1, (now - t0) / dur);
       num.textContent = String(Math.round(p * 100)).padStart(3, "0");
@@ -154,10 +159,15 @@
     { threshold: 0.12 }
   );
 
-  /* ---------- generic horizontal track behaviors ---------- */
-  function trackBehaviors(track) {
+  /* ---------- generic horizontal track behaviors ----------
+     - drag applies to mouse only (touch gets native scrolling)
+     - vertical wheel drives the track ONLY while it still has
+       somewhere to go; at either end the page scrolls on normally,
+       so you're never trapped in a horizontal section. */
+  function trackBehaviors(track, opts = {}) {
     let sx = 0, ss = 0, dragging = false;
     track.addEventListener("pointerdown", e => {
+      if (e.pointerType !== "mouse") return;
       dragging = true; delete track.dataset.dragged;
       sx = e.clientX; ss = track.scrollLeft;
       track.classList.add("is-dragging");
@@ -169,11 +179,31 @@
       track.scrollLeft = ss - dx;
     });
     window.addEventListener("pointerup", () => {
+      if (!dragging) return;
       dragging = false; track.classList.remove("is-dragging");
       setTimeout(() => delete track.dataset.dragged, 50);
     });
+
+    /* Wheel: paged mode advances exactly one panel per gesture
+       (snap-friendly); continuous mode nudges freely. Both RELEASE
+       to normal page scrolling at either end of the track. */
+    let acc = 0, lockUntil = 0;
     track.addEventListener("wheel", e => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { e.preventDefault(); track.scrollLeft += e.deltaY; }
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; /* native horizontal */
+      const max = track.scrollWidth - track.clientWidth;
+      const atEnd = e.deltaY > 0 && track.scrollLeft >= max - 2;
+      const atStart = e.deltaY < 0 && track.scrollLeft <= 2;
+      if (atEnd || atStart || max <= 0) return;             /* let the page move on */
+      e.preventDefault();
+      if (!opts.paged) { track.scrollLeft += e.deltaY; return; }
+      const now = performance.now();
+      if (now < lockUntil) return;                          /* one panel per gesture */
+      acc += e.deltaY;
+      if (Math.abs(acc) < 50) return;
+      const dir = Math.sign(acc);
+      acc = 0;
+      lockUntil = now + 500;
+      track.scrollBy({ left: dir * track.clientWidth, behavior: reduceMotion ? "auto" : "smooth" });
     }, { passive: false });
   }
 
@@ -216,6 +246,7 @@
       const plate = document.createElement("figcaption");
       plate.className = "wall__plate";
       plate.innerHTML = `<strong>FR ${String(i + 1).padStart(3, "0")}</strong>${plateText(photo)}`;
+      armPlate(plate, photo);
       item.appendChild(plate);
       track.appendChild(item);
     });
@@ -248,7 +279,7 @@
 
   /* ---------- walls ---------- */
   const wallsTrack = $("wallsTrack");
-  trackBehaviors(wallsTrack);
+  trackBehaviors(wallsTrack, { paged: true });
   $("wallsPrev").addEventListener("click", () => wallsTrack.scrollBy({ left: -wallsTrack.clientWidth, behavior: reduceMotion ? "auto" : "smooth" }));
   $("wallsNext").addEventListener("click", () => wallsTrack.scrollBy({ left: wallsTrack.clientWidth, behavior: reduceMotion ? "auto" : "smooth" }));
   wallsTrack.addEventListener("scroll", () => updateWallCount(), { passive: true });
@@ -305,6 +336,112 @@
       hoverPeek.style.transform = `translate3d(${px}px, ${py}px, 0)`;
     });
   }, { passive: true });
+
+  /* ============================================================
+     EASTER EGGS — five secrets hang in this gallery.
+     1. Click a label plate → a red collector's dot (galleries mark
+        sold works with red dots). Your collection is remembered.
+     2. Press "f" → the room fires a camera flash.
+     3. Type "noir" → the gallery rehangs in darkroom light.
+        Type "ivory" → daylight again. (Never saved — just a mood.)
+     4. Click the DXB clock → how long until Dubai's golden hour.
+     5. Reach the end of the gallery → the visitors' book notices.
+     ============================================================ */
+
+  /* toast for whispers */
+  const egg = document.createElement("div");
+  egg.className = "egg-toast";
+  document.body.appendChild(egg);
+  let eggTimer;
+  function whisper(msg, ms = 3000) {
+    egg.textContent = msg;
+    egg.classList.add("is-on");
+    clearTimeout(eggTimer);
+    eggTimer = setTimeout(() => egg.classList.remove("is-on"), ms);
+  }
+
+  /* 1 · collector's red dot on the plates */
+  function armPlate(plate, photo) {
+    const key = photoKey(photo);
+    if (collected.has(key)) plate.classList.add("is-collected");
+    plate.title = "";
+    plate.addEventListener("click", () => {
+      if (collected.has(key)) {
+        collected.delete(key);
+        plate.classList.remove("is-collected");
+        whisper("Returned to the wall.");
+      } else {
+        collected.add(key);
+        plate.classList.add("is-collected");
+        const n = collected.size;
+        whisper(n === 1
+          ? "A red dot — this frame is yours now."
+          : `Collected. ${n} frames in your private collection.`);
+      }
+      try { localStorage.setItem("btf-collected", JSON.stringify([...collected])); } catch {}
+    });
+  }
+
+  /* 2 · press "f" for flash — 3 · type noir / ivory to rehang */
+  const flash = document.createElement("div");
+  flash.className = "flash";
+  flash.setAttribute("aria-hidden", "true");
+  document.body.appendChild(flash);
+  const NOIR = { bg: "#14110e", bgSoft: "#1e1a16", ink: "#f1eadd", ink2: "#c6bca7", muted: "#948b78", line: "#2c261e", accent: "#c9a26b", accent2: "#e4c186", mark: "#d9482b", reelBg: "#0c0a08", reelInk: "#efe8da" };
+  let typed = "";
+  document.addEventListener("keydown", e => {
+    if (e.target.closest("input, textarea, select") || e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (k === "f") {
+      flash.classList.remove("is-firing");
+      void flash.offsetWidth; /* restart the animation */
+      flash.classList.add("is-firing");
+      whisper("1/2000 s \u00b7 f/1.8 \u00b7 got it.", 1600);
+      return;
+    }
+    if (k.length === 1) {
+      typed = (typed + k).slice(-8);
+      if (typed.endsWith("noir")) { applyTheme(NOIR); whisper("The gallery rehangs after dark. Type \u201civory\u201d for daylight."); }
+      if (typed.endsWith("ivory")) { applyTheme(cfg.theme); whisper("Daylight restored."); }
+    }
+  });
+
+  /* 4 · the clock knows golden hour */
+  const SUNSET_BY_MONTH = [17.9, 18.2, 18.5, 18.75, 19.0, 19.2, 19.25, 19.0, 18.6, 18.1, 17.7, 17.6];
+  function goldenHourWhisper() {
+    const now = new Date();
+    const dxb = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Dubai" }));
+    const sunset = SUNSET_BY_MONTH[dxb.getMonth()];
+    const t = dxb.getHours() + dxb.getMinutes() / 60;
+    const start = sunset - 1;
+    if (t >= start && t <= sunset) { whisper("It's golden hour in Dubai right now \u2014 someone should be shooting."); return; }
+    let hrs = t < start ? start - t : 24 - t + start;
+    const h = Math.floor(hrs), m = Math.round((hrs - h) * 60);
+    whisper(`Golden hour in Dubai in ${h ? h + "h " : ""}${m}m.`);
+  }
+  ["railClock", "dubaiClock"].forEach(id => {
+    const el = $(id);
+    el.style.cursor = "help";
+    el.addEventListener("click", goldenHourWhisper);
+  });
+
+  /* 5 · the visitors' book notices you made it */
+  let bowed = false;
+  new IntersectionObserver(es => {
+    es.forEach(en => {
+      if (en.isIntersecting && !bowed) {
+        bowed = true;
+        whisper("You've walked every room \u2014 the visitors' book is right here.", 4200);
+      }
+    });
+  }, { threshold: 0.9 }).observe(document.querySelector(".visit__footer"));
+
+  /* a note for the curious */
+  console.log(
+    "%c\u25a3 The Print Room %c\nfive secrets hang in this gallery \u2014 a red dot, a flash,\na darker hang, golden hour, and a bow at the end.",
+    "font-family:Georgia,serif;font-size:16px;font-style:italic;color:#8d5f28",
+    "color:#71674f;font-size:11px;line-height:1.6"
+  );
 
   /* ---------- rail active room ---------- */
   const roomIO = new IntersectionObserver(es => {
@@ -387,6 +524,7 @@
       const plate = document.createElement("figcaption");
       plate.className = "wall__plate";
       plate.innerHTML = `<strong>FR ${String(i + 1).padStart(3, "0")} · ${photo.artist || photo.category}</strong>${plateText(photo)}`;
+      armPlate(plate, photo);
       wall.appendChild(plate);
       wallsTrack.appendChild(wall);
     });

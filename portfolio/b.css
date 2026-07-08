@@ -313,6 +313,8 @@ a { color: inherit; }
   scrollbar-width: none;
   cursor: grab;
   border-block: 1px solid var(--line);
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
 }
 .walls__track::-webkit-scrollbar { display: none; }
 .walls__track.is-dragging { cursor: grabbing; }
@@ -664,6 +666,8 @@ button.show-row:hover .show-row__count { background: var(--accent); }
   padding: 2.2rem var(--gutter);
   scrollbar-width: none;
   cursor: grab;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
 }
 .roomview__track::-webkit-scrollbar { display: none; }
 .roomview__track.is-dragging { cursor: grabbing; }
@@ -822,6 +826,67 @@ button.show-row:hover .show-row__count { background: var(--accent); }
   box-shadow: 0 10px 28px rgba(24,19,13,0.28);
 }
 .admin-pill:hover { background: var(--accent); border-color: var(--accent); }
+
+/* ============================================================
+   EASTER EGGS
+   ============================================================ */
+/* camera flash (press "f") */
+.flash {
+  position: fixed; inset: 0; z-index: 140;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+.flash.is-firing { animation: fire 0.5s ease-out; }
+@keyframes fire {
+  0% { opacity: 0; }
+  6% { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+
+/* the collector's red dot on a plate */
+.wall__plate { cursor: pointer; }
+.wall__plate.is-collected::after {
+  content: "";
+  position: absolute;
+  right: 0.7rem; bottom: 0.7rem;
+  width: 0.55rem; height: 0.55rem;
+  border-radius: 50%;
+  background: var(--mark);
+  box-shadow: 0 0 0 2px var(--matte);
+  animation: dot-in 0.35s var(--ease-out);
+}
+@keyframes dot-in { from { transform: scale(0); } to { transform: scale(1); } }
+
+/* whispered toasts */
+.egg-toast {
+  position: fixed;
+  bottom: 1.6rem; left: 50%;
+  transform: translateX(-50%) translateY(0.6rem);
+  z-index: 145;
+  max-width: min(88vw, 34em);
+  text-align: center;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--serif); font-style: italic;
+  font-size: 0.95rem; line-height: 1.5;
+  padding: 0.85em 1.7em;
+  border-radius: 999px;
+  box-shadow: 0 14px 36px rgba(31, 26, 18, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+}
+.egg-toast.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* the hint in the visitors' book */
+.visit__secret {
+  width: 100%;
+  text-align: center;
+  font-family: var(--serif); font-style: italic;
+  font-size: 0.78rem;
+  color: color-mix(in srgb, var(--muted) 70%, transparent);
+  letter-spacing: 0.06em;
+}
 
 /* ============================================================
    REVEALS + REDUCED MOTION
