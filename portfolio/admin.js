@@ -122,6 +122,10 @@
 
   /* ---------- theme presets ---------- */
   const PRESETS = {
+    pastel: {
+      label: "Gallery Pastel",
+      theme: { preset: "pastel", bg: "#f7f6f2", bgSoft: "#efeeea", ink: "#24252a", ink2: "#47484f", muted: "#6f7076", line: "#e1e1dc", accent: "#96697f", accent2: "#c9a2b4", mark: "#b6465f", reelBg: "#17181d", reelInk: "#eceaf0" },
+    },
     paper: {
       label: "Paper & Blush",
       theme: { preset: "paper", bg: "#faf6ef", bgSoft: "#f3ecdf", ink: "#262220", ink2: "#4a443c", muted: "#6e675c", line: "#e3dccd", accent: "#b06e55", accent2: "#cf9d84", mark: "#c0392b", reelBg: "#141210", reelInk: "#f0ede5" },

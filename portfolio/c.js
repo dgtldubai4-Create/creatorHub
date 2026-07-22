@@ -251,7 +251,7 @@
     const used = new Map();
     const chosen = [];
     for (const p of rest) {
-      const k = p.folder || "manual";
+      const k = p.folder || photoKey(p); /* hand-added frames aren't one bucket */
       if ((used.get(k) || 0) >= per) continue;
       used.set(k, (used.get(k) || 0) + 1);
       chosen.push(p);
@@ -867,7 +867,7 @@
     reel.forEach((photo, i) => {
       const idx = photosNow.indexOf(photo);
       const f = document.createElement("figure");
-      f.className = "reel-frame settle";
+      f.className = `reel-frame settle reel-frame--${["a", "b", "c"][i % 3]} w${i % 4}`;
       const imgWrap = document.createElement("div");
       imgWrap.className = "reel-frame__img soft";
       imgWrap.appendChild(frameMedia(photo, idx, 1600));

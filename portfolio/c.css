@@ -16,9 +16,13 @@
   --accent-2: #cf9d84;
   --mark: #c0392b;
   --matte: #ffffff;
-  --sage: #7e9070;
-  --wash-a: #f2dfd6;   /* blush wash */
-  --wash-b: #e6ebdd;   /* sage wash  */
+  --sage: #87a08e;
+  --lilac: #a08fb8;
+  --powder: #7f9db8;
+  --wash-a: #f4e3e9;   /* blush   */
+  --wash-b: #e6eee7;   /* mint    */
+  --wash-c: #ebe6f3;   /* lilac   */
+  --wash-d: #e2ecf3;   /* powder  */
   --hand: "Caveat", "Segoe Script", cursive;
   --serif: "Fraunces", "Georgia", serif;
   --sans: "Space Grotesk", "Helvetica Neue", sans-serif;
@@ -27,7 +31,10 @@
   --focus-t: 0.75s;
 }
 
-[data-mode="dark"] body { --sage: #93a389; --wash-a: #2c2229; --wash-b: #232a26; }
+[data-mode="dark"] body {
+  --sage: #8fae96; --lilac: #a996c4; --powder: #8aa8c4;
+  --wash-a: #2b2129; --wash-b: #20281f; --wash-c: #262038; --wash-d: #1d2733;
+}
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -215,13 +222,13 @@ main, footer { overflow-x: clip; } /* pastel washes may overhang the frames — 
   font-family: var(--hand);
   font-size: clamp(1.25rem, 2.4vw, 1.7rem);
   font-weight: 500;
-  color: var(--sage);
+  color: var(--lilac);
   transform: rotate(-2.2deg);
   animation: fade-up 1s var(--ease-out) 0.9s backwards;
 }
 .hero__note-arrow {
   width: 2.6em; flex: 0 0 auto;
-  stroke: var(--sage); stroke-width: 2.4; stroke-linecap: round;
+  stroke: var(--lilac); stroke-width: 2.4; stroke-linecap: round;
   transform: translateY(-0.4em);
 }
 .hero__meta {
@@ -278,6 +285,16 @@ main, footer { overflow-x: clip; } /* pastel washes may overhang the frames — 
   font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--muted);
 }
+/* each room announces itself in its own pastel */
+.sect[data-tint="rose"]   { --tint: var(--accent); }
+.sect[data-tint="lilac"]  { --tint: var(--lilac); }
+.sect[data-tint="powder"] { --tint: var(--powder); }
+.sect[data-tint="sage"]   { --tint: var(--sage); }
+.sect__no { color: var(--tint, var(--accent)); border-color: var(--tint, var(--accent)); }
+.sect__title em { color: var(--tint, var(--accent)); }
+.sect__title .squiggle { stroke: var(--tint, var(--sage)); }
+.sect--right { flex-direction: row-reverse; text-align: right; }
+.sect--right .sect__hint { margin-left: 0; margin-right: auto; text-align: left; }
 
 /* ============================================================
    THE REEL — curated frames rack into focus as they arrive
@@ -294,21 +311,31 @@ main, footer { overflow-x: clip; } /* pastel washes may overhang the frames — 
   width: 100%;
   max-width: 1100px;
 }
-/* frames hang a degree off true, alternating sides — a human hang */
-.reel-frame:nth-child(odd)  { justify-self: start; --tilt: -1.1deg; }
-.reel-frame:nth-child(even) { justify-self: end;   --tilt: 0.9deg; align-items: end; text-align: right; }
+/* three layouts and four pastels rotate — no two frames alike.
+   layout a: broad, hung left, tilted anticlockwise
+   layout b: intimate, hung right, tilted clockwise
+   layout c: full-bleed breakout, dead level                     */
+.reel-frame--a { justify-self: start; --tilt: -1.3deg; }
+.reel-frame--b { justify-self: end; --tilt: 1.2deg; align-items: end; text-align: right; }
+.reel-frame--b .reel-frame__img { max-width: min(100%, 640px); }
+.reel-frame--c { max-width: none; width: calc(100% + 2 * var(--gutter)); margin-inline: calc(-1 * var(--gutter)); --tilt: 0deg; }
+.reel-frame--c .reel-frame__img { max-width: 100%; border-inline: none; }
+.reel-frame--c .reel-frame__img img, .reel-frame--c .reel-frame__img .ph { width: 100%; max-height: 82vh; object-fit: cover; }
 .reel-frame::before {
   content: "";
   position: absolute;
   inset: -6% -4%;
-  background: radial-gradient(ellipse at 30% 30%, var(--wash-a), transparent 68%);
+  background: radial-gradient(ellipse at 30% 30%, var(--wash, var(--wash-a)), transparent 68%);
   z-index: -1;
   border-radius: 50%;
   transition: background 0.5s;
 }
-.reel-frame:nth-child(even)::before {
-  background: radial-gradient(ellipse at 70% 40%, var(--wash-b), transparent 68%);
-}
+.reel-frame--b::before { background: radial-gradient(ellipse at 70% 40%, var(--wash, var(--wash-c)), transparent 68%); }
+.reel-frame--c::before { display: none; }
+.reel-frame.w0 { --wash: var(--wash-a); }
+.reel-frame.w1 { --wash: var(--wash-b); }
+.reel-frame.w2 { --wash: var(--wash-c); }
+.reel-frame.w3 { --wash: var(--wash-d); }
 .reel-frame__img {
   max-width: min(100%, 980px);
   cursor: pointer;
@@ -338,9 +365,10 @@ main, footer { overflow-x: clip; } /* pastel washes may overhang the frames — 
   transform: rotate(-2deg);
   text-transform: none; letter-spacing: 0;
 }
-.reel-frame:nth-child(even) .reel-frame__note { transform: rotate(1.6deg); color: var(--sage); }
+.reel-frame--b .reel-frame__note { transform: rotate(1.6deg); color: var(--lilac); }
+.reel-frame--c .reel-frame__note { color: var(--powder); padding-left: var(--gutter); }
 .reel-frame__note::before { content: "\2198\00a0 "; font-family: var(--sans); font-size: 0.8em; }
-.reel-frame:nth-child(even) .reel-frame__note::before { content: "\2199\00a0 "; }
+.reel-frame--b .reel-frame__note::before { content: "\2199\00a0 "; }
 
 /* frames settle into the hang as they arrive */
 .settle {
@@ -419,7 +447,7 @@ button.artist-row:hover .artist-row__count { background: var(--accent); }
   overflow: hidden;
   padding: clamp(2rem, 5vw, 3.5rem) 0;
   border-block: 1px solid var(--line);
-  background: linear-gradient(90deg, var(--wash-b), var(--bg) 35%, var(--bg) 65%, var(--wash-a));
+  background: linear-gradient(90deg, var(--wash-d), var(--wash-b) 30%, var(--bg) 50%, var(--wash-c) 72%, var(--wash-a));
   transition: background 0.5s;
 }
 .drift__row {
@@ -535,6 +563,35 @@ button.artist-row:hover .artist-row__count { background: var(--accent); }
   display: block; font-family: var(--serif); font-style: italic; font-weight: 300;
   font-size: 1.9em; letter-spacing: 0.04em; text-transform: none;
   color: rgba(241, 234, 221, 0.8);
+}
+
+/* ============================================================
+   A BREATH — the statement between rooms
+   ============================================================ */
+.statement {
+  position: relative;
+  padding: clamp(5rem, 12vw, 9rem) var(--gutter);
+  text-align: center;
+  background:
+    radial-gradient(ellipse 60% 90% at 18% 20%, var(--wash-c), transparent 60%),
+    radial-gradient(ellipse 55% 80% at 85% 75%, var(--wash-a), transparent 60%),
+    var(--bg);
+  transition: background 0.5s;
+}
+.statement__text {
+  font-family: var(--serif); font-style: italic; font-weight: 340;
+  font-size: clamp(1.8rem, 5vw, 3.6rem);
+  line-height: 1.25; letter-spacing: -0.01em;
+  color: var(--ink);
+  max-width: 22em; margin: 0 auto;
+  text-wrap: balance;
+}
+.statement__hand {
+  margin-top: 1.2rem;
+  font-family: var(--hand); font-weight: 500;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  color: var(--lilac);
+  transform: rotate(-2deg);
 }
 
 /* ============================================================

@@ -56,7 +56,7 @@
 
     <!-- ===================== THE REEL — curated frames in depth ===================== -->
     <section class="reel" id="reel">
-      <header class="sect">
+      <header class="sect" data-tint="rose">
         <span class="sect__no">01</span>
         <h2 class="sect__title">In <em>focus</em></h2>
         <p class="sect__hint" id="reelHint">chosen methodically — the Curator ranks every frame, the photographer signs off</p>
@@ -66,7 +66,7 @@
 
     <!-- ===================== ARTISTS ===================== -->
     <section class="artists" id="artists">
-      <header class="sect">
+      <header class="sect sect--right" data-tint="lilac">
         <span class="sect__no">02</span>
         <h2 class="sect__title">Artists &amp; <em>stages</em></h2>
         <p class="sect__hint" data-bind="credits.sub"></p>
@@ -80,7 +80,7 @@
 
     <!-- ===================== ARCHIVE ===================== -->
     <section class="archive" id="archive">
-      <header class="sect">
+      <header class="sect" data-tint="powder">
         <span class="sect__no">03</span>
         <h2 class="sect__title">The <em>archive</em></h2>
         <p class="sect__hint">hover to pull a frame into focus · click to enlarge</p>
@@ -91,9 +91,15 @@
       <button class="cull-door" id="cullDoor">◐ The Cull — test your eye</button>
     </section>
 
+    <!-- ===================== A BREATH ===================== -->
+    <section class="statement" aria-label="A note from the photographer">
+      <p class="statement__text reveal"><span data-bind="about.statement"></span></p>
+      <p class="statement__hand reveal" aria-hidden="true">— promise</p>
+    </section>
+
     <!-- ===================== ABOUT ===================== -->
     <section class="about" id="about">
-      <header class="sect">
+      <header class="sect" data-tint="sage">
         <span class="sect__no">04</span>
         <h2 class="sect__title">The <em>photographer</em></h2>
       </header>

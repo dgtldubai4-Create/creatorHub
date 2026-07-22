@@ -37,34 +37,34 @@ const CONFIG = {
   /* ---- color scheme (edit per-token in the admin panel,
           or pick a preset there: Ivory, Gallery, Darkroom, Dusk) ---- */
   theme: {
-    preset: "paper",
-    bg:      "#faf6ef",   // warm paper
-    bgSoft:  "#f3ecdf",   // deeper paper
-    ink:     "#262220",   // soft charcoal — still 12:1 on paper
-    ink2:    "#4a443c",   // paragraphs & secondary text
-    muted:   "#6e675c",   // small labels
-    line:    "#e3dccd",   // hairlines & borders
-    accent:  "#b06e55",   // dusty rose-terracotta
-    accent2: "#cf9d84",   // its pastel sister (tags, fills)
-    mark:    "#c0392b",   // collector's red
-    reelBg:  "#141210",
-    reelInk: "#f0ede5",
+    preset: "pastel",
+    bg:      "#f7f6f2",   // cool gallery white
+    bgSoft:  "#efeeea",
+    ink:     "#24252a",   // cool charcoal
+    ink2:    "#47484f",
+    muted:   "#6f7076",
+    line:    "#e1e1dc",
+    accent:  "#96697f",   // dusty rose-mauve — pink, never brown
+    accent2: "#c9a2b4",   // pastel pink
+    mark:    "#b6465f",   // rose-red collector's dot
+    reelBg:  "#17181d",
+    reelInk: "#eceaf0",
   },
 
   /* ---- night mode (design C follows the visitor's system
           setting; these tokens are the after-dark palette) ---- */
   themeNight: {
-    bg:      "#191820",   // plum-graphite, not black
-    bgSoft:  "#211f2a",
-    ink:     "#ece7de",
-    ink2:    "#c6bfb2",
-    muted:   "#8f887c",
-    line:    "#322f3c",
-    accent:  "#d8a08e",   // the rose, glowing softly after dark
-    accent2: "#b98874",
-    mark:    "#d05543",
-    reelBg:  "#100f15",
-    reelInk: "#ece7de",
+    bg:      "#17181f",   // cool ink, not black
+    bgSoft:  "#1f2029",
+    ink:     "#eceaf0",
+    ink2:    "#c3c1cc",
+    muted:   "#8c8a96",
+    line:    "#30313c",
+    accent:  "#c9a2b4",   // pastel pink glows after dark
+    accent2: "#a98bb8",   // lilac
+    mark:    "#d3607a",
+    reelBg:  "#101117",
+    reelInk: "#eceaf0",
   },
 
   /* ---- the Curator — methodical best-image selection ----
@@ -125,6 +125,7 @@ const CONFIG = {
       "Clients often tell me guests and performers relax more quickly with a woman behind the camera. For women-only gatherings and behind-the-scenes moments, that comfort isn't a bonus — it's the whole job. And when the brief moves to a finish line or a keynote stage, the same instinct applies: find the honest frame.",
     ],
     quote: "My favourite photographs are the ones nobody remembers being taken.",
+    statement: "Half my job is light. The other half is trust.",
     portraitCaption: "usually the one behind the camera",
   },
 
