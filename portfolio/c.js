@@ -373,18 +373,46 @@
     { rootMargin: "-18% 0px -18% 0px", threshold: 0.35 }
   );
   function observe() {
-    document.querySelectorAll(".reveal").forEach(el => revealIO.observe(el));
+    document.querySelectorAll(".reveal, .settle").forEach(el => revealIO.observe(el));
     document.querySelectorAll(".soft").forEach(el => focusIO.observe(el));
   }
 
-  /* hero racks focus on first scroll */
-  let heroRacked = false;
-  addEventListener("scroll", () => {
+  /* hand-drawn squiggles under every section's accent word */
+  document.querySelectorAll(".sect__title em").forEach(em => {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 120 12");
+    svg.setAttribute("class", "squiggle");
+    svg.setAttribute("aria-hidden", "true");
+    svg.innerHTML = '<path d="M2 8 Q 18 2 36 7 T 70 6 T 118 4"/>';
+    em.appendChild(svg);
+  });
+  document.querySelectorAll(".sect").forEach(el => revealIO.observe(el));
+
+  /* hero racks focus on first scroll; the pen thread and the
+     drifting strip ride the same rAF-throttled handler */
+  let heroRacked = false, scrollQueued = false;
+  const threadFill = $("threadFill"), threadDot = $("threadDot"), driftRow = $("driftRow");
+  function onScroll() {
     const racked = scrollY > innerHeight * 0.12;
     if (racked !== heroRacked) {
       heroRacked = racked;
       $("hero").classList.toggle("is-racked", racked);
     }
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? scrollY / max : 0;
+    threadFill.style.transform = `scaleY(${p})`;
+    threadDot.style.transform = `translate(-50%, ${p * innerHeight}px) translateY(-50%)`;
+    threadDot.style.top = `${p * 100}%`;
+    if (driftRow.dataset.ready) {
+      const r = $("drift").getBoundingClientRect();
+      const vis = 1 - Math.min(1, Math.max(0, r.top / innerHeight));
+      driftRow.style.transform = `translate3d(${-vis * (driftRow.scrollWidth - innerWidth) * 0.6}px, 0, 0)`;
+    }
+  }
+  addEventListener("scroll", () => {
+    if (scrollQueued) return;
+    scrollQueued = true;
+    requestAnimationFrame(() => { scrollQueued = false; onScroll(); });
   }, { passive: true });
 
   /* ---------- archive filters ---------- */
@@ -839,7 +867,7 @@
     reel.forEach((photo, i) => {
       const idx = photosNow.indexOf(photo);
       const f = document.createElement("figure");
-      f.className = "reel-frame";
+      f.className = "reel-frame settle";
       const imgWrap = document.createElement("div");
       imgWrap.className = "reel-frame__img soft";
       imgWrap.appendChild(frameMedia(photo, idx, 1600));
@@ -853,8 +881,30 @@
         (exifLine(photo) ? `<span>${exifLine(photo)}</span>` : "") +
         (photo.artist ? `<span>${photo.artist}</span>` : "");
       f.appendChild(plate);
+      if (photo.note) {
+        const note = document.createElement("p");
+        note.className = "reel-frame__note";
+        note.setAttribute("aria-hidden", "true");
+        note.textContent = photo.note;
+        f.appendChild(note);
+      }
       frames.appendChild(f);
     });
+
+    /* the drifting strip between rooms */
+    driftRow.innerHTML = "";
+    const driftPool = photosNow.filter(p => p.category !== "portrait").slice(0, 14);
+    driftPool.forEach((p, i) => {
+      const cell = document.createElement("span");
+      cell.className = "drift__cell";
+      const url = imageUrl(p, 500);
+      cell.style.background = url
+        ? `url("${url}") center/cover`
+        : `linear-gradient(${140 + i * 25}deg, hsl(${(20 + i * 37) % 360} 22% 30%), hsl(${(200 + i * 21) % 360} 18% 14%))`;
+      driftRow.appendChild(cell);
+    });
+    driftRow.dataset.ready = driftPool.length ? "1" : "";
+    $("drift").style.display = driftPool.length ? "" : "none";
 
     /* artists */
     const list = $("artistsList");

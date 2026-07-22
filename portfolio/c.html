@@ -11,7 +11,7 @@
   <meta name="theme-color" content="#fbfaf6" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..600&family=Caveat:wght@400..600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="c.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◎</text></svg>" />
 </head>
@@ -21,6 +21,7 @@
   <noscript><p style="padding:6rem 2rem;text-align:center;font-family:Georgia,serif">This portfolio needs JavaScript to pull focus — please enable it.</p></noscript>
 
   <div class="grain" aria-hidden="true"></div>
+  <div class="thread" aria-hidden="true"><i id="threadFill"></i><b id="threadDot"></b></div>
 
   <!-- ===================== NAV ===================== -->
   <header class="nav">
@@ -47,6 +48,7 @@
           <span class="hero__line"><em>until someone pulls focus.</em></span>
         </h1>
         <p class="hero__sub" data-bind="hero.sub"></p>
+        <p class="hero__note" aria-hidden="true"><svg viewBox="0 0 60 44" class="hero__note-arrow"><path d="M54 4 C 38 10, 22 14, 8 34 M8 34 l 2 -10 M8 34 l 10 -2" fill="none"/></svg><span data-bind="hero.note"></span></p>
         <p class="hero__meta" id="heroMeta" aria-hidden="true"></p>
       </div>
       <a class="hero__scroll" href="#reel" aria-label="Scroll to the photographs"><i aria-hidden="true"></i>rack focus ↓</a>
@@ -72,6 +74,9 @@
       <ul class="artists__list" id="artistsList"></ul>
       <p class="artists__venues" id="venuesFlow"></p>
     </section>
+
+    <!-- a strip of frames drifting past between rooms -->
+    <div class="drift" id="drift" aria-hidden="true"><div class="drift__row" id="driftRow"></div></div>
 
     <!-- ===================== ARCHIVE ===================== -->
     <section class="archive" id="archive">

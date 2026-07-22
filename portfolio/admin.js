@@ -122,6 +122,10 @@
 
   /* ---------- theme presets ---------- */
   const PRESETS = {
+    paper: {
+      label: "Paper & Blush",
+      theme: { preset: "paper", bg: "#faf6ef", bgSoft: "#f3ecdf", ink: "#262220", ink2: "#4a443c", muted: "#6e675c", line: "#e3dccd", accent: "#b06e55", accent2: "#cf9d84", mark: "#c0392b", reelBg: "#141210", reelInk: "#f0ede5" },
+    },
     porcelain: {
       label: "Porcelain (crisp)",
       theme: { preset: "porcelain", bg: "#fbfaf6", bgSoft: "#f1efe7", ink: "#161410", ink2: "#3a362c", muted: "#5f5a4a", line: "#e0ddd1", accent: "#7a4f1d", accent2: "#996f37", mark: "#c0392b", reelBg: "#141210", reelInk: "#f0ede5" },
@@ -180,6 +184,7 @@
     row.appendChild(mkInput("Google Drive link (or leave empty)", "drive"));
     row.appendChild(mkInput("Caption", "title"));
     row.appendChild(mkInput("Artist / performer (optional)", "artist"));
+    row.appendChild(mkInput("Margin note (handwritten, beside the frame)", "note"));
 
     const g2 = el("div", "admin-row__grid2");
     const catField = el("div", "admin-field");

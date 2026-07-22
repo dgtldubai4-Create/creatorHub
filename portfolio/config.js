@@ -37,34 +37,34 @@ const CONFIG = {
   /* ---- color scheme (edit per-token in the admin panel,
           or pick a preset there: Ivory, Gallery, Darkroom, Dusk) ---- */
   theme: {
-    preset: "porcelain",
-    bg:      "#fbfaf6",   // page background — near-white, maximum readability
-    bgSoft:  "#f1efe7",   // alternate section background
-    ink:     "#161410",   // main text — near-black
-    ink2:    "#3a362c",   // paragraphs & secondary text
-    muted:   "#5f5a4a",   // small labels
-    line:    "#e0ddd1",   // hairlines & borders
-    accent:  "#7a4f1d",   // links, highlights, italic words — deep bronze
-    accent2: "#996f37",   // lighter accent (tags, hovers)
+    preset: "paper",
+    bg:      "#faf6ef",   // warm paper
+    bgSoft:  "#f3ecdf",   // deeper paper
+    ink:     "#262220",   // soft charcoal — still 12:1 on paper
+    ink2:    "#4a443c",   // paragraphs & secondary text
+    muted:   "#6e675c",   // small labels
+    line:    "#e3dccd",   // hairlines & borders
+    accent:  "#b06e55",   // dusty rose-terracotta
+    accent2: "#cf9d84",   // its pastel sister (tags, fills)
     mark:    "#c0392b",   // collector's red
-    reelBg:  "#141210",   // the dark film-strip band
-    reelInk: "#f0ede5",   // text on the film strip
+    reelBg:  "#141210",
+    reelInk: "#f0ede5",
   },
 
   /* ---- night mode (design C follows the visitor's system
           setting; these tokens are the after-dark palette) ---- */
   themeNight: {
-    bg:      "#131311",   // deep graphite, not black
-    bgSoft:  "#1b1b18",
-    ink:     "#ecebe4",
-    ink2:    "#c2c0b4",
-    muted:   "#8b887a",
-    line:    "#2b2b26",
-    accent:  "#c9a26b",   // the bronze, warmed for the dark
-    accent2: "#a98850",
+    bg:      "#191820",   // plum-graphite, not black
+    bgSoft:  "#211f2a",
+    ink:     "#ece7de",
+    ink2:    "#c6bfb2",
+    muted:   "#8f887c",
+    line:    "#322f3c",
+    accent:  "#d8a08e",   // the rose, glowing softly after dark
+    accent2: "#b98874",
     mark:    "#d05543",
-    reelBg:  "#0c0c0a",
-    reelInk: "#ecebe4",
+    reelBg:  "#100f15",
+    reelInk: "#ece7de",
   },
 
   /* ---- the Curator — methodical best-image selection ----
@@ -114,6 +114,7 @@ const CONFIG = {
     lineStart: "Your",
     rotator: ["event", "concert", "gala", "comedy night"],
     lineEnd: "remembered as it felt.",
+    note: "…and pulling it is my favourite part",
     sub: "I photograph live events across Dubai — concerts, galas, launches and comedy nights — with a quiet, documentary approach. No interruptions, no stiff line-ups; just an honest record of the night.",
   },
 
@@ -205,14 +206,14 @@ const CONFIG = {
      a folder fills their category. The "artist" field links a
      photo to the Artists list. */
   photos: [
-    { drive: "", src: "", title: "Golden-hour arrivals — private gala", category: "events",   artist: "",                     year: "2025", wide: true,  featured: true  },
+    { drive: "", src: "", title: "Golden-hour arrivals — private gala", category: "events",   artist: "",                     year: "2025", wide: true,  featured: true,  note: "shot barefoot — heels off at hour six" },
     { drive: "", src: "", title: "Confetti, mid-air",                   category: "events",   artist: "",                     year: "2025", wide: false, featured: true  },
     { drive: "", src: "", title: "The quiet minute before doors open",  category: "events",   artist: "",                     year: "2024", wide: false, featured: false },
-    { drive: "", src: "", title: "Encore, from the pit",                category: "concerts", artist: "Arena headliner",      year: "2025", wide: false, featured: true  },
+    { drive: "", src: "", title: "Encore, from the pit",                category: "concerts", artist: "Arena headliner",      year: "2025", wide: false, featured: true,  note: "ears rang for two days. worth it." },
     { drive: "", src: "", title: "Crowd under the lights",              category: "concerts", artist: "Arena headliner",      year: "2024", wide: true,  featured: true  },
     { drive: "", src: "", title: "Strings, half a beat before",         category: "concerts", artist: "Symphony gala",        year: "2024", wide: false, featured: false },
     { drive: "", src: "", title: "Main stage, blue hour",               category: "concerts", artist: "Festival main stage",  year: "2025", wide: false, featured: true  },
-    { drive: "", src: "", title: "Headliner, mid-punchline",            category: "comedy",   artist: "The stand-up special", year: "2025", wide: true,  featured: true  },
+    { drive: "", src: "", title: "Headliner, mid-punchline",            category: "comedy",   artist: "The stand-up special", year: "2025", wide: true,  featured: true,  note: "the lights did this, not me" },
     { drive: "", src: "", title: "Front row, mid-laugh",                category: "comedy",   artist: "The stand-up special", year: "2025", wide: false, featured: false },
     { drive: "", src: "", title: "The finish line, 1/2000s",            category: "sports",   artist: "",                     year: "2025", wide: false, featured: false },
     { drive: "", src: "", title: "Dust and horsepower — desert rally",  category: "sports",   artist: "",                     year: "2024", wide: true,  featured: false },
