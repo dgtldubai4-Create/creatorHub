@@ -359,6 +359,43 @@
     inner.appendChild(colors);
     body.appendChild(sec);
 
+    if (cfg().themeNight) {
+      [sec, inner] = section("Night mode colours");
+      inner.appendChild(el("div", "admin-field__hint",
+        "Design C follows each visitor's system setting; these are the after-dark tokens."));
+      const nightColors = el("div", "admin-colors");
+      THEME_TOKENS.filter(([k]) => !["reelBg", "reelInk"].includes(k)).forEach(([key, label]) => {
+        const c = el("label", "admin-color");
+        const input = el("input");
+        input.type = "color";
+        input.value = cfg().themeNight[key] || "#131311";
+        input.addEventListener("input", () => { cfg().themeNight[key] = input.value; commit(); });
+        c.appendChild(input);
+        c.appendChild(document.createTextNode(label));
+        nightColors.appendChild(c);
+      });
+      inner.appendChild(nightColors);
+      body.appendChild(sec);
+    }
+
+    if (cfg().curator) {
+      [sec, inner] = section("The Curator");
+      inner.appendChild(el("div", "admin-field__hint",
+        "Design C scores every Drive frame (metadata, filename, sharpness/exposure) and hangs the best automatically. Pin or hide individual frames from the enlarged view while in #admin mode."));
+      const pf = el("div", "admin-field");
+      pf.appendChild(el("label", "", "Top frames per folder in the reel"));
+      const input = el("input");
+      input.type = "text";
+      input.value = String(cfg().curator.perFolder ?? 3);
+      input.addEventListener("input", () => {
+        cfg().curator.perFolder = Math.max(1, parseInt(input.value, 10) || 3);
+        commit();
+      });
+      pf.appendChild(input);
+      inner.appendChild(pf);
+      body.appendChild(sec);
+    }
+
     [sec, inner] = section("Hero");
     inner.appendChild(field("Eyebrow line", "hero.eyebrow"));
     inner.appendChild(field("Headline start", "hero.lineStart"));

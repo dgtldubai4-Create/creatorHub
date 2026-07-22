@@ -51,6 +51,33 @@ const CONFIG = {
     reelInk: "#f0ede5",   // text on the film strip
   },
 
+  /* ---- night mode (design C follows the visitor's system
+          setting; these tokens are the after-dark palette) ---- */
+  themeNight: {
+    bg:      "#131311",   // deep graphite, not black
+    bgSoft:  "#1b1b18",
+    ink:     "#ecebe4",
+    ink2:    "#c2c0b4",
+    muted:   "#8b887a",
+    line:    "#2b2b26",
+    accent:  "#c9a26b",   // the bronze, warmed for the dark
+    accent2: "#a98850",
+    mark:    "#d05543",
+    reelBg:  "#0c0c0a",
+    reelInk: "#ecebe4",
+  },
+
+  /* ---- the Curator — methodical best-image selection ----
+     Every Drive photo is scored (metadata, filename forensics,
+     and a pixel pass where the browser allows). The top picks
+     hang in the reel; you can pin or hide any frame from the
+     zoom view while in #admin mode. */
+  curator: {
+    perFolder: 3,          // how many top frames per folder join the reel
+    pins: [],              // Drive file IDs you always want featured
+    vetoes: [],            // Drive file IDs never to show
+  },
+
   /* ---- gallery categories (the filter chips, in order) ---- */
   categories: [
     { key: "events",   label: "Events" },

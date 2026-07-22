@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Focus Pull — Event Photographer, Dubai</title>
+  <meta name="description" content="Event photographer based in Dubai. Concerts, galas, launches and comedy nights, seen in depth." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Focus Pull — Event Photographer, Dubai" />
+  <meta property="og:description" content="Concerts, galas, launches and comedy nights across Dubai, seen in depth." />
+  <meta name="theme-color" content="#fbfaf6" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="c.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◎</text></svg>" />
+</head>
+<body>
+
+  <a class="skip-link" href="#reel">Skip to the photographs</a>
+  <noscript><p style="padding:6rem 2rem;text-align:center;font-family:Georgia,serif">This portfolio needs JavaScript to pull focus — please enable it.</p></noscript>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ===================== NAV ===================== -->
+  <header class="nav">
+    <a class="nav__brand" href="#top"><span class="nav__mark" aria-hidden="true">◎</span><span id="brandName" data-bind="site.name">Your Name</span></a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#reel">Work</a>
+      <a href="#artists">Artists</a>
+      <a href="#about">About</a>
+      <a href="#contact" class="nav__cta">Book me</a>
+    </nav>
+    <button class="nav__mode" id="modeToggle" aria-label="Switch between light and dark mode">◐</button>
+  </header>
+
+  <main id="top">
+
+    <!-- ===================== HERO — the opening frame ===================== -->
+    <section class="hero" id="hero">
+      <div class="hero__photo" id="heroPhoto" aria-hidden="true"></div>
+      <div class="hero__veil" aria-hidden="true"></div>
+      <div class="hero__inner">
+        <p class="hero__eyebrow" data-bind="hero.eyebrow">Event photography · Dubai</p>
+        <h1 class="hero__title">
+          <span class="hero__line"><span>Everything is a blur</span></span>
+          <span class="hero__line"><em>until someone pulls focus.</em></span>
+        </h1>
+        <p class="hero__sub" data-bind="hero.sub"></p>
+        <p class="hero__meta" id="heroMeta" aria-hidden="true"></p>
+      </div>
+      <a class="hero__scroll" href="#reel" aria-label="Scroll to the photographs"><i aria-hidden="true"></i>rack focus ↓</a>
+    </section>
+
+    <!-- ===================== THE REEL — curated frames in depth ===================== -->
+    <section class="reel" id="reel">
+      <header class="sect">
+        <span class="sect__no">01</span>
+        <h2 class="sect__title">In <em>focus</em></h2>
+        <p class="sect__hint" id="reelHint">chosen methodically — the Curator ranks every frame, the photographer signs off</p>
+      </header>
+      <div class="reel__frames" id="reelFrames"></div>
+    </section>
+
+    <!-- ===================== ARTISTS ===================== -->
+    <section class="artists" id="artists">
+      <header class="sect">
+        <span class="sect__no">02</span>
+        <h2 class="sect__title">Artists &amp; <em>stages</em></h2>
+        <p class="sect__hint" data-bind="credits.sub"></p>
+      </header>
+      <ul class="artists__list" id="artistsList"></ul>
+      <p class="artists__venues" id="venuesFlow"></p>
+    </section>
+
+    <!-- ===================== ARCHIVE ===================== -->
+    <section class="archive" id="archive">
+      <header class="sect">
+        <span class="sect__no">03</span>
+        <h2 class="sect__title">The <em>archive</em></h2>
+        <p class="sect__hint">hover to pull a frame into focus · click to enlarge</p>
+      </header>
+      <div class="archive__filters" id="archiveFilters" role="tablist" aria-label="Filter photographs"></div>
+      <div class="archive__grid" id="archiveGrid"></div>
+      <p class="archive__empty" id="archiveEmpty" hidden>No frames here yet — they're coming.</p>
+      <button class="cull-door" id="cullDoor">◐ The Cull — test your eye</button>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section class="about" id="about">
+      <header class="sect">
+        <span class="sect__no">04</span>
+        <h2 class="sect__title">The <em>photographer</em></h2>
+      </header>
+      <div class="about__grid">
+        <figure class="about__portrait">
+          <div class="about__frame" id="aboutPortrait"><span class="about__note">your portrait —<br/>add a "portrait" photo</span></div>
+          <figcaption data-bind="about.portraitCaption"></figcaption>
+        </figure>
+        <div class="about__text">
+          <h3 class="about__heading" data-bind="about.heading"></h3>
+          <div id="aboutParas"></div>
+          <blockquote class="about__quote" id="aboutQuote"></blockquote>
+          <dl class="about__stats" id="aboutStats"></dl>
+        </div>
+      </div>
+      <div class="about__words" id="aboutWords" aria-live="polite"></div>
+    </section>
+
+    <!-- ===================== CONTACT ===================== -->
+    <section class="contact" id="contact">
+      <p class="contact__eyebrow"><span data-bind="contact.eyebrow">Currently booking</span> · <span id="dubaiClock">--:--</span> in Dubai</p>
+      <h2 class="contact__title"><span data-bind="contact.titleLine1"></span> <em data-bind="contact.titleLine2"></em></h2>
+      <div class="contact__actions">
+        <a class="contact__btn contact__btn--primary" id="emailLink" href="#">Email me</a>
+        <a class="contact__btn" id="whatsappLink" href="#" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="contact__btn" id="instagramLink" href="#" target="_blank" rel="noopener">Instagram</a>
+      </div>
+      <p class="contact__note" data-bind="contact.note"></p>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span id="footerName">©</span>
+    <span data-bind="footer.tag"></span>
+    <span data-bind="footer.rights"></span>
+  </footer>
+
+  <!-- ===================== ZOOM ===================== -->
+  <div class="zoom" id="zoom" role="dialog" aria-modal="true" aria-label="Photograph" hidden>
+    <button class="zoom__close" id="zoomClose" aria-label="Close">✕</button>
+    <img id="zoomImg" alt="" />
+    <p class="zoom__plate" id="zoomPlate"></p>
+    <div class="zoom__actions">
+      <button class="zoom__btn" id="zoomCollect">● Collect this frame</button>
+      <button class="zoom__btn" id="zoomPostcard">Take a postcard ↓</button>
+      <button class="zoom__btn zoom__btn--admin" id="zoomPin" hidden>Pin to reel</button>
+      <button class="zoom__btn zoom__btn--admin" id="zoomVeto" hidden>Hide this frame</button>
+    </div>
+  </div>
+
+  <!-- ===================== THE CULL ===================== -->
+  <div class="cull" id="cull" role="dialog" aria-modal="true" aria-label="The Cull — a culling game" hidden>
+    <div class="cull__card">
+      <header class="cull__head">
+        <h2>The Cull</h2>
+        <p id="cullIntroText">Two frames. Three seconds. Keep one — the way an editor culls a shoot.
+          Ten rounds, then we compare your eye with the photographer's.</p>
+        <button class="cull__close" id="cullClose" aria-label="Leave the game">✕</button>
+      </header>
+      <div class="cull__stage" id="cullStage">
+        <button class="cull__start" id="cullStart">Start culling</button>
+      </div>
+      <footer class="cull__foot" id="cullFoot" aria-live="polite"></footer>
+    </div>
+  </div>
+
+  <!-- ===================== ADMIN (open with #admin) ===================== -->
+  <div class="admin" id="admin" hidden>
+    <div class="admin__scrim" id="adminScrim"></div>
+    <aside class="admin__panel" role="dialog" aria-label="Site editor">
+      <header class="admin__head">
+        <h2>Site editor</h2>
+        <p>Changes apply instantly and are saved in this browser. Press <strong>Export</strong> to download your updated <code>config.js</code>, then replace the file in your site folder to publish.</p>
+        <p style="color:#a4713a;margin-top:0.5rem"><strong>Before you publish:</strong> the artists, venues, quotes and stats are example content — replace them with your real ones.</p>
+        <button class="admin__close" id="adminClose" aria-label="Close editor">✕</button>
+      </header>
+      <div class="admin__body" id="adminBody"></div>
+      <footer class="admin__foot">
+        <button class="admin__btn admin__btn--primary" id="adminExport">Export config.js</button>
+        <button class="admin__btn" id="adminCopy">Copy JSON</button>
+        <button class="admin__btn admin__btn--danger" id="adminReset">Reset all edits</button>
+      </footer>
+    </aside>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="c.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

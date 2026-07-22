@@ -4,15 +4,28 @@ A hand-crafted portfolio for an event photographer in Dubai (concerts,
 galas, comedy nights, sports). No frameworks, no build step, one shared
 config file — and **two complete designs**:
 
-| | Design A — “The Contact Sheet” | Design B — “The Print Room” |
-|---|---|---|
-| File | `index.html` | `b.html` |
-| Feel | editorial contact-sheet, filterable grid | museum hang, one print per wall, exhibitions |
-| Artists | click a name → filtered grid | click a name → walk into their room |
+| | A — “Contact Sheet” | B — “Print Room” | C — “Focus Pull” |
+|---|---|---|---|
+| File | `index.html` | `b.html` | `c.html` |
+| Feel | editorial grid | museum hang | depth of field — frames rack sharp as you reach them |
+| Extra | artist deep-links | exhibitions, postcards, secrets | the Curator, day/night modes, The Cull game |
 
-Both read the same `config.js`, share the same saved edits, and have the
-same admin panel — edit once, both designs update. Deploy whichever you
-prefer as your homepage (rename it `index.html`), or keep both.
+All three read the same `config.js`, share the same saved edits, and have
+the same admin panel — edit once, every design updates. Deploy whichever
+you prefer as your homepage (rename it `index.html`).
+
+**Design C extras**
+- **The Curator** scores every Drive frame methodically (resolution,
+  shutter/aperture, burst position, filename hints like “final”, plus
+  sharpness/exposure analysis of the thumbnail where the browser allows)
+  and hangs the best automatically. Pin or hide any frame from the
+  enlarged view while in `#admin` mode; set frames-per-folder in the
+  admin panel.
+- **Day & night** — follows each visitor's system setting, with a toggle
+  in the nav. Night tokens are editable in the admin panel.
+- **The Cull** — a 3-second-per-round culling game at the end of the
+  archive: visitors keep one of two frames and are scored against the
+  Curator's ranking.
 
 ## Edit everything with the admin panel
 
