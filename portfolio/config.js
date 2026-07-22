@@ -106,6 +106,8 @@ const CONFIG = {
       { link: "https://drive.google.com/drive/folders/1tf-2FyvfKvhy_bFHn0jyy-DpMvAV68OS", category: "concerts", label: "Live concert", artist: "", year: "2024", featured: 0 },
       { link: "https://drive.google.com/drive/folders/1EYtv2ndAhO5Yf5MTh7WllITPEwWvDmld", category: "concerts", label: "Live concert", artist: "", year: "2024", featured: 0 },
       { link: "https://drive.google.com/drive/folders/1tKrE840f3k9F8SViR3TK-HJ65y_ecs8u", category: "concerts", label: "Live concert", artist: "", year: "2024", featured: 0 },
+      { link: "https://drive.google.com/drive/folders/1rAym1aOYzWbWql_3P554FT8YDbPsyO5X", category: "events",   label: "Live show",    artist: "", year: "2025", featured: 1 },
+      { link: "https://drive.google.com/drive/folders/1jKbvMnopSskC9a8RaFurpxqZ8F2Ixke2", category: "events",   label: "Live show",    artist: "", year: "2025", featured: 1 },
     ],
   },
 
