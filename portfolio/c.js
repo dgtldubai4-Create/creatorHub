@@ -261,7 +261,7 @@
   }
 
   /* ---------- placeholder ---------- */
-  const PH_HUES = { comedy: [290, 20], concerts: [215, 24], events: [28, 14], sports: [200, 24], portrait: [45, 12] };
+  const PH_HUES = { comedy: [290, 20], concerts: [215, 24], events: [345, 16], sports: [200, 24], portrait: [265, 14] };
   function placeholderEl(photo, index) {
     const [hue] = PH_HUES[photo.category] || [30, 15];
     const el = document.createElement("div");
@@ -494,7 +494,7 @@
     let i = 0;
     const show = () => {
       const url = shots.length ? imageUrl(shots[i % shots.length], 600) : null;
-      hoverPeek.style.backgroundImage = url ? `url("${url}")` : `linear-gradient(150deg, hsl(28 25% 32%), hsl(20 18% 14%))`;
+      hoverPeek.style.backgroundImage = url ? `url("${url}")` : `linear-gradient(150deg, hsl(265 20% 32%), hsl(230 16% 14%))`;
       i++;
     };
     show();
@@ -689,7 +689,7 @@
     }
     if (!drawn) {
       const g = x.createLinearGradient(ix, iy, ix + iw, iy + ih);
-      g.addColorStop(0, "hsl(28 24% 26%)"); g.addColorStop(1, "hsl(215 20% 12%)");
+      g.addColorStop(0, "hsl(340 22% 28%)"); g.addColorStop(1, "hsl(230 20% 13%)");
       x.fillStyle = g; x.fillRect(ix, iy, iw, ih);
       x.fillStyle = "rgba(241,234,221,0.75)";
       x.font = "italic 300 44px Fraunces, Georgia, serif";
@@ -856,7 +856,7 @@
     const hUrl = heroPhoto && imageUrl(heroPhoto, 2000);
     $("heroPhoto").style.backgroundImage = hUrl
       ? `url("${hUrl}")`
-      : "radial-gradient(ellipse at 30% 20%, hsl(28 30% 30% / .85), transparent 60%), radial-gradient(ellipse at 75% 75%, hsl(215 25% 22% / .8), transparent 65%), linear-gradient(160deg, hsl(30 18% 16%), hsl(24 14% 9%))";
+      : "radial-gradient(ellipse at 30% 20%, hsl(340 26% 32% / .85), transparent 60%), radial-gradient(ellipse at 75% 75%, hsl(215 28% 26% / .8), transparent 65%), linear-gradient(160deg, hsl(260 16% 17%), hsl(230 14% 10%))";
     $("heroMeta").textContent = heroPhoto
       ? [`FR ${String(Math.max(1, photosNow.indexOf(heroPhoto) + 1)).padStart(3, "0")}`, plateText(heroPhoto), exifLine(heroPhoto)].filter(Boolean).join("  ·  ")
       : "";
@@ -900,7 +900,7 @@
       const url = imageUrl(p, 500);
       cell.style.background = url
         ? `url("${url}") center/cover`
-        : `linear-gradient(${140 + i * 25}deg, hsl(${(20 + i * 37) % 360} 22% 30%), hsl(${(200 + i * 21) % 360} 18% 14%))`;
+        : `linear-gradient(${140 + i * 25}deg, hsl(${[340, 215, 265, 160][i % 4]} 22% 30%), hsl(${[230, 260, 200, 215][i % 4]} 18% 14%))`;
       driftRow.appendChild(cell);
     });
     driftRow.dataset.ready = driftPool.length ? "1" : "";
