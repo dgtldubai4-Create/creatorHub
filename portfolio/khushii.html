@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Khushii Wason — Event &amp; Concert Photographer, Dubai</title>
+<meta name="description" content="Khushii Wason photographs live performance in Dubai — arena concerts, comedy specials and festivals. Karan Aujla, Himesh Reshammiya, Anuv Jain, Dubai Opera, Coca-Cola Arena.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Khushii Wason — Event &amp; Concert Photographer, Dubai">
+<meta property="og:description" content="Arena concerts, comedy specials and festivals across the UAE. 250+ events, 48 artists, 6 years in the pit.">
+<meta name="theme-color" content="#131318">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='34' fill='none' stroke='%23FFC1CC' stroke-width='9'/></svg>">
+<style>
+/* ============================================================
+   KHUSHII WASON — THE PIT
+   One design. Dark stage, pastel lights, real names.
+   Built to make artists and organisers pick up the phone.
+   ============================================================ */
+:root{
+  --bg:#131318; --panel:#1B1B22; --raise:#22222B;
+  --ink:#EFEDF2; --ink2:#BCB9C6; --muted:#8C8996;
+  --aqua:#A8DADC; --pink:#FFC1CC; --lilac:#B39CD0;
+  --line:rgba(239,237,242,.14);
+  --shadow:0 26px 70px -18px rgba(0,0,0,.75);
+  --gut:clamp(1.15rem,4.5vw,4.5rem);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+html[data-theme="light"]{
+  --bg:#FAF9FB; --panel:#F1F0F4; --raise:#FFFFFF;
+  --ink:#16161C; --ink2:#3E3E48; --muted:#67676F;
+  --aqua:#2F7E82; --pink:#B8425C; --lilac:#6B4E99;
+  --line:rgba(22,22,28,.14);
+  --shadow:0 22px 56px -20px rgba(30,25,45,.3);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Space Grotesk',system-ui,sans-serif;font-weight:380;
+  background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;transition:background-color .5s,color .4s;
+}
+/* stage light follows the cursor — you are in a dark venue */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.9;
+  background:
+    radial-gradient(620px circle at var(--mx,72%) var(--my,26%), color-mix(in srgb,var(--lilac) 13%,transparent), transparent 68%),
+    radial-gradient(460px circle at calc(var(--mx,72%) + 14%) calc(var(--my,26%) + 16%), color-mix(in srgb,var(--pink) 9%,transparent), transparent 66%);
+}
+html[data-theme="light"] body::before{opacity:.55}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{background:none;border:none;cursor:pointer}
+::selection{background:var(--pink);color:#16161C}
+:focus-visible{outline:2px solid var(--aqua);outline-offset:3px;border-radius:3px}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.17em;text-transform:uppercase}
+.srf{font-family:'Bodoni Moda',serif}
+.skip{position:fixed;top:-5rem;left:1rem;z-index:400;background:var(--ink);color:var(--bg);padding:.7em 1.2em;border-radius:999px;font-size:.78rem;transition:top .25s}
+.skip:focus{top:1rem}
+
+/* ---------------- header ---------------- */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.85rem var(--gut);
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  border-bottom:1px solid transparent;transition:border-color .3s,background-color .5s;
+}
+body.scrolled header{border-bottom-color:var(--line);backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:center;gap:.6rem;font-family:'Bodoni Moda',serif;font-size:1.15rem;letter-spacing:.01em;white-space:nowrap}
+.brand .ap{width:10px;height:10px;border-radius:50%;background:var(--pink);box-shadow:0 0 14px var(--pink);flex:0 0 auto}
+nav.main{display:flex;gap:clamp(.9rem,2.4vw,2rem)}
+nav.main a{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);transition:color .25s}
+nav.main a:hover{color:var(--ink)}
+.hactions{display:flex;gap:.45rem;align-items:center}
+.ibtn{
+  width:40px;height:40px;border-radius:999px;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;transition:border-color .25s,color .25s;
+}
+.ibtn:hover{border-color:var(--lilac);color:var(--lilac)}
+.book-btn{
+  width:auto;padding:0 1.15rem;height:40px;border-radius:999px;border:1px solid var(--ink);
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;
+  display:flex;align-items:center;transition:background-color .25s,color .25s;
+}
+.book-btn:hover{background:var(--ink);color:var(--bg)}
+.book-btn .bi{display:none;font-size:.95rem}
+body.editing #editToggle{background:var(--pink);color:#16161C;border-color:transparent}
+#menuBtn{display:none}
+@media(max-width:900px){ nav.main{display:none} #menuBtn{display:flex} .book-btn .bw{display:none} .book-btn .bi{display:block} .book-btn{width:40px;padding:0;justify-content:center} }
+
+#menuOverlay{
+  position:fixed;inset:0;z-index:190;background:var(--bg);
+  display:flex;flex-direction:column;justify-content:center;padding:var(--gut);gap:.2rem;
+  opacity:0;pointer-events:none;transition:opacity .35s;
+}
+body.menu-open #menuOverlay{opacity:1;pointer-events:auto}
+#menuOverlay a{
+  font-family:'Bodoni Moda',serif;font-size:clamp(2.2rem,9vw,4rem);padding:.45rem 0;
+  display:flex;gap:1rem;align-items:baseline;border-bottom:1px solid var(--line);
+  transform:translateX(-20px);opacity:0;transition:transform .4s var(--ease),opacity .4s;
+}
+body.menu-open #menuOverlay a{transform:none;opacity:1}
+body.menu-open #menuOverlay a:nth-child(2){transition-delay:.05s}
+body.menu-open #menuOverlay a:nth-child(3){transition-delay:.1s}
+body.menu-open #menuOverlay a:nth-child(4){transition-delay:.15s}
+body.menu-open #menuOverlay a:nth-child(5){transition-delay:.2s}
+#menuOverlay .n{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--pink)}
+#menuOverlay em{font-style:italic;color:var(--lilac)}
+
+/* ---------------- hero ---------------- */
+.hero{
+  position:relative;z-index:1;min-height:100svh;
+  display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.5rem,4vw,4rem);align-items:center;
+  padding:7rem var(--gut) 3rem;
+}
+.hero .live{display:inline-flex;align-items:center;gap:.55rem;color:var(--aqua);margin-bottom:1.5rem}
+.hero .live i{width:7px;height:7px;border-radius:50%;background:var(--aqua);box-shadow:0 0 10px var(--aqua);animation:blink 2.4s infinite}
+@keyframes blink{50%{opacity:.3}}
+.hero h1{
+  font-family:'Bodoni Moda',serif;font-weight:500;line-height:.92;letter-spacing:-.005em;
+  font-size:clamp(3rem,7.6vw,7rem);text-transform:uppercase;
+}
+.hero h1 .l{display:block;overflow:hidden}
+.hero h1 .l>span{display:block;transform:translateY(105%);animation:rise .95s var(--ease) forwards}
+.hero h1 .l:nth-child(2)>span{animation-delay:.1s}
+.hero h1 .l:nth-child(3)>span{animation-delay:.2s}
+@keyframes rise{to{transform:none}}
+.hero h1 em{font-style:italic;text-transform:none;color:var(--pink)}
+.hero h1 .l:last-child{overflow:visible}
+.hero .lede{margin-top:1.7rem;max-width:40ch;color:var(--ink2);font-size:clamp(1rem,1.5vw,1.13rem);line-height:1.65;animation:fade .9s var(--ease) .55s backwards}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}}
+.hero .cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:2.1rem;animation:fade .9s var(--ease) .7s backwards}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;padding:.95em 1.7em;border-radius:999px;
+  border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  letter-spacing:.16em;text-transform:uppercase;transition:all .28s var(--ease);
+}
+.btn:hover{transform:translateY(-2px);border-color:var(--lilac)}
+.btn.solid{background:var(--pink);color:#16161C;border-color:transparent;font-weight:600}
+.btn.solid:hover{background:var(--aqua)}
+.hero-figure{position:relative;justify-self:end;width:100%;max-width:560px}
+.hero-figure .fr{
+  position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);
+  box-shadow:var(--shadow);aspect-ratio:4/5;background:var(--panel);
+}
+.hero-figure .fr img{width:100%;height:100%;object-fit:cover;transform:scale(1.04);animation:kb 22s ease-in-out infinite alternate}
+@keyframes kb{to{transform:scale(1.12) translateY(-1.5%)}}
+.hero-figure .plate{
+  position:absolute;left:-8px;bottom:-14px;z-index:3;background:var(--raise);border:1px solid var(--line);
+  border-radius:10px;padding:.7rem 1rem;box-shadow:var(--shadow);max-width:82%;
+}
+.hero-figure .plate .t{font-family:'Bodoni Moda',serif;font-style:italic;font-size:1.02rem}
+.hero-figure .plate .s{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:.15rem}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:6rem;gap:2.2rem;align-content:center}
+  .hero-figure{justify-self:stretch;max-width:none}
+  .hero-figure .fr{aspect-ratio:4/3}
+}
+
+/* ---------------- credit ticker ---------------- */
+.credits{position:relative;z-index:1;border-block:1px solid var(--line);background:var(--panel);overflow:hidden;padding:.9rem 0}
+.credits .tr{display:inline-flex;gap:2.2rem;white-space:nowrap;width:max-content;animation:mx 34s linear infinite}
+.credits:hover .tr{animation-play-state:paused}
+.credits b{font-family:'Bodoni Moda',serif;font-weight:500;font-size:clamp(1rem,2vw,1.35rem);letter-spacing:.01em}
+.credits i{color:var(--aqua);font-style:normal;font-size:.7em}
+@keyframes mx{to{transform:translateX(-50%)}}
+
+/* ---------------- sections ---------------- */
+section{position:relative;z-index:1;padding:clamp(3.6rem,8vw,7rem) var(--gut)}
+.shead{display:flex;align-items:baseline;gap:1.1rem;flex-wrap:wrap;margin-bottom:clamp(1.8rem,4vw,3rem)}
+.shead .ix{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.2em;color:var(--pink)}
+.shead h2{font-family:'Bodoni Moda',serif;font-weight:500;font-size:clamp(1.9rem,5vw,3.4rem);text-transform:uppercase;letter-spacing:.005em}
+.shead h2 em{font-style:italic;text-transform:none;color:var(--lilac)}
+.shead .rl{flex:1;min-width:2rem;height:1px;background:var(--line)}
+.shead .hint{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .75s,transform .75s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------------- setlist ---------------- */
+.setlist{border-top:1px solid var(--line)}
+.row{
+  position:relative;display:grid;grid-template-columns:auto 1fr auto auto;gap:1.1rem;align-items:center;
+  width:100%;text-align:left;padding:1.25rem .4rem;border-bottom:1px solid var(--line);overflow:hidden;
+}
+.row::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--lilac) 15%,transparent),transparent 62%);
+  transform:translateX(-101%);transition:transform .45s var(--ease);
+}
+.row:hover::before,.row:focus-visible::before{transform:none}
+.row .no{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted)}
+.row .ti{font-family:'Bodoni Moda',serif;font-size:clamp(1.15rem,2.9vw,1.95rem);transition:letter-spacing .35s,color .25s}
+.row:hover .ti{letter-spacing:.02em;color:var(--pink)}
+.row .ve{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);text-align:right}
+.row .ct{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--aqua);white-space:nowrap}
+.row .th{display:none;width:54px;height:54px;object-fit:cover;border-radius:7px;background:var(--panel)}
+#peek{
+  position:fixed;width:230px;height:296px;object-fit:cover;border-radius:10px;pointer-events:none;z-index:150;
+  opacity:0;transform:scale(.9);transition:opacity .25s,transform .35s;box-shadow:var(--shadow);border:1px solid var(--line);
+}
+#peek.on{opacity:1;transform:scale(1)}
+@media(max-width:900px){
+  .row{grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;gap:.2rem .9rem;padding:1rem .3rem}
+  .row .th{display:block;grid-row:1/3}
+  .row .no{grid-column:2}.row .ct{grid-column:3;grid-row:1}
+  .row .ti{grid-column:2/4}.row .ve{grid-column:2/4;text-align:left}
+  #peek{display:none}
+}
+
+/* ---------------- gallery ---------------- */
+.filters{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.4rem}
+.chip{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:.6em 1.15em;border-radius:999px;border:1px solid var(--line);color:var(--muted);transition:all .25s;
+}
+.chip:hover{border-color:var(--lilac);color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
+.grid{columns:3 260px;column-gap:clamp(.7rem,1.4vw,1.1rem)}
+.card{
+  break-inside:avoid;margin-bottom:clamp(.7rem,1.4vw,1.1rem);position:relative;border-radius:12px;overflow:hidden;
+  border:1px solid var(--line);background:var(--panel);cursor:zoom-in;display:block;width:100%;
+  opacity:0;transform:translateY(22px) scale(.985);transition:opacity .6s,transform .6s var(--ease);
+}
+.card.in{opacity:1;transform:none}
+.card img{width:100%;height:auto;display:block;transition:transform .7s var(--ease),filter .4s}
+.card:hover img{transform:scale(1.045)}
+.card .meta{
+  position:absolute;left:0;right:0;bottom:0;padding:2.4rem .85rem .75rem;
+  background:linear-gradient(to top,rgba(10,10,14,.88),transparent);
+  opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;
+}
+.card:hover .meta,.card:focus-visible .meta{opacity:1;transform:none}
+.card .meta .a{font-family:'Bodoni Moda',serif;font-style:italic;font-size:1rem;color:#F4F2F7;display:block}
+.card .meta .b{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:#C9C5D4}
+.gempty{font-family:'Bodoni Moda',serif;font-style:italic;color:var(--muted);padding:2rem 0;font-size:1.15rem}
+
+/* ---------------- numbers ---------------- */
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;border-block:1px solid var(--line);padding:clamp(2rem,4vw,3rem) 0}
+.nums .c{text-align:center}
+.nums .eq{display:flex;justify-content:center;align-items:flex-end;gap:3px;height:34px;margin-bottom:.7rem}
+.nums .eq i{width:5px;border-radius:3px 3px 0 0;background:linear-gradient(to top,var(--lilac),var(--pink));animation:eq 1.15s ease-in-out infinite alternate}
+.nums .eq i:nth-child(1){height:35%}.nums .eq i:nth-child(2){height:80%;animation-delay:.15s}
+.nums .eq i:nth-child(3){height:55%;animation-delay:.3s}.nums .eq i:nth-child(4){height:92%;animation-delay:.45s}
+@keyframes eq{to{transform:scaleY(.42)}}
+.nums .v{font-family:'Bodoni Moda',serif;font-size:clamp(1.9rem,5vw,3.4rem);font-variant-numeric:tabular-nums;line-height:1}
+.nums .v span.p{color:var(--pink)}
+.nums .k{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:.5rem}
+@media(max-width:760px){.nums{grid-template-columns:repeat(2,1fr);gap:2rem}}
+
+/* ---------------- about ---------------- */
+.about{display:grid;grid-template-columns:minmax(240px,330px) 1fr;gap:clamp(1.8rem,5vw,4.5rem);align-items:center}
+@media(max-width:900px){.about{grid-template-columns:1fr}}
+.about .pf{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
+.about .pf img{width:100%;aspect-ratio:4/5;object-fit:cover;background:var(--panel)}
+.about .pf .cap{position:absolute;left:0;right:0;bottom:0;padding:2.4rem 1rem .9rem;background:linear-gradient(to top,rgba(10,10,14,.9),transparent)}
+.about .pf .cap .n{font-family:'Bodoni Moda',serif;font-style:italic;font-size:1.25rem;color:#F4F2F7}
+.about .pf .cap .r{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:#C9C5D4;margin-top:.2rem}
+.about .lede{font-family:'Bodoni Moda',serif;font-size:clamp(1.3rem,2.9vw,2rem);line-height:1.35;margin-bottom:1.1rem}
+.about .lede em{font-style:italic;color:var(--pink)}
+.about p{color:var(--ink2);line-height:1.75;max-width:58ch;margin-bottom:1rem}
+.tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.3rem}
+.tags span{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;padding:.5em 1em;border-radius:999px;border:1px solid var(--line);color:var(--ink2)}
+
+/* ---------------- booking desk ---------------- */
+.desk{
+  display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.6rem,4vw,3.4rem);
+  background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:clamp(1.4rem,4vw,2.8rem);
+}
+@media(max-width:900px){.desk{grid-template-columns:1fr}}
+.desk h3{font-family:'Bodoni Moda',serif;font-size:clamp(1.5rem,3.4vw,2.3rem);line-height:1.2;margin-bottom:.5rem}
+.desk h3 em{font-style:italic;color:var(--aqua)}
+.desk .sub{color:var(--ink2);font-size:.94rem;max-width:44ch;margin-bottom:1.5rem}
+.fgrp{margin-bottom:1.05rem}
+.fgrp>label{display:block;font-family:'JetBrains Mono',monospace;font-size:.57rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.opts{display:flex;flex-wrap:wrap;gap:.4rem}
+.opt{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.11em;text-transform:uppercase;
+  padding:.62em 1.05em;border-radius:999px;border:1px solid var(--line);color:var(--ink2);transition:all .22s;
+}
+.opt:hover{border-color:var(--lilac)}
+.opt.on{background:var(--lilac);color:#16161C;border-color:transparent;font-weight:600}
+.fld{width:100%;padding:.8rem .95rem;border-radius:11px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:.9rem}
+.fld::placeholder{color:var(--muted)}
+.fld:focus{outline:2px solid var(--aqua);outline-offset:0;border-color:transparent}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+@media(max-width:520px){.two{grid-template-columns:1fr}}
+.brief{
+  background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:1.2rem 1.3rem;
+  display:flex;flex-direction:column;height:100%;min-height:260px;
+}
+.brief .bh{font-family:'JetBrains Mono',monospace;font-size:.57rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding-bottom:.75rem;border-bottom:1px dashed var(--line);margin-bottom:.9rem}
+.brief pre{
+  flex:1;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.85;color:var(--ink2);
+  white-space:pre-wrap;word-break:break-word;margin-bottom:1.1rem;
+}
+.brief pre b{color:var(--ink);font-weight:600}
+.send{display:flex;flex-wrap:wrap;gap:.55rem}
+.desk .direct{margin-top:1.2rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.desk .direct a{color:var(--aqua);border-bottom:1px solid color-mix(in srgb,var(--aqua) 45%,transparent)}
+
+/* ---------------- footer ---------------- */
+footer{
+  position:relative;z-index:1;border-top:1px solid var(--line);padding:2.2rem var(--gut) 2.6rem;
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:1.2rem;align-items:center;
+}
+.fsoc{display:flex;flex-wrap:wrap;gap:.5rem}
+.fsoc a{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:.62em 1.15em;border-radius:999px;border:1px solid var(--line);transition:all .25s}
+.fsoc a:hover{border-color:var(--pink);color:var(--pink)}
+footer .cr{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------------- lightbox ---------------- */
+#lb{position:fixed;inset:0;z-index:400;background:rgba(8,8,11,.96);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s}
+#lb.open{opacity:1;pointer-events:auto}
+#lb img{max-width:94vw;max-height:80vh;object-fit:contain;border-radius:6px}
+#lbCap{position:absolute;left:0;right:0;bottom:1.6rem;text-align:center;color:#E9E7EC;font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:0 3rem}
+#lbNum{position:absolute;top:1.3rem;left:1.5rem;color:#8C8996;font-family:'JetBrains Mono',monospace;font-size:.66rem}
+#lb button{position:absolute;color:#E9E7EC;border:1px solid rgba(233,231,236,.28);border-radius:999px;background:rgba(20,20,26,.5)}
+#lbX{top:1rem;right:1rem;width:46px;height:46px;font-size:1.2rem}
+#lbP,#lbN{top:50%;transform:translateY(-50%);width:50px;height:50px;font-size:1.2rem}
+#lbP{left:1rem}#lbN{right:1rem}
+@media(max-width:760px){#lbP,#lbN{display:none}}
+
+/* ---------------- edit mode ---------------- */
+#editBar{
+  position:fixed;left:50%;bottom:1rem;transform:translate(-50%,150%);z-index:300;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:.45rem;align-items:center;
+  background:var(--raise);border:1px solid var(--line);padding:.7rem .85rem;border-radius:16px;
+  box-shadow:var(--shadow);transition:transform .45s var(--ease);max-width:min(94vw,680px);
+}
+body.editing #editBar{transform:translate(-50%,0)}
+#editBar .h{flex-basis:100%;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+#editBar button{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.09em;text-transform:uppercase;padding:.55rem .8rem;border-radius:999px;border:1px solid var(--line)}
+#editBar button:hover{border-color:var(--aqua)}
+#editBar button.pri{background:var(--pink);color:#16161C;border-color:transparent;font-weight:700}
+body.editing [data-e]{outline:1.5px dashed color-mix(in srgb,var(--pink) 70%,transparent);outline-offset:3px;border-radius:3px}
+body.editing [data-e]:focus{outline:2px solid var(--pink);background:color-mix(in srgb,var(--lilac) 18%,transparent)}
+.swap{position:absolute;right:.55rem;top:.55rem;z-index:6;display:none;font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.08em;text-transform:uppercase;background:var(--pink);color:#16161C;padding:.35rem .65rem;border-radius:999px;pointer-events:none}
+body.editing .swap{display:block}
+.modal{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;background:rgba(8,8,11,.72);padding:1rem}
+.modal.open{display:flex}
+.pane{width:min(94vw,500px);background:var(--raise);border:1px solid var(--line);border-radius:18px;padding:1.6rem;box-shadow:var(--shadow);max-height:90vh;overflow-y:auto}
+.pane h3{font-family:'Bodoni Moda',serif;font-style:italic;font-size:1.45rem;margin-bottom:.4rem}
+.pane .nt{font-size:.79rem;color:var(--ink2);line-height:1.55;margin-bottom:.9rem}
+.pane label{display:block;font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:.85rem 0 .35rem}
+.pane input,.pane textarea,.pane select{width:100%;padding:.72rem .9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:.85rem;font-family:'JetBrains Mono',monospace;resize:vertical}
+.pane input:focus,.pane textarea:focus,.pane select:focus{outline:2px solid var(--aqua)}
+.pane .r{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.3rem;flex-wrap:wrap}
+.pane .r button{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.7rem 1.1rem;border-radius:999px;border:1px solid var(--line)}
+.pane .r .ap{background:var(--aqua);color:#16161C;border-color:transparent;font-weight:600}
+.pane .r .dg{color:#E5806F;border-color:#E5806F}
+#toast{
+  position:fixed;top:4.6rem;left:50%;transform:translate(-50%,-14px);z-index:600;opacity:0;pointer-events:none;
+  background:var(--raise);border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:.58rem;
+  letter-spacing:.1em;text-transform:uppercase;padding:.72rem 1.2rem;border-radius:999px;
+  transition:opacity .3s,transform .3s;box-shadow:var(--shadow);max-width:90vw;text-align:center;
+}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}
+  .reveal,.card{opacity:1;transform:none}
+  body::before{display:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#work">Skip to the photographs</a>
+
+<header>
+  <a class="brand" href="#top"><span class="ap"></span><span data-e>Khushii Wason</span></a>
+  <nav class="main" aria-label="Primary">
+    <a href="#shows">Shows</a><a href="#work">Work</a><a href="#about">About</a><a href="#book">Book</a>
+  </nav>
+  <div class="hactions">
+    <button class="ibtn" id="themeBtn" aria-label="Switch light or dark mode">◐</button>
+    <button class="ibtn" id="editToggle" aria-label="Toggle edit mode" title="Edit this site">✎</button>
+    <a class="book-btn" href="#book"><span class="bw">Book me</span><span class="bi" aria-hidden="true">✉</span></a>
+    <button class="ibtn" id="menuBtn" aria-label="Open menu">☰</button>
+  </div>
+</header>
+
+<div id="menuOverlay" aria-hidden="true">
+  <a href="#shows"><span class="n">01</span>The <em>shows</em></a>
+  <a href="#work"><span class="n">02</span>The <em>work</em></a>
+  <a href="#about"><span class="n">03</span>About <em>Khushii</em></a>
+  <a href="#book"><span class="n">04</span>Book <em>me</em></a>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="top">
+  <div>
+    <p class="live mono"><i></i><span data-e>Booking 2026 · Dubai &amp; worldwide</span></p>
+    <h1>
+      <span class="l"><span data-e>Performance,</span></span>
+      <span class="l"><span data-e>light</span></span>
+      <span class="l"><span><em data-e>changes.</em></span></span>
+    </h1>
+    <p class="lede" data-e>I photograph live music and events in Dubai — arena tours, comedy specials, festivals. Six years in the photo pit, shooting the frame that puts you back in the room.</p>
+    <div class="cta">
+      <a class="btn solid" href="#book">Check my availability</a>
+      <a class="btn" href="#work">See the work</a>
+    </div>
+  </div>
+  <figure class="hero-figure">
+    <div class="fr">
+      <img id="heroImg" src="" alt="Karan Aujla performing to a full arena" loading="eager">
+      <span class="swap">✎ swap</span>
+    </div>
+    <figcaption class="plate">
+      <div class="t" data-e>Karan Aujla — the beat drops</div>
+      <div class="s" data-e>Etihad Arena · Abu Dhabi</div>
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ===================== CREDITS ===================== -->
+<div class="credits" aria-label="Artists and venues photographed">
+  <div class="tr" id="creditTrack"></div>
+</div>
+
+<!-- ===================== SHOWS ===================== -->
+<section id="shows">
+  <div class="shead reveal">
+    <span class="ix">01</span><h2>The <em>shows</em></h2><span class="rl"></span>
+    <span class="hint" data-e>Tap a show to see its frames</span>
+  </div>
+  <div class="setlist" id="setlist"></div>
+  <img id="peek" alt="" aria-hidden="true">
+</section>
+
+<!-- ===================== WORK ===================== -->
+<section id="work">
+  <div class="shead reveal">
+    <span class="ix">02</span><h2>The <em>work</em></h2><span class="rl"></span>
+    <span class="hint" data-e>Click any frame to enlarge</span>
+  </div>
+  <div class="filters" id="filters" role="tablist" aria-label="Filter photographs"></div>
+  <div class="grid" id="grid"></div>
+  <p class="gempty" id="gempty" hidden>Nothing filed under that yet — try another filter.</p>
+</section>
+
+<!-- ===================== NUMBERS ===================== -->
+<section aria-label="By the numbers" style="padding-top:0">
+  <div class="nums reveal">
+    <div class="c"><div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="v"><span data-n="250">0</span><span class="p">+</span></div><div class="k" data-e>Events shot</div></div>
+    <div class="c"><div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="v"><span data-n="48">0</span><span class="p">+</span></div><div class="k" data-e>Artists on stage</div></div>
+    <div class="c"><div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="v"><span data-n="12">0</span></div><div class="k" data-e>Cities</div></div>
+    <div class="c"><div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="v"><span data-n="48">0</span><span class="p">h</span></div><div class="k" data-e>Gallery delivery</div></div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section id="about">
+  <div class="shead reveal"><span class="ix">03</span><h2>About <em>Khushii</em></h2><span class="rl"></span></div>
+  <div class="about">
+    <figure class="pf reveal">
+      <img id="portraitImg" src="" alt="Portrait of Khushii Wason">
+      <span class="swap">✎ swap</span>
+      <figcaption class="cap"><div class="n" data-e>Khushii Wason</div><div class="r" data-e>Photographer · Dubai, UAE</div></figcaption>
+    </figure>
+    <div class="reveal">
+      <p class="lede" data-e>Some photographers wait for the light. In a live room the light never waits — so I learned to read it, and to <em>move first</em>.</p>
+      <p data-e>I'm a Dubai-based photographer working across live performance and artist stories. Six years in the pit have taught me where the confetti falls, when a crowd is about to erupt, and how to work a stage wash without killing the mood the lighting designer built. I've shot arena tours at Etihad and Coca-Cola Arena, stand-up specials at Dubai Opera, festivals, brand nights and weddings.</p>
+      <p data-e>Artists get frames they actually want to post. Organisers get a same-night selection for socials and the full edited gallery inside 48 hours. Nobody gets asked to pose.</p>
+      <div class="tags">
+        <span data-e>Concerts</span><span data-e>Comedy</span><span data-e>Festivals</span><span data-e>Brand events</span><span data-e>Tour coverage</span><span data-e>Portraits</span><span data-e>Weddings</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== BOOK ===================== -->
+<section id="book">
+  <div class="shead reveal"><span class="ix">04</span><h2>Book <em>me</em></h2><span class="rl"></span>
+    <span class="hint"><span id="dxbClock">--:--</span> in Dubai</span>
+  </div>
+  <div class="desk reveal">
+    <div>
+      <h3>Tell me about the night — <em>I'll reply today.</em></h3>
+      <p class="sub" data-e>Two taps builds a proper brief. It opens in WhatsApp or your mail app, already written.</p>
+
+      <div class="fgrp">
+        <label>What is it?</label>
+        <div class="opts" id="optType">
+          <button class="opt on" data-v="Concert / tour">Concert</button>
+          <button class="opt" data-v="Comedy show">Comedy</button>
+          <button class="opt" data-v="Festival">Festival</button>
+          <button class="opt" data-v="Brand / corporate event">Brand event</button>
+          <button class="opt" data-v="Wedding">Wedding</button>
+          <button class="opt" data-v="Portrait / artist shoot">Artist shoot</button>
+        </div>
+      </div>
+
+      <div class="fgrp two">
+        <div><label for="bDate">Date</label><input class="fld" id="bDate" type="date"></div>
+        <div><label for="bVenue">Venue or city</label><input class="fld" id="bVenue" type="text" placeholder="Coca-Cola Arena"></div>
+      </div>
+
+      <div class="fgrp">
+        <label>Coverage</label>
+        <div class="opts" id="optHours">
+          <button class="opt" data-v="2 hours">2 h</button>
+          <button class="opt on" data-v="4 hours">4 h</button>
+          <button class="opt" data-v="Full show + backstage">Full show</button>
+          <button class="opt" data-v="Multi-day / tour">Multi-day</button>
+        </div>
+      </div>
+
+      <div class="fgrp">
+        <label>What matters most</label>
+        <div class="opts" id="optNeed">
+          <button class="opt on" data-v="Same-night selection for socials">Same-night set</button>
+          <button class="opt" data-v="Full edited gallery">Full gallery</button>
+          <button class="opt" data-v="Artist-approved frames only">Artist approval</button>
+          <button class="opt" data-v="Video snippets too">Video too</button>
+        </div>
+      </div>
+
+      <div class="fgrp two">
+        <div><label for="bName">Your name</label><input class="fld" id="bName" type="text" placeholder="Name" autocomplete="name"></div>
+        <div><label for="bOrg">Artist / company</label><input class="fld" id="bOrg" type="text" placeholder="Optional" autocomplete="organization"></div>
+      </div>
+
+      <p class="direct">Or reach me directly — <a href="mailto:hello@khushiiwason.com" data-e>hello@khushiiwason.com</a></p>
+    </div>
+
+    <aside class="brief" aria-live="polite">
+      <div class="bh">Your brief — live preview</div>
+      <pre id="briefText"></pre>
+      <div class="send">
+        <a class="btn solid" id="waSend" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+        <a class="btn" id="mailSend" href="#">Send as email</a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<footer>
+  <span class="cr" data-e>© 2026 Khushii Wason — Dubai, UAE</span>
+  <div class="fsoc">
+    <a href="https://instagram.com/" target="_blank" rel="noopener" data-e>Instagram</a>
+    <a href="https://behance.net/" target="_blank" rel="noopener" data-e>Behance</a>
+    <a id="waFooter" href="#" target="_blank" rel="noopener" data-e>WhatsApp</a>
+    <a href="mailto:hello@khushiiwason.com" data-e>Email</a>
+  </div>
+</footer>
+
+<!-- ===================== LIGHTBOX ===================== -->
+<div id="lb" role="dialog" aria-modal="true" aria-label="Photograph viewer">
+  <span id="lbNum">1 / 1</span>
+  <img id="lbImg" src="" alt="">
+  <p id="lbCap"></p>
+  <button id="lbX" aria-label="Close">✕</button>
+  <button id="lbP" aria-label="Previous">←</button>
+  <button id="lbN" aria-label="Next">→</button>
+</div>
+
+<!-- ===================== EDIT ===================== -->
+<div id="editBar">
+  <span class="h">Edit mode — tap any text to type · tap any photo to swap it</span>
+  <button id="addShow">+ Show</button>
+  <button id="addPhoto">+ Photo</button>
+  <button id="bulkAdd">⚡ Paste many links</button>
+  <button id="driveBtn">◎ Connect Drive</button>
+  <button id="exitEdit">Done</button>
+  <button class="pri" id="saveSite">⬇ Save my site</button>
+</div>
+
+<div class="modal" id="imgModal" role="dialog" aria-modal="true" aria-label="Replace photo">
+  <div class="pane">
+    <h3>Replace this photo</h3>
+    <p class="nt">Paste a <strong>Google Drive share link</strong> (Share → “Anyone with the link” → Copy) or any direct image URL. Drive links convert automatically.</p>
+    <label for="mUrl">Photo link</label>
+    <input id="mUrl" type="url" placeholder="https://drive.google.com/file/d/…/view" autocomplete="off">
+    <label for="mAlt">Describe the photo</label>
+    <input id="mAlt" type="text" placeholder="e.g. Anuv Jain, last chorus" autocomplete="off">
+    <label for="mShow">Which show? (groups it in the filters)</label>
+    <input id="mShow" type="text" placeholder="e.g. Karan Aujla" autocomplete="off">
+    <div class="r"><button class="dg" id="mDel">Remove</button><button id="mCancel">Cancel</button><button class="ap" id="mApply">Apply</button></div>
+  </div>
+</div>
+
+<div class="modal" id="bulkModal" role="dialog" aria-modal="true" aria-label="Add many photos">
+  <div class="pane">
+    <h3>Add many photos</h3>
+    <p class="nt">In Drive: select photos → Share → “Anyone with the link” → Copy links. Paste below, one per line.</p>
+    <label for="bulkShow">File them under</label>
+    <input id="bulkShow" type="text" placeholder="e.g. Dubai Comedy Fest" autocomplete="off">
+    <label for="bulkLinks">Links (one per line)</label>
+    <textarea id="bulkLinks" rows="7" placeholder="https://drive.google.com/file/d/…/view"></textarea>
+    <div class="r"><button id="bulkCancel">Cancel</button><button class="ap" id="bulkApply">Add photos</button></div>
+  </div>
+</div>
+
+<div class="modal" id="driveModal" role="dialog" aria-modal="true" aria-label="Connect Google Drive">
+  <div class="pane">
+    <h3>Connect a Drive folder</h3>
+    <p class="nt">Load a whole folder at once. Needs a free Google API key: <strong>console.cloud.google.com</strong> → New project → APIs &amp; Services → Library → enable <strong>Google Drive API</strong> → Credentials → Create API key. The key only reads publicly-shared files. Your folder must be shared as “Anyone with the link”.</p>
+    <label for="dKey">Google API key</label>
+    <input id="dKey" type="text" placeholder="AIza…" autocomplete="off">
+    <label for="dFolder">Folder link</label>
+    <input id="dFolder" type="url" placeholder="https://drive.google.com/drive/folders/…" autocomplete="off">
+    <label for="dShow">File these under</label>
+    <input id="dShow" type="text" placeholder="e.g. Karan Aujla" autocomplete="off">
+    <label for="dMax">How many photos (best first)</label>
+    <input id="dMax" type="number" min="1" max="60" value="12">
+    <div class="r"><button id="dCancel">Cancel</button><button class="ap" id="dLoad">Load folder</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const body=document.body, root=document.documentElement;
+const fine=matchMedia('(pointer:fine)').matches;
+const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- your details (edit in the page, they save with it) ---------- */
+const WA='971500000000';           // WhatsApp number, digits only
+const MAIL='hello@khushiiwason.com';
+
+/* ---------- shows: the real work ---------- */
+const SHOWS=[
+  {t:"Karan Aujla — live in concert", v:"Etihad Arena · Abu Dhabi", c:"Concert"},
+  {t:"Himesh Reshammiya — arena night", v:"Coca-Cola Arena · Dubai", c:"Concert"},
+  {t:"Anuv Jain — baithak pop, live", v:"Dubai · 2 Feb", c:"Concert"},
+  {t:"Dubai Comedy Fest ’25", v:"Dubai · 2025", c:"Comedy"},
+  {t:"Harsh Gujral — stand-up special", v:"Dubai Opera", c:"Comedy"},
+  {t:"Abhishek Upmanyu — live", v:"Dubai · Jan 2026", c:"Comedy"},
+  {t:"Gaurav Kapoor — live at the opera", v:"Dubai Opera", c:"Comedy"},
+  {t:"DJ Buddha — behind the decks", v:"Dubai", c:"Festival"}
+];
+const CREDITS=["Karan Aujla","Himesh Reshammiya","Anuv Jain","Harsh Gujral","Abhishek Upmanyu","Gaurav Kapoor","DJ Buddha","Etihad Arena","Coca-Cola Arena","Dubai Opera","Dubai Comedy Fest","BackstageSiblings"];
+
+/* seed frames — swap each for your own in edit mode */
+const SEED=[
+  {show:"Karan Aujla", cap:"The beat drops", u:"https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=1200&auto=format&fit=crop"},
+  {show:"Himesh Reshammiya", cap:"Full house", u:"https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?q=80&w=1200&auto=format&fit=crop"},
+  {show:"Anuv Jain", cap:"Last chorus", u:"https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=1200&auto=format&fit=crop"},
+  {show:"Dubai Comedy Fest", cap:"Closing night", u:"https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=1200&auto=format&fit=crop"},
+  {show:"DJ Buddha", cap:"The drop", u:"https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200&auto=format&fit=crop"},
+  {show:"Harsh Gujral", cap:"Dubai Opera", u:"https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1200&auto=format&fit=crop"},
+  {show:"Karan Aujla", cap:"Crowd, hands up", u:"https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=1200&auto=format&fit=crop"},
+  {show:"Anuv Jain", cap:"Soundcheck", u:"https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=1200&auto=format&fit=crop"},
+  {show:"Gaurav Kapoor", cap:"Crowd work", u:"https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1200&auto=format&fit=crop"},
+  {show:"DJ Buddha", cap:"Red wash", u:"https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?q=80&w=1200&auto=format&fit=crop"},
+  {show:"Dubai Comedy Fest", cap:"Front row", u:"https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1200&auto=format&fit=crop"},
+  {show:"Himesh Reshammiya", cap:"Encore lights", u:"https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200&auto=format&fit=crop"}
+];
+
+let toastT; function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),3400);}
+
+/* ---------- theme ---------- */
+try{const s=localStorage.getItem('kw-theme'); if(s) root.setAttribute('data-theme',s);}catch(e){}
+$('#themeBtn').addEventListener('click',()=>{
+  const n=root.getAttribute('data-theme')==='dark'?'light':'dark';
+  root.setAttribute('data-theme',n);
+  $('meta[name="theme-color"]').setAttribute('content', n==='dark'?'#131318':'#FAF9FB');
+  try{localStorage.setItem('kw-theme',n);}catch(e){}
+});
+
+/* ---------- menu, scroll state, spotlight ---------- */
+$('#menuBtn').addEventListener('click',()=>body.classList.toggle('menu-open'));
+$$('#menuOverlay a').forEach(a=>a.addEventListener('click',()=>body.classList.remove('menu-open')));
+let sq=false;
+addEventListener('scroll',()=>{ if(sq)return; sq=true; requestAnimationFrame(()=>{sq=false;body.classList.toggle('scrolled',scrollY>40);}); },{passive:true});
+if(fine&&!calm){
+  let pq=false,px=0,py=0;
+  addEventListener('mousemove',e=>{px=e.clientX;py=e.clientY;if(pq)return;pq=true;
+    requestAnimationFrame(()=>{pq=false;body.style.setProperty('--mx',(px/innerWidth*100)+'%');body.style.setProperty('--my',(py/innerHeight*100)+'%');});
+  },{passive:true});
+}
+
+/* ---------- pastel placeholder ---------- */
+const PAL=[['#2A2A38','#3B3348'],['#332B36','#2A3440'],['#2E3040','#3A2F3B'],['#2B333C','#352E42']];
+function ph(i,w,h){
+  const [a,b]=PAL[i%PAL.length];
+  return 'data:image/svg+xml,'+encodeURIComponent(
+   `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="${w}" height="${h}" fill="url(#g)"/><circle cx="${w/2}" cy="${h*0.44}" r="${Math.min(w,h)*0.07}" fill="none" stroke="#FFC1CC" stroke-width="4" opacity=".5"/><text x="${w/2}" y="${h*0.58}" font-family="monospace" font-size="${Math.max(14,w*0.032)}" letter-spacing="5" text-anchor="middle" fill="#EFEDF2" opacity=".45">PHOTO COMING SOON</text></svg>`);
+}
+function guard(img,i,w,h){
+  img.addEventListener('error',()=>{ if(img.dataset.fb)return; img.dataset.fb='1'; img.src=ph(i||0,w||900,h||1100); });
+  if(!img.getAttribute('src')){ img.dataset.fb='1'; img.src=ph(i||0,w||900,h||1100); }
+}
+
+/* ---------- drive helper ---------- */
+function drive(url){
+  url=(url||'').trim();
+  if(!/drive\.google\.com|docs\.google\.com/.test(url)) return {url};
+  if(url.includes('/folders/')) return {folder:true};
+  const m=url.match(/\/d\/([-\w]{20,})/)||url.match(/[?&]id=([-\w]{20,})/);
+  return m?{url:'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1600'}:{url};
+}
+
+/* ---------- reveals ---------- */
+const rio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}}),{threshold:.1});
+function watch(el){rio.observe(el);}
+$$('.reveal').forEach(watch);
+
+/* ---------- credits ticker ---------- */
+(function(){
+  const one=CREDITS.map(c=>`<b>${c}</b><i>◦</i>`).join('');
+  $('#creditTrack').innerHTML=one+one;
+})();
+
+/* ---------- shows ---------- */
+const peek=$('#peek'); if(fine) guard(peek,0,700,900);
+function firstShotFor(name){
+  const f=frames.find(x=>x.show.toLowerCase()===name.toLowerCase().split('—')[0].trim().toLowerCase())
+      || frames.find(x=>name.toLowerCase().includes(x.show.toLowerCase()));
+  return f?f.el.querySelector('img').src:null;
+}
+function buildShows(){
+  const wrap=$('#setlist'); wrap.innerHTML='';
+  SHOWS.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='row reveal'; b.type='button';
+    b.innerHTML=`<img class="th" alt="" loading="lazy"><span class="no">${String(i+1).padStart(2,'0')}</span>`+
+      `<span class="ti" data-e>${s.t}</span><span class="ve" data-e>${s.v}</span><span class="ct">${s.c}</span>`;
+    const key=s.t.split('—')[0].trim();
+    b.addEventListener('click',()=>{ setFilter(key); $('#work').scrollIntoView({behavior:calm?'auto':'smooth'}); });
+    if(fine){
+      b.addEventListener('mouseenter',()=>{const u=firstShotFor(key); if(u){peek.src=u;peek.classList.add('on');}});
+      b.addEventListener('mouseleave',()=>peek.classList.remove('on'));
+      b.addEventListener('mousemove',e=>{peek.style.left=Math.min(e.clientX+24,innerWidth-250)+'px';peek.style.top=Math.max(Math.min(e.clientY-150,innerHeight-310),12)+'px';});
+    }
+    const th=b.querySelector('.th'); guard(th,i,300,300);
+    wrap.appendChild(b); watch(b);
+    setTimeout(()=>{const u=firstShotFor(key); if(u){delete th.dataset.fb; th.src=u;}},60);
+  });
+}
+
+/* ---------- gallery ---------- */
+let frames=[], filter='All';
+function makeCard(f,i){
+  const a=document.createElement('button');
+  a.className='card'; a.type='button'; a.dataset.show=f.show;
+  a.innerHTML=`<img alt="${(f.cap||'')+' — '+f.show}" loading="lazy"><span class="swap">✎ swap</span>`+
+    `<span class="meta"><span class="a" data-e>${f.cap||'Untitled'}</span><span class="b" data-e>${f.show}</span></span>`;
+  const img=a.querySelector('img');
+  guard(img,i,900,Math.round(900*(i%3===0?1.32:i%3===1?0.72:1)));
+  if(f.u){ const d=drive(f.u); if(!d.folder&&d.url){ delete img.dataset.fb; img.dataset.userSrc=f.u; img.src=d.url; } }
+  a.addEventListener('click',()=>{ if(body.classList.contains('editing')) return; openLB(img.src); });
+  return a;
+}
+function renderGrid(){
+  const g=$('#grid'); g.innerHTML='';
+  const list=frames.filter(f=>filter==='All'||f.show===filter);
+  list.forEach(f=>{ g.appendChild(f.el); requestAnimationFrame(()=>f.el.classList.add('in')); });
+  $('#gempty').hidden=list.length>0;
+}
+function buildFilters(){
+  const shows=['All',...new Set(frames.map(f=>f.show))];
+  const box=$('#filters'); box.innerHTML='';
+  shows.forEach(s=>{
+    const b=document.createElement('button');
+    b.className='chip'+(s===filter?' on':''); b.type='button'; b.textContent=s;
+    b.addEventListener('click',()=>setFilter(s));
+    box.appendChild(b);
+  });
+}
+function setFilter(s){
+  filter=frames.some(f=>f.show===s)?s:'All';
+  buildFilters(); renderGrid();
+  history.replaceState(null,'',filter==='All'?location.pathname:'#show='+encodeURIComponent(filter));
+}
+function addFrame(f,front){
+  const i=frames.length;
+  const item={...f, el:null}; item.el=makeCard(item,i);
+  front?frames.unshift(item):frames.push(item);
+  return item;
+}
+SEED.forEach(f=>addFrame(f));
+buildFilters(); renderGrid(); buildShows();
+
+/* hero + portrait */
+(function(){
+  const h=$('#heroImg'); guard(h,0,1100,1400);
+  delete h.dataset.fb; h.dataset.userSrc=SEED[0].u; h.src=SEED[0].u;
+  const p=$('#portraitImg'); guard(p,2,900,1150);
+  delete p.dataset.fb; p.src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=900&auto=format&fit=crop";
+})();
+
+/* deep link ?#show= */
+(function(){
+  const m=location.hash.match(/show=([^&]+)/);
+  if(m) setTimeout(()=>setFilter(decodeURIComponent(m[1])),120);
+})();
+
+/* ---------- counters ---------- */
+const cio=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return; cio.unobserve(e.target);
+  const el=e.target, to=+el.dataset.n, t0=performance.now();
+  (function tk(t){const p=Math.min((t-t0)/1500,1); el.textContent=Math.round(to*(1-Math.pow(2,-10*p))); if(p<1)requestAnimationFrame(tk); else el.textContent=to;})(t0);
+}),{threshold:.5});
+$$('[data-n]').forEach(el=>cio.observe(el));
+
+/* ---------- lightbox ---------- */
+const lb=$('#lb'), lbImg=$('#lbImg'), lbCap=$('#lbCap'), lbNum=$('#lbNum');
+let shots=[], li=0;
+function openLB(src){
+  shots=frames.filter(f=>filter==='All'||f.show===filter)
+    .map(f=>({src:f.el.querySelector('img').src, cap:(f.cap||'')+' · '+f.show}));
+  const i=shots.findIndex(s=>s.src===src); show(i<0?0:i);
+  lb.classList.add('open'); body.style.overflow='hidden'; $('#lbX').focus();
+}
+function show(i){ if(!shots.length)return; li=(i+shots.length)%shots.length; lbImg.src=shots[li].src; lbImg.alt=shots[li].cap; lbCap.textContent=shots[li].cap; lbNum.textContent=(li+1)+' / '+shots.length; }
+function closeLB(){ lb.classList.remove('open'); body.style.overflow=''; }
+$('#lbX').addEventListener('click',closeLB);
+$('#lbP').addEventListener('click',()=>show(li-1));
+$('#lbN').addEventListener('click',()=>show(li+1));
+lb.addEventListener('click',e=>{if(e.target===lb)closeLB();});
+addEventListener('keydown',e=>{
+  if(!lb.classList.contains('open'))return;
+  if(e.key==='Escape')closeLB(); if(e.key==='ArrowLeft')show(li-1); if(e.key==='ArrowRight')show(li+1);
+  if(e.key==='Tab'){e.preventDefault();$('#lbX').focus();}
+});
+let sx0=0,sy0=0;
+lb.addEventListener('touchstart',e=>{sx0=e.touches[0].clientX;sy0=e.touches[0].clientY;},{passive:true});
+lb.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-sx0, dy=e.changedTouches[0].clientY-sy0;
+  if(dy>90&&Math.abs(dx)<70)return closeLB();
+  if(dx<-50)show(li+1); if(dx>50)show(li-1);
+},{passive:true});
+guard(lbImg,0,1200,900);
+
+/* ---------- booking brief ---------- */
+function pick(id){ const el=$('#'+id+' .opt.on'); return el?el.dataset.v:''; }
+$$('.opts').forEach(g=>g.addEventListener('click',e=>{
+  const b=e.target.closest('.opt'); if(!b)return;
+  $$('.opt',g).forEach(o=>o.classList.remove('on')); b.classList.add('on'); brief();
+}));
+['bDate','bVenue','bName','bOrg'].forEach(id=>$('#'+id).addEventListener('input',brief));
+function briefText(){
+  const d=$('#bDate').value, ven=$('#bVenue').value.trim(), nm=$('#bName').value.trim(), org=$('#bOrg').value.trim();
+  const date=d?new Date(d+'T00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'date TBC';
+  return [
+    'Hi Khushii — I\'d like to book you.',
+    '',
+    'Type: '+pick('optType'),
+    'Date: '+date,
+    'Venue: '+(ven||'TBC'),
+    'Coverage: '+pick('optHours'),
+    'Priority: '+pick('optNeed'),
+    'From: '+(nm||'—')+(org?' ('+org+')':'')
+  ].join('\n');
+}
+function brief(){
+  const t=briefText();
+  $('#briefText').innerHTML=t.replace(/^(\w[\w ]*:)/gm,'<b>$1</b>');
+  $('#waSend').href='https://wa.me/'+WA+'?text='+encodeURIComponent(t);
+  $('#mailSend').href='mailto:'+MAIL+'?subject='+encodeURIComponent('Booking enquiry — '+pick('optType'))+'&body='+encodeURIComponent(t);
+}
+$('#waFooter').href='https://wa.me/'+WA;
+brief();
+
+/* ---------- dubai clock ---------- */
+function clock(){ $('#dxbClock').textContent=new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Dubai'}).format(new Date()); }
+clock(); setInterval(clock,30000);
+
+/* ================= EDIT MODE ================= */
+let cur=null;
+function editing(on){
+  body.classList.toggle('editing',on);
+  $$('[data-e]').forEach(el=>on?el.setAttribute('contenteditable','true'):el.removeAttribute('contenteditable'));
+  if(on) toast('Edit mode on — tap text to type, tap photos to swap');
+}
+$('#editToggle').addEventListener('click',()=>editing(!body.classList.contains('editing')));
+$('#exitEdit').addEventListener('click',()=>editing(false));
+document.addEventListener('click',e=>{
+  if(!body.classList.contains('editing'))return;
+  const a=e.target.closest('a'); if(a&&!a.closest('#editBar'))e.preventDefault();
+  const img=e.target.closest('.card img, .hero-figure img, .about .pf img');
+  if(img){ e.preventDefault(); e.stopPropagation(); openImg(img); }
+},true);
+
+const im=$('#imgModal');
+function openImg(img){
+  cur=img;
+  $('#mUrl').value=img.dataset.userSrc||(img.dataset.fb?'':img.src);
+  $('#mAlt').value=img.alt||'';
+  const card=img.closest('.card');
+  $('#mShow').value=card?card.dataset.show:'';
+  im.classList.add('open'); setTimeout(()=>$('#mUrl').focus(),60);
+}
+function closeImg(){ im.classList.remove('open'); cur=null; }
+$('#mCancel').addEventListener('click',closeImg);
+im.addEventListener('click',e=>{if(e.target===im)closeImg();});
+$('#mApply').addEventListener('click',()=>{
+  if(!cur)return closeImg();
+  const raw=$('#mUrl').value.trim();
+  if(!raw){toast('Paste a photo link first');return;}
+  const d=drive(raw);
+  if(d.folder){toast('That is a folder link — use ◎ Connect Drive instead');return;}
+  delete cur.dataset.fb; cur.dataset.userSrc=raw; cur.src=d.url; cur.alt=$('#mAlt').value.trim();
+  const card=cur.closest('.card'), sh=$('#mShow').value.trim();
+  if(card){
+    const f=frames.find(x=>x.el===card);
+    if(f){ f.u=raw; f.cap=$('#mAlt').value.trim()||f.cap; if(sh){f.show=sh;card.dataset.show=sh;} }
+    const mb=card.querySelector('.meta .b'); if(mb&&sh) mb.textContent=sh;
+    const ma=card.querySelector('.meta .a'); if(ma&&$('#mAlt').value.trim()) ma.textContent=$('#mAlt').value.trim();
+    buildFilters();
+  }
+  toast('Photo updated'); closeImg(); buildShows();
+});
+$('#mDel').addEventListener('click',()=>{
+  if(!cur)return closeImg();
+  const card=cur.closest('.card');
+  if(card){ frames=frames.filter(f=>f.el!==card); card.remove(); buildFilters(); renderGrid(); toast('Photo removed'); }
+  else toast('This one can only be swapped, not removed');
+  closeImg();
+});
+$('#addPhoto').addEventListener('click',()=>{
+  const f=addFrame({show:filter==='All'?'New show':filter,cap:'New frame',u:''},true);
+  renderGrid(); buildFilters();
+  f.el.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>openImg(f.el.querySelector('img')),420);
+});
+$('#addShow').addEventListener('click',()=>{
+  SHOWS.push({t:'New show — artist name',v:'Venue · date',c:'Concert'});
+  buildShows(); editing(true);
+  $('#setlist').lastElementChild.scrollIntoView({behavior:'smooth',block:'center'});
+  toast('Show added — tap its text to edit');
+});
+
+const bm=$('#bulkModal');
+$('#bulkAdd').addEventListener('click',()=>{bm.classList.add('open');setTimeout(()=>$('#bulkLinks').focus(),60);});
+$('#bulkCancel').addEventListener('click',()=>bm.classList.remove('open'));
+bm.addEventListener('click',e=>{if(e.target===bm)bm.classList.remove('open');});
+$('#bulkApply').addEventListener('click',()=>{
+  const show=$('#bulkShow').value.trim()||'New show';
+  const lines=$('#bulkLinks').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  let ok=0,skip=0;
+  lines.forEach(l=>{ const d=drive(l); if(d.folder||!d.url){skip++;return;} addFrame({show,cap:show,u:l}); ok++; });
+  bm.classList.remove('open'); $('#bulkLinks').value='';
+  buildFilters(); renderGrid(); buildShows();
+  toast(ok+' photo'+(ok===1?'':'s')+' added'+(skip?' · '+skip+' skipped (folder links need ◎ Connect Drive)':''));
+});
+
+/* ---------- connect a whole Drive folder ---------- */
+const dm=$('#driveModal');
+$('#driveBtn').addEventListener('click',()=>{
+  try{ $('#dKey').value=localStorage.getItem('kw-drivekey')||''; }catch(e){}
+  dm.classList.add('open'); setTimeout(()=>$('#dKey').focus(),60);
+});
+$('#dCancel').addEventListener('click',()=>dm.classList.remove('open'));
+dm.addEventListener('click',e=>{if(e.target===dm)dm.classList.remove('open');});
+$('#dLoad').addEventListener('click',async()=>{
+  const key=$('#dKey').value.trim(), link=$('#dFolder').value.trim();
+  const show=$('#dShow').value.trim()||'New show', max=Math.max(1,Math.min(60,+$('#dMax').value||12));
+  if(!key||!link){toast('Need both the API key and the folder link');return;}
+  const fm=link.match(/\/folders\/([-\w]{20,})/); if(!fm){toast('That does not look like a folder link');return;}
+  try{ localStorage.setItem('kw-drivekey',key); }catch(e){}
+  toast('Reading your folder…');
+  try{
+    const q=encodeURIComponent(`'${fm[1]}' in parents and mimeType contains 'image/' and trashed=false`);
+    const fields=encodeURIComponent('files(id,name,imageMediaMetadata(width,height,exposureTime,aperture,isoSpeed))');
+    const r=await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=${fields}&pageSize=1000&key=${key}`);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const files=(await r.json()).files||[];
+    if(!files.length){toast('No images found — is the folder shared with “Anyone with the link”?');return;}
+    /* rank: resolution, frozen action, wide aperture, and her own "final/edit/pick" filenames */
+    const scored=files.map(f=>{
+      const m=f.imageMediaMetadata||{}; let s=0;
+      if(m.width&&m.height) s+=Math.min(12,(m.width*m.height)/1e6);
+      if(m.exposureTime&&m.exposureTime<=1/500) s+=4;
+      if(m.aperture&&m.aperture<=2.8) s+=3;
+      if(m.isoSpeed&&m.isoSpeed>=6400) s-=2;
+      const n=(f.name||'').toLowerCase();
+      if(/final|edit|pick|sel|best|keeper/.test(n)) s+=15;
+      if(/copy|dup|test/.test(n)) s-=6;
+      return {f,s};
+    }).sort((a,b)=>b.s-a.s).slice(0,max);
+    scored.forEach(({f})=>addFrame({show,cap:f.name.replace(/\.[a-z0-9]+$/i,''),u:'https://drive.google.com/file/d/'+f.id+'/view'}));
+    dm.classList.remove('open');
+    buildFilters(); renderGrid(); buildShows();
+    toast(scored.length+' photos loaded from Drive — best frames first');
+  }catch(err){
+    toast('Drive said no: '+err.message+' — check the key and that the folder is public');
+  }
+});
+
+/* ---------- save ---------- */
+$('#saveSite').addEventListener('click',()=>{
+  const c=root.cloneNode(true);
+  c.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+  const cb=c.querySelector('body'); cb.classList.remove('editing','menu-open'); cb.style.overflow='';
+  c.querySelectorAll('.modal').forEach(m=>m.classList.remove('open'));
+  c.querySelector('#lb')?.classList.remove('open');
+  c.querySelector('#toast')?.classList.remove('on');
+  const blob=new Blob(['<!DOCTYPE html>\n'+c.outerHTML],{type:'text/html'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='khushii-wason.html'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  toast('Saved — that downloaded file is your updated site');
+});
+
+console.log('%cKhushii Wason','font-family:Georgia;font-style:italic;font-size:18px;color:#FFC1CC','\nPress ✎ to edit this site. Everything is one file.');
+})();
+</script>
+</body>
+</html>
