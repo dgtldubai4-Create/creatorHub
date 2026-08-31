@@ -24,7 +24,11 @@
     --input: 142 22% 84%;
     --ring: 145 65% 29%;
     --radius: 0.75rem;
-    --font-display: ui-serif;
+
+    /* Strong custom easings — built-in CSS easings are too weak. */
+    --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   }
 }
 
@@ -75,7 +79,56 @@
   }
 
   .card-lift {
-    @apply transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_20px_45px_-12px_rgba(17,67,39,0.25)];
+    transition:
+      transform 250ms var(--ease-out-strong),
+      box-shadow 250ms var(--ease-out-strong),
+      border-color 250ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .card-lift:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 45px -12px rgba(17, 67, 39, 0.25);
+    }
+  }
+
+  .press {
+    transition: transform 160ms var(--ease-out-strong);
+  }
+  .press:active {
+    transform: scale(0.97);
+  }
+
+  /* Tier ribbon shine for reward / tier cards */
+  .tier-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .tier-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.28) 50%, transparent 60%);
+    transform: translateX(-120%);
+    transition: transform 700ms var(--ease-out-strong);
+    pointer-events: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .tier-shine:hover::after {
+      transform: translateX(120%);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-lift:hover {
+    transform: none;
+  }
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
   }
 }
 

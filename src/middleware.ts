@@ -7,8 +7,13 @@ import type { Role } from "@/lib/constants";
 const ROLE_RULES: Array<{ prefix: string; roles: Role[] }> = [
   { prefix: "/queue", roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
   { prefix: "/creators", roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
+  { prefix: "/insights", roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
   { prefix: "/submit", roles: ["CREATOR"] },
   { prefix: "/me", roles: ["CREATOR"] },
+  { prefix: "/academy", roles: ["CREATOR"] },
+  { prefix: "/rewards", roles: ["CREATOR"] },
+  { prefix: "/earnings", roles: ["CREATOR"] },
+  { prefix: "/leaderboard", roles: ["CREATOR"] },
 ];
 
 export default withAuth(
@@ -24,7 +29,8 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      // "/" is public: it renders the DaburStars landing page when signed out.
+      authorized: ({ token, req }) => !!token || req.nextUrl.pathname === "/",
     },
     pages: { signIn: "/login" },
   },

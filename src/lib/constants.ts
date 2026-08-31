@@ -127,3 +127,5 @@ export const parseHandles = (raw: string): Handles => parseJson<Handles>(raw, {}
 export const parseTags = (raw: string): string[] => parseJson<string[]>(raw, []);
 export const parseKpis = (raw: string): Record<string, string> =>
   parseJson<Record<string, string>>(raw, {});
+export const parseStringList = (raw: string): string[] => parseJson<string[]>(raw, []);
+export const parseNumberList = (raw: string): number[] => parseJson<number[]>(raw, []);

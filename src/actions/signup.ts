@@ -3,6 +3,7 @@
 import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { signupSchema, type SignupInput } from "@/lib/validators";
+import { POINTS } from "@/lib/program";
 
 export type ActionResult =
   | { ok: true }
@@ -35,15 +36,33 @@ export async function signup(input: SignupInput): Promise<ActionResult> {
         collabType: data.collabType,
         status: "PROSPECT",
         tags: "[]",
+        points: POINTS.SIGNUP,
+        lifetimePoints: POINTS.SIGNUP,
       },
     });
-    await tx.user.create({
+    await tx.pointsEvent.create({
+      data: {
+        creatorId: creator.id,
+        type: "SIGNUP",
+        points: POINTS.SIGNUP,
+        note: "Welcome to DaburStars",
+      },
+    });
+    const user = await tx.user.create({
       data: {
         email,
         passwordHash,
         role: "CREATOR",
         name: data.name,
         creatorId: creator.id,
+      },
+    });
+    await tx.notification.create({
+      data: {
+        userId: user.id,
+        title: `Welcome to DaburStars 🌱 +${POINTS.SIGNUP} pts`,
+        body: "Your welcome points are banked. Start with the Playbook course in the Academy, then join your first launch.",
+        href: "/academy",
       },
     });
   });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Calendar, Gift, Loader2, Rocket, Target } from "lucide-react";
 import { requestToJoin, proposeBarter } from "@/actions/join-requests";
@@ -29,6 +30,7 @@ interface LaunchCardCampaign {
   endDate: string;
   status: string;
   kpis: string;
+  basePoints: number;
 }
 
 export function LaunchCard({
@@ -94,14 +96,27 @@ export function LaunchCard({
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/80">
               {BRAND_LABELS[brand] ?? campaign.brand}
             </p>
-            <h3 className="mt-1 text-lg font-bold leading-snug text-white">{campaign.name}</h3>
+            <Link href={`/launches/${campaign.id}`} className="hover:underline">
+              <h3 className="mt-1 text-lg font-bold leading-snug text-white">{campaign.name}</h3>
+            </Link>
           </div>
           <StatusBadge status={campaign.status} />
         </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-5">
-        <p className="text-sm leading-relaxed text-muted-foreground">{campaign.objective}</p>
+        <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{campaign.objective}</p>
+        <div className="flex items-center justify-between">
+          <Link
+            href={`/launches/${campaign.id}`}
+            className="text-sm font-semibold text-dabur-600 hover:underline"
+          >
+            Read the full brief →
+          </Link>
+          <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-800">
+            +{campaign.basePoints} pts / asset
+          </span>
+        </div>
 
         <div className="mt-auto space-y-2 text-sm">
           <p className="flex items-center gap-2 text-dabur-800">

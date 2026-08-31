@@ -1,9 +1,11 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Nav } from "@/components/nav";
+import { tierForPoints } from "@/lib/program";
+import { timeAgo } from "@/lib/utils";
 import type { ReactNode } from "react";
 
-/** Authenticated page chrome: role-aware nav + content container. */
+/** Authenticated page chrome: role-aware nav + notifications + tier chip. */
 export async function Shell({ children }: { children: ReactNode }) {
   const session = await auth();
   if (!session?.user) return <>{children}</>;
@@ -21,6 +23,31 @@ export async function Shell({ children }: { children: ReactNode }) {
     pendingCount = requests + assets;
   }
 
+  const [rawNotifications, creator] = await Promise.all([
+    prisma.notification.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    }),
+    session.user.creatorId
+      ? prisma.creator.findUnique({
+          where: { id: session.user.creatorId },
+          select: { points: true, lifetimePoints: true },
+        })
+      : Promise.resolve(null),
+  ]);
+
+  const notifications = rawNotifications.map((n) => ({
+    id: n.id,
+    title: n.title,
+    body: n.body,
+    href: n.href,
+    unread: n.readAt === null,
+    when: timeAgo(n.createdAt),
+  }));
+
+  const tier = creator ? tierForPoints(creator.lifetimePoints) : null;
+
   return (
     <div className="flex min-h-screen flex-col">
       <Nav
@@ -28,10 +55,13 @@ export async function Shell({ children }: { children: ReactNode }) {
         name={session.user.name ?? "User"}
         region={session.user.region}
         pendingCount={pendingCount}
+        notifications={notifications}
+        tier={tier ? { label: tier.label, emoji: tier.emoji, gradient: tier.gradient } : null}
+        points={creator?.points}
       />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6">{children}</main>
       <footer className="border-t bg-white/50 py-4 text-center text-xs text-muted-foreground">
-        Dabur Creator Hub · Middle East Digital Marketing · MVP
+        DaburStars · Dabur Creator Hub · Middle East
       </footer>
     </div>
   );

@@ -38,7 +38,8 @@ model User {
   creator   Creator? @relation(fields: [creatorId], references: [id])
   creatorId String?  @unique
 
-  decisions JoinRequest[] @relation("decidedBy")
+  decisions     JoinRequest[]  @relation("decidedBy")
+  notifications Notification[]
 
   @@index([role, region])
 }
@@ -56,14 +57,21 @@ model Creator {
   status          String   @default("PROSPECT") // PROSPECT | ACTIVE | PAUSED
   tags            String   @default("[]") // JSON: string[]
   avgScore        Float? // reserved — written by the future Grading module
+  points          Int      @default(0) // spendable balance (sum of ALL ledger events, redemptions negative)
+  lifetimePoints  Int      @default(0) // sum of positive events only — drives tier, never decreases
   createdAt       DateTime @default(now())
 
-  user         User?
-  joinRequests JoinRequest[]
-  assets       Asset[]
+  user           User?
+  joinRequests   JoinRequest[]
+  assets         Asset[]
+  pointsEvents   PointsEvent[]
+  redemptions    Redemption[]
+  courseProgress CourseProgress[]
+  earnings       Earning[]
 
   @@index([region, category])
   @@index([status, followerTier])
+  @@index([lifetimePoints])
 }
 
 model Campaign {
@@ -77,10 +85,19 @@ model Campaign {
   status         String   @default("PLANNING") // PLANNING | LIVE | CLOSED
   openToCreators Boolean  @default(false)
   kpis           String   @default("{}") // JSON: { metric: target }
-  createdAt      DateTime @default(now())
+  // ── Brief (creator-facing) ──
+  tagline            String?
+  deliverables       String    @default("[]") // JSON: [{ type, qty, notes }]
+  dos                String    @default("[]") // JSON: string[]
+  donts              String    @default("[]") // JSON: string[]
+  compensation       String? // human-readable comp summary, e.g. "AED 2,500–6,000 + product kit"
+  submissionDeadline DateTime?
+  basePoints         Int       @default(100) // points awarded per approved asset
+  createdAt          DateTime  @default(now())
 
   joinRequests JoinRequest[]
   assets       Asset[]
+  earnings     Earning[]
 
   @@index([status, openToCreators])
   @@index([region])
@@ -122,4 +139,116 @@ model Asset {
 
   @@index([status])
   @@index([creatorId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Program layer — points, tiers, rewards, academy, earnings, notifications.
+// Creator.points is the denormalized sum of PointsEvent.points (kept in the
+// same transaction whenever an event is written).
+// ─────────────────────────────────────────────────────────────────────────────
+
+model PointsEvent {
+  id        String   @id @default(cuid())
+  creatorId String
+  type      String // ASSET_APPROVED | ASSET_LIVE | JOIN_APPROVED | COURSE_COMPLETED | REDEMPTION | BONUS | SIGNUP
+  points    Int // negative for redemptions
+  note      String
+  createdAt DateTime @default(now())
+
+  creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@index([creatorId, createdAt])
+}
+
+model Reward {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  category    String // PRODUCT | EXPERIENCE | BOOST | VOUCHER
+  emoji       String
+  pointsCost  Int
+  minTier     String  @default("SPROUT") // SPROUT | TULSI | AMLA | KESAR
+  stock       Int     @default(10)
+  active      Boolean @default(true)
+
+  redemptions Redemption[]
+
+  @@index([active, pointsCost])
+}
+
+model Redemption {
+  id        String   @id @default(cuid())
+  creatorId String
+  rewardId  String
+  status    String   @default("REQUESTED") // REQUESTED | FULFILLED
+  createdAt DateTime @default(now())
+
+  creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  reward  Reward  @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+
+  @@index([creatorId, createdAt])
+}
+
+model Course {
+  id      String @id @default(cuid())
+  slug    String @unique
+  title   String
+  summary String
+  emoji   String
+  level   String // FOUNDATION | INTERMEDIATE | ADVANCED
+  minutes Int
+  points  Int
+  lessons String // JSON: [{ title, body }]
+  quiz    String // JSON: [{ question, options: string[], answer: number }]
+  order   Int    @default(0)
+
+  progress CourseProgress[]
+}
+
+model CourseProgress {
+  id               String    @id @default(cuid())
+  creatorId        String
+  courseId         String
+  completedLessons String    @default("[]") // JSON: number[] (lesson indexes)
+  quizScore        Int? // percentage 0-100, set on completion
+  completedAt      DateTime?
+  updatedAt        DateTime  @updatedAt
+
+  creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([creatorId, courseId])
+}
+
+model Earning {
+  id          String    @id @default(cuid())
+  creatorId   String
+  campaignId  String?
+  description String
+  type        String // PAID | BARTER
+  amount      Float // monetary value in `currency` (estimated retail value for barter)
+  currency    String    @default("AED")
+  status      String    @default("PENDING") // PENDING | APPROVED | PAID
+  createdAt   DateTime  @default(now())
+  paidAt      DateTime?
+
+  creator  Creator   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  campaign Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+
+  @@index([creatorId, createdAt])
+  @@index([status])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  title     String
+  body      String
+  href      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }

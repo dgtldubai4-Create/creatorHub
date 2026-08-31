@@ -91,6 +91,7 @@ export default async function LaunchesPage({
                   endDate: campaign.endDate.toISOString(),
                   status: campaign.status,
                   kpis: campaign.kpis,
+                  basePoints: campaign.basePoints,
                 }}
                 isCreator={session.user.role === "CREATOR"}
                 existingRequestStatus={requestByCampaign.get(campaign.id) ?? null}
