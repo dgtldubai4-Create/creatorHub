@@ -32,21 +32,23 @@ export default async function RewardsPage() {
       <FadeUp>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-display text-3xl font-bold text-dabur-900">
-              Rewards <span className="text-gradient-green">Store</span>
+            <h1 className="font-game text-3xl font-extrabold text-dabur-900">
+              The <span className="text-tang">Shop</span>
             </h1>
             <p className="mt-1 max-w-xl text-muted-foreground">
-              Spend points on product drops, boosts and experiences. Redeeming never lowers your
-              tier — that&apos;s lifetime points.
+              Spend miles on product drops, boosts and experiences. Spending never lowers your
+              class — that&apos;s lifetime miles.
             </p>
           </div>
-          <div className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white px-5 py-3 shadow-sm">
-            <Coins className="h-5 w-5 text-amber-600" />
+          <div className="flex items-center gap-3 rounded-2xl border-2 border-mango bg-gradient-to-br from-tang-soft to-card px-5 py-3 shadow-sm">
+            <Coins className="h-5 w-5 text-tang-deep" aria-hidden />
             <div>
-              <p className="text-xl font-bold leading-tight text-dabur-900">
-                {formatPoints(creator.points)} pts
+              <p className="font-game text-xl font-extrabold leading-tight text-dabur-900">
+                {formatPoints(creator.points)} MI
               </p>
-              <p className="text-xs text-muted-foreground">spendable balance</p>
+              <p className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
+                spendable balance
+              </p>
             </div>
             <TierBadge points={creator.lifetimePoints} size="md" className="ml-2" />
           </div>

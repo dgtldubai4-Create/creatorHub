@@ -64,12 +64,12 @@ export default async function QueuePage() {
     <Shell>
       <FadeUp>
         <div className="mb-8">
-          <h1 className="font-display text-3xl font-bold text-dabur-900">
-            Approval <span className="text-gradient-green">Queue</span>
+          <h1 className="font-game text-3xl font-extrabold text-dabur-900">
+            Control <span className="text-tang">Room</span>
           </h1>
           <p className="mt-1 text-muted-foreground">
-            Decisions pending for <strong>{scopeLabel}</strong>. Rejections always require a
-            reason — it&apos;s sent straight to the creator.
+            Casting and approvals for <strong>{scopeLabel}</strong>. Every stamp pays the creator
+            miles automatically; every return needs a craft note — it&apos;s sent straight to them.
           </p>
         </div>
       </FadeUp>
@@ -78,7 +78,7 @@ export default async function QueuePage() {
       <FadeUp delay={0.05}>
         <section className="glass-card mb-8 overflow-hidden">
           <div className="flex items-center justify-between border-b bg-dabur-50/50 px-6 py-4">
-            <h2 className="font-semibold text-dabur-900">Pending join requests</h2>
+            <h2 className="font-game font-bold text-dabur-900">Casting — creators asking in</h2>
             <Badge variant="warning">{pendingRequests.length} waiting</Badge>
           </div>
           {pendingRequests.length === 0 ? (
@@ -156,7 +156,7 @@ export default async function QueuePage() {
       <FadeUp delay={0.1}>
         <section className="glass-card mb-8 overflow-hidden">
           <div className="flex items-center justify-between border-b bg-sky-50/50 px-6 py-4">
-            <h2 className="font-semibold text-dabur-900">Assets awaiting review</h2>
+            <h2 className="font-game font-bold text-dabur-900">Approvals — content awaiting a stamp</h2>
             <Badge variant="info">{submittedAssets.length} to review</Badge>
           </div>
           {submittedAssets.length === 0 ? (
@@ -235,7 +235,7 @@ export default async function QueuePage() {
         <FadeUp delay={0.15}>
           <section className="glass-card overflow-hidden">
             <div className="flex items-center justify-between border-b bg-emerald-50/50 px-6 py-4">
-              <h2 className="font-semibold text-dabur-900">Approved — ready to go live</h2>
+              <h2 className="font-game font-bold text-dabur-900">Stamped — confirm they went live</h2>
               <Badge variant="success">{approvedAssets.length} approved</Badge>
             </div>
             <Table>

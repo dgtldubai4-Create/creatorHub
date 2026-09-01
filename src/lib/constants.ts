@@ -7,10 +7,19 @@ export type Role = (typeof ROLES)[number];
 export const REGIONS = ["UAE", "KSA", "KUWAIT", "QATAR", "OMAN", "BAHRAIN", "EGYPT"] as const;
 export type Region = (typeof REGIONS)[number];
 
-export const CATEGORIES = ["HAIR", "ORAL", "HEALTH_OTC", "SKIN"] as const;
+export const CATEGORIES = ["HAIR", "ORAL", "SKIN", "GROOMING", "KIDS_FAMILY"] as const;
 export type Category = (typeof CATEGORIES)[number];
 
-export const BRANDS = ["DABUR_AMLA", "VATIKA", "HAJMOLA", "DABUR_HERBL", "REAL"] as const;
+// The real Dabur Middle East portfolio (per brand team, Sep 2026).
+export const BRANDS = [
+  "VATIKA_NATURALS",
+  "DABUR_AMLA",
+  "AMLA_KIDS",
+  "VATIKA_MENZ",
+  "HERBOLENE",
+  "DABUR_MISWAK",
+  "DERMOVIVA",
+] as const;
 export type Brand = (typeof BRANDS)[number];
 
 export const PLATFORMS = ["INSTAGRAM", "TIKTOK", "YOUTUBE", "SNAPCHAT"] as const;
@@ -43,18 +52,42 @@ export type AssetStatus = (typeof ASSET_STATUSES)[number];
 // ── Display labels ───────────────────────────────────────────────────────────
 
 export const BRAND_LABELS: Record<Brand, string> = {
+  VATIKA_NATURALS: "Vatika Naturals",
   DABUR_AMLA: "Dabur Amla",
-  VATIKA: "Vatika",
-  HAJMOLA: "Hajmola",
-  DABUR_HERBL: "Dabur Herb'l",
-  REAL: "Real",
+  AMLA_KIDS: "Amla Kids",
+  VATIKA_MENZ: "Vatika Menz",
+  HERBOLENE: "Herbolene",
+  DABUR_MISWAK: "Dabur Miswak",
+  DERMOVIVA: "Dermoviva",
+};
+
+export const BRAND_TAGLINES: Record<Brand, string> = {
+  VATIKA_NATURALS: "Hair & body",
+  DABUR_AMLA: "Hair oils · est. 1940",
+  AMLA_KIDS: "Kids haircare",
+  VATIKA_MENZ: "Styling",
+  HERBOLENE: "Skin",
+  DABUR_MISWAK: "Oral care",
+  DERMOVIVA: "Skin & baby",
+};
+
+/** Which creator category each brand primarily casts from. */
+export const BRAND_CATEGORY: Record<Brand, Category> = {
+  VATIKA_NATURALS: "HAIR",
+  DABUR_AMLA: "HAIR",
+  AMLA_KIDS: "KIDS_FAMILY",
+  VATIKA_MENZ: "GROOMING",
+  HERBOLENE: "SKIN",
+  DABUR_MISWAK: "ORAL",
+  DERMOVIVA: "SKIN",
 };
 
 export const CATEGORY_LABELS: Record<Category, string> = {
   HAIR: "Hair",
-  ORAL: "Oral",
-  HEALTH_OTC: "Health / OTC",
+  ORAL: "Oral care",
   SKIN: "Skin",
+  GROOMING: "Men's grooming",
+  KIDS_FAMILY: "Kids & family",
 };
 
 export const REGION_LABELS: Record<Region, string> = {
@@ -104,12 +137,26 @@ export const ASSET_TYPE_LABELS: Record<AssetType, string> = {
   POST: "Post",
 };
 
+/** Brand banner gradients — tuned for the light Miles & Stamps system. */
 export const BRAND_GRADIENTS: Record<Brand, string> = {
-  DABUR_AMLA: "from-emerald-600 via-emerald-700 to-teal-800",
-  VATIKA: "from-lime-600 via-emerald-700 to-emerald-900",
-  HAJMOLA: "from-amber-500 via-orange-600 to-red-700",
-  DABUR_HERBL: "from-teal-600 via-emerald-700 to-green-900",
-  REAL: "from-orange-500 via-red-500 to-rose-700",
+  VATIKA_NATURALS: "from-emerald-600 to-teal-700",
+  DABUR_AMLA: "from-green-700 to-emerald-900",
+  AMLA_KIDS: "from-pink-500 to-rose-600",
+  VATIKA_MENZ: "from-slate-700 to-zinc-900",
+  HERBOLENE: "from-lime-600 to-green-700",
+  DABUR_MISWAK: "from-amber-600 to-yellow-800",
+  DERMOVIVA: "from-sky-500 to-cyan-700",
+};
+
+/** Soft chip tones per brand (bg + text), for the light system. */
+export const BRAND_TONES: Record<Brand, string> = {
+  VATIKA_NATURALS: "bg-emerald-100 text-emerald-800",
+  DABUR_AMLA: "bg-green-100 text-green-900",
+  AMLA_KIDS: "bg-pink-100 text-pink-800",
+  VATIKA_MENZ: "bg-slate-200 text-slate-800",
+  HERBOLENE: "bg-lime-100 text-lime-800",
+  DABUR_MISWAK: "bg-amber-100 text-amber-800",
+  DERMOVIVA: "bg-sky-100 text-sky-800",
 };
 
 // ── JSON field helpers (SQLite stores JSON as strings) ──────────────────────

@@ -1,11 +1,12 @@
 # DaburStars · Dabur Creator Hub 🌿
 
-The creator program platform for Dabur's Middle East marketing team — built to go
-head-to-head with the big beauty-house creator programs. Creators join launches, learn,
-earn points and climb a tier ladder; marketers run approvals and read the program's pulse.
+The **Miles & Stamps** creator program platform for Dabur's Middle East marketing team,
+covering the real portfolio: Vatika Naturals, Dabur Amla, Amla Kids, Vatika Menz,
+Herbolene, Dabur Miswak and Dermoviva. Creators earn stamps and miles on real campaigns;
+guests play side quests before they even register; the brand runs it all from a Control Room.
 
 **The program loop:** join a launch → learn in the Academy → create & get approved → earn
-points and money → climb Sprout 🌱 → Tulsi 🌿 → Amla ✨ → Kesar 👑.
+points and money → climb Scout 🧭 → Voyager 🌿 → Envoy ✨ → Ambassador 🏆.
 
 ## What's inside
 
@@ -35,11 +36,12 @@ points and money → climb Sprout 🌱 → Tulsi 🌿 → Amla ✨ → Kesar �
   creator bench by region, top creators, campaign table
 - **Creator directory** — searchable, with program tiers
 
-## The points economy
+## The miles economy
 
-| Event | Points |
+| Event | Miles |
 | --- | --- |
 | Signing up | +50 |
+| Guest side quests (escrow, banked at signup) | up to +325 (server-capped) |
 | Accepted into a launch | +40 |
 | Asset approved | +campaign `basePoints` (80–120 seeded) |
 | Asset goes live | +50 |
@@ -53,7 +55,7 @@ Both are updated in the same transaction as their ledger event.
 ## Tech stack
 
 Next.js 14 (App Router) · TypeScript · Tailwind CSS + shadcn-style components ·
-framer-motion (custom easing system per design review) · Fraunces + Inter via `next/font` ·
+framer-motion (custom easing system per design review) · Spectral + Baloo 2 + IBM Plex Mono + Special Elite via `next/font` ·
 Prisma (SQLite locally, Postgres-ready) · NextAuth credentials + JWT with role-based
 middleware · Zod + React Hook Form.
 
@@ -74,8 +76,8 @@ Password for all accounts: **`dabur2026`**
 
 | Role       | Email                        | What you'll see                                          |
 | ---------- | ---------------------------- | -------------------------------------------------------- |
-| CREATOR    | `layla@creators.example`     | Amla tier, rich ledger, earnings, a rejection to fix     |
-| CREATOR    | `noora@creators.example`     | Fresh Sprout account — the day-one experience            |
+| CREATOR    | `layla@creators.example`     | Envoy class, rich ledger, earnings, a rejection to fix     |
+| CREATOR    | `noora@creators.example`     | Fresh Scout account — the day-one experience            |
 | MARKETER   | `marketer.uae@dabur.example` | Queue + insights scoped to **UAE**                       |
 | BRAND_LEAD | `brandlead@dabur.example`    | Everything across all seven regions                      |
 | ADMIN      | `admin@dabur.example`        | Everything                                               |
@@ -86,6 +88,7 @@ Password for all accounts: **`dabur2026`**
 | ----------------- | ----------------------------- | ------------------------------------------- |
 | `/`               | Public / all roles            | Landing (signed out) · role dashboard (in)  |
 | `/signup`         | Public                        | Creator self-signup (+50 welcome points)    |
+| `/challenge`      | Public                        | Flagship public challenge — entry creates the account |
 | `/login`          | Public                        | Credentials sign-in with demo quick-fill    |
 | `/launches`       | All roles                     | Open launches board with filters            |
 | `/launches/[id]`  | All roles                     | Full campaign brief                         |
@@ -121,7 +124,7 @@ SQLite is for local dev only — serverless filesystems are ephemeral.
 prisma/schema.prisma    # core + program layer (points, rewards, courses, earnings)
 prisma/seed.ts          # demo data: ledgers, courses, rewards, earnings, notifications
 src/lib/program.ts      # tier ladder, point values, tier math — single source of truth
-src/middleware.ts       # role-based route protection ("/" public for the landing)
+src/middleware.ts       # role-based route protection ("/" and "/challenge" public)
 src/lib/                # auth config, prisma client, zod validators, enum constants
 src/actions/            # all mutations (server actions, zod-validated, role-checked)
 src/app/                # App Router pages

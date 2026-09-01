@@ -29,8 +29,12 @@ export default withAuth(
   },
   {
     callbacks: {
-      // "/" is public: it renders the DaburStars landing page when signed out.
-      authorized: ({ token, req }) => !!token || req.nextUrl.pathname === "/",
+      // Public routes: the landing page and the flagship challenge
+      // (entry doubles as registration).
+      authorized: ({ token, req }) =>
+        !!token ||
+        req.nextUrl.pathname === "/" ||
+        req.nextUrl.pathname.startsWith("/challenge"),
     },
     pages: { signIn: "/login" },
   },

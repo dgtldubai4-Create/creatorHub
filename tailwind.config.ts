@@ -55,6 +55,15 @@ const config: Config = {
         amber: {
           warm: "#f5a623",
         },
+        // ── Miles & Stamps palette ──
+        paper: "#f7f1e3",
+        cream: "#f4ecd8",
+        inkbrown: "#241f14",
+        tang: { DEFAULT: "#ff7a1a", soft: "#ffe9d2", deep: "#c25404" },
+        mango: "#ffb648",
+        sunny: "#ffc531",
+        tealpop: { DEFAULT: "#16a08c", soft: "#d9f2ee" },
+        stampred: { DEFAULT: "#b3392f", soft: "#fde3de" },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -62,8 +71,11 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "-apple-system", "sans-serif"],
-        display: ["var(--font-display)", "Georgia", "serif"],
+        sans: ["var(--font-serif)", "Iowan Old Style", "Georgia", "serif"],
+        display: ["var(--font-serif)", "Georgia", "serif"],
+        game: ["var(--font-game)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+        stamp: ["var(--font-stamp)", "cursive"],
       },
       transitionTimingFunction: {
         "out-strong": "cubic-bezier(0.23, 1, 0.32, 1)",

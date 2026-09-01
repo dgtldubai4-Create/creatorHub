@@ -4,7 +4,7 @@ import { Shell } from "@/components/shell";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion";
 import { LaunchCard } from "@/components/launch-card";
 import { LaunchFilters } from "@/components/launch-filters";
-import { CATEGORIES, REGIONS, type Category, type Region } from "@/lib/constants";
+import { BRAND_CATEGORY, CATEGORIES, REGIONS, type Category, type Region } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -29,15 +29,8 @@ export default async function LaunchesPage({
   });
 
   // Category filter matches campaigns to the creator category their brand serves.
-  const BRAND_CATEGORY: Record<string, Category> = {
-    DABUR_AMLA: "HAIR",
-    VATIKA: "HAIR",
-    HAJMOLA: "HEALTH_OTC",
-    DABUR_HERBL: "ORAL",
-    REAL: "HEALTH_OTC",
-  };
   const filtered = category
-    ? campaigns.filter((c) => BRAND_CATEGORY[c.brand] === category)
+    ? campaigns.filter((c) => BRAND_CATEGORY[c.brand as keyof typeof BRAND_CATEGORY] === category)
     : campaigns;
 
   // The creator's existing requests, to disable duplicate asks.

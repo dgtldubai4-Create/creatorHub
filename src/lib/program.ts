@@ -1,59 +1,57 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// DaburStars program logic — tiers, point values, level math.
-// Tier is always derived from lifetime points (never stored) so ledger and
-// tier can't drift apart.
+// DaburStars "Miles & Stamps" program logic.
+// EARN (stamps + miles) → LEVEL (four classes, lifetime miles, never drops)
+// → SPEND (shop; balance only). Tier is always derived from lifetimePoints.
+// DB columns keep the neutral names points/lifetimePoints; "miles" is display
+// language only.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const PROGRAM_NAME = "DaburStars";
 
 export const PROGRAM_TIERS = [
   {
-    key: "SPROUT",
-    label: "Sprout",
-    emoji: "🌱",
+    key: "SCOUT",
+    label: "Scout",
+    emoji: "🧭",
     min: 0,
-    blurb: "Every star starts as a seed. Join launches, learn the craft, earn your first points.",
-    perks: ["Access to open launches", "Creator Academy", "Barter collabs", "Points on every approval"],
-    gradient: "from-emerald-400 to-teal-600",
-    ring: "ring-emerald-400/40",
+    blurb: "Day one. Play quests, take your first brief, earn your first stamp.",
+    perks: ["Open campaigns", "Side quests", "The Academy", "Miles on every approval"],
+    gradient: "from-emerald-500 to-teal-600",
     text: "text-emerald-700",
     soft: "bg-emerald-50 border-emerald-200",
   },
   {
-    key: "TULSI",
-    label: "Tulsi",
+    key: "VOYAGER",
+    label: "Voyager",
     emoji: "🌿",
     min: 500,
-    blurb: "A trusted regular. Priority review and seasonal product drops land on your doorstep.",
-    perks: ["48h priority review", "Seasonal product drops", "Rewards store access", "Tulsi badge on profile"],
+    blurb: "A trusted regular — product drops find your doorstep first.",
+    perks: ["48h priority review", "Seasonal product drops", "Full shop access", "Voyager badge"],
     gradient: "from-dabur-500 to-dabur-700",
-    ring: "ring-dabur-500/40",
     text: "text-dabur-700",
     soft: "bg-dabur-50 border-dabur-200",
   },
   {
-    key: "AMLA",
-    label: "Amla",
+    key: "ENVOY",
+    label: "Envoy",
     emoji: "✨",
     min: 1500,
-    blurb: "A headline creator. Paid-first briefs, campaign co-creation and amplified reach.",
-    perks: ["Paid-first briefs", "Paid media amplification", "Campaign co-creation calls", "Early brief access"],
-    gradient: "from-amber-400 to-orange-600",
-    ring: "ring-amber-400/50",
-    text: "text-amber-700",
-    soft: "bg-amber-50 border-amber-200",
+    blurb: "A headline creator — paid-first briefs and amplified reach.",
+    perks: ["Paid-first briefs", "Paid media boosts", "Co-creation calls", "Early brief access"],
+    gradient: "from-mango to-tang",
+    text: "text-tang-deep",
+    soft: "bg-tang-soft border-mango",
   },
   {
-    key: "KESAR",
-    label: "Kesar",
-    emoji: "👑",
+    key: "AMBASSADOR",
+    label: "Ambassador",
+    emoji: "🏆",
     min: 4000,
-    blurb: "The saffron circle. Annual ambassador contracts, shoots, and a seat at the table.",
+    blurb: "The endgame is real: a contract, shoots, and a seat at the table.",
     perks: ["Ambassador contract track", "Brand shoot invitations", "Dubai creator summit", "Dedicated manager"],
-    gradient: "from-rose-500 via-red-500 to-amber-500",
-    ring: "ring-rose-400/50",
-    text: "text-rose-700",
-    soft: "bg-rose-50 border-rose-200",
+    gradient: "from-tang to-stampred",
+    text: "text-stampred",
+    soft: "bg-stampred-soft border-stampred",
   },
 ] as const;
 
@@ -90,16 +88,18 @@ export function tierRank(key: string): number {
   return idx === -1 ? 0 : idx;
 }
 
-// ── Point values ─────────────────────────────────────────────────────────────
+// ── Mile values ──────────────────────────────────────────────────────────────
 
 export const POINTS = {
   SIGNUP: 50,
   JOIN_APPROVED: 40,
   ASSET_LIVE_BONUS: 50, // on top of the campaign's basePoints at approval
+  SIDE_QUEST_CAP: 325, // hard server-side cap on escrowed guest-quest miles
 } as const;
 
 export const POINTS_EVENT_TYPES = [
   "SIGNUP",
+  "SIDE_QUEST",
   "JOIN_APPROVED",
   "ASSET_APPROVED",
   "ASSET_LIVE",
@@ -111,15 +111,16 @@ export type PointsEventType = (typeof POINTS_EVENT_TYPES)[number];
 
 export const POINTS_EVENT_LABELS: Record<PointsEventType, string> = {
   SIGNUP: "Joined DaburStars",
-  JOIN_APPROVED: "Accepted into a launch",
-  ASSET_APPROVED: "Content approved",
+  SIDE_QUEST: "Side quest cleared",
+  JOIN_APPROVED: "Cast in a campaign",
+  ASSET_APPROVED: "Stamped — content approved",
   ASSET_LIVE: "Content went live",
   COURSE_COMPLETED: "Academy course completed",
-  REDEMPTION: "Reward redeemed",
+  REDEMPTION: "Shop redemption",
   BONUS: "Bonus",
 };
 
-// ── Rewards / courses / earnings enums ───────────────────────────────────────
+// ── Shop / courses / earnings enums ─────────────────────────────────────────
 
 export const REWARD_CATEGORIES = ["PRODUCT", "EXPERIENCE", "BOOST", "VOUCHER"] as const;
 export type RewardCategory = (typeof REWARD_CATEGORIES)[number];
@@ -150,6 +151,9 @@ export type Deliverable = { type: string; qty: number; notes?: string };
 export type Lesson = { title: string; body: string };
 export type QuizQuestion = { question: string; options: string[]; answer: number };
 
-export function formatPoints(points: number): string {
+/** Display formatting for miles. */
+export function formatMiles(points: number): string {
   return points.toLocaleString("en-US");
 }
+// Back-compat alias used by earlier pages.
+export const formatPoints = formatMiles;

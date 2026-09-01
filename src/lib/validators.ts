@@ -20,8 +20,29 @@ export const signupSchema = z.object({
   region: z.enum(REGIONS),
   category: z.enum(CATEGORIES),
   collabType: z.enum(COLLAB_TYPES),
+  // Guest side-quest miles held in escrow; server re-caps regardless of input.
+  escrowMiles: z.number().int().min(0).max(1000).optional(),
 });
 export type SignupInput = z.infer<typeof signupSchema>;
+
+// Public challenge entry: registration + first submission in one move.
+export const challengeEntrySchema = z.object({
+  campaignId: z.string().cuid(),
+  name: z.string().min(2, "Name must be at least 2 characters").max(80),
+  email: z.string().email("Enter a valid email"),
+  password: z.string().min(8, "Password must be at least 8 characters").max(100),
+  handle: z
+    .string()
+    .min(2, "Handle is required")
+    .max(60)
+    .transform((h) => (h.startsWith("@") ? h : `@${h}`)),
+  primaryPlatform: z.enum(PLATFORMS),
+  region: z.enum(REGIONS),
+  entryUrl: z.string().url("Link your entry post (e.g. the Reel URL)"),
+  caption: z.string().min(3, "Tell us about your entry").max(2200),
+  escrowMiles: z.number().int().min(0).max(1000).optional(),
+});
+export type ChallengeEntryInput = z.infer<typeof challengeEntrySchema>;
 
 export const joinRequestSchema = z.object({
   campaignId: z.string().cuid(),

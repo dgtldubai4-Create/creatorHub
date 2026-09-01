@@ -31,6 +31,7 @@ import {
   type Region,
 } from "@/lib/constants";
 import { formatPoints, type Deliverable } from "@/lib/program";
+import { ProductImage } from "@/components/product-image";
 import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -86,6 +87,9 @@ export default async function LaunchBriefPage({ params }: { params: { id: string
           className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${gradient} px-6 py-10 text-white shadow-xl sm:px-10`}
         >
           <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_80%_20%,white,transparent_50%)]" />
+          <div aria-hidden className="absolute right-10 top-1/2 hidden -translate-y-1/2 drop-shadow-2xl lg:block">
+            <ProductImage brand={brand} height={150} />
+          </div>
           <div className="relative">
             <div className="flex flex-wrap items-center gap-3">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/80">
@@ -121,7 +125,7 @@ export default async function LaunchBriefPage({ params }: { params: { id: string
               )}
               <span className="flex items-center gap-1.5">
                 <Coins className="h-4 w-4" />
-                {formatPoints(campaign.basePoints)} pts per approved asset
+                {formatPoints(campaign.basePoints)} MI per stamped post
               </span>
             </div>
             {isCreator && campaign.openToCreators && (
@@ -243,15 +247,15 @@ export default async function LaunchBriefPage({ params }: { params: { id: string
               <div className="mt-4 space-y-2 border-t border-amber-200/70 pt-4 text-sm">
                 <p className="flex items-center justify-between">
                   <span className="text-muted-foreground">Per approved asset</span>
-                  <strong className="text-dabur-800">+{formatPoints(campaign.basePoints)} pts</strong>
+                  <strong className="text-dabur-800">+{formatPoints(campaign.basePoints)} MI</strong>
                 </p>
                 <p className="flex items-center justify-between">
                   <span className="text-muted-foreground">When it goes live</span>
-                  <strong className="text-dabur-800">+50 pts</strong>
+                  <strong className="text-dabur-800">+50 MI</strong>
                 </p>
                 <p className="flex items-center justify-between">
                   <span className="text-muted-foreground">Joining the launch</span>
-                  <strong className="text-dabur-800">+40 pts</strong>
+                  <strong className="text-dabur-800">+40 MI</strong>
                 </p>
               </div>
             </section>
@@ -263,7 +267,7 @@ export default async function LaunchBriefPage({ params }: { params: { id: string
               <ol className="space-y-3">
                 {[
                   "Submit against the deliverables above",
-                  "Regional team reviews — Tulsi tier and up within 48h",
+                  "Regional team reviews — Voyager class and up within 48h",
                   "Approved: points land instantly. Rejected: you get a written reason and resubmit",
                   "Post it, we verify, live bonus lands",
                 ].map((step, i) => (

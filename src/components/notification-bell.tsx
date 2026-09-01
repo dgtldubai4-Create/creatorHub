@@ -48,13 +48,13 @@ export function NotificationBell({ items }: { items: NotificationItem[] }) {
     <div ref={wrapRef} className="relative">
       <button
         onClick={toggle}
-        className="press relative rounded-lg p-2 text-dabur-200 transition-colors hover:bg-white/10 hover:text-white"
+        className="press relative rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-dabur-800"
         title="Notifications"
         aria-label={unread > 0 ? `Notifications, ${unread} unread` : "Notifications"}
       >
         <Bell className="h-4 w-4" />
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-amber-400 px-1 text-[10px] font-bold text-amber-950 ring-2 ring-dabur-900">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-tang px-1 font-game text-[10px] font-bold text-white ring-2 ring-card">
             {unread}
           </span>
         )}
@@ -68,7 +68,7 @@ export function NotificationBell({ items }: { items: NotificationItem[] }) {
             exit={{ opacity: 0, scale: 0.97, y: -2, transition: { duration: 0.12 } }}
             transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
             style={{ transformOrigin: "top right" }}
-            className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-dabur-100 bg-white shadow-[0_20px_50px_-12px_rgba(8,37,21,0.3)]"
+            className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_50px_-12px_rgba(36,31,20,0.3)]"
           >
             <div className="border-b border-dabur-100 px-4 py-3">
               <p className="text-sm font-semibold text-dabur-900">Notifications</p>

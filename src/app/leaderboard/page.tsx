@@ -55,7 +55,7 @@ export default async function LeaderboardPage() {
             The <span className="text-gradient-green">Stars</span> Board
           </h1>
           <p className="mx-auto mt-1 max-w-xl text-muted-foreground">
-            Lifetime points across the program.{" "}
+            Lifetime miles across the program.{" "}
             {myRank >= 0 ? `You're #${myRank + 1} of the top ${creators.length}.` : "Climb into the top 25 to appear here."}
           </p>
         </div>
@@ -91,7 +91,7 @@ export default async function LeaderboardPage() {
               <p className="mt-3 text-2xl font-bold tabular-nums text-dabur-800">
                 {formatPoints(c.lifetimePoints)}
               </p>
-              <p className="text-xs text-muted-foreground">lifetime pts</p>
+              <p className="text-xs text-muted-foreground">lifetime MI</p>
               {(monthlyByCreator.get(c.id) ?? 0) > 0 && (
                 <p className="mt-2 flex items-center gap-1 text-xs font-semibold text-orange-600">
                   <Flame className="h-3.5 w-3.5" /> +{formatPoints(monthlyByCreator.get(c.id)!)} this month

@@ -152,14 +152,14 @@ export function CoursePlayer({
         {!allLessonsDone ? (
           <p className="text-sm text-muted-foreground">
             Finish the lessons above to unlock the quiz — passing banks{" "}
-            <strong className="text-amber-700">+{points} points</strong>.
+            <strong className="text-amber-700">+{points} miles</strong>.
           </p>
         ) : (
           <>
             <p className="text-sm text-muted-foreground">
               {completed
-                ? "You've already banked the points — retake it any time to beat your score."
-                : `Pass (2 of ${quiz.length} or better) to bank +${points} points.`}
+                ? "You've already banked the miles — retake it any time to beat your score."
+                : `Pass (2 of ${quiz.length} or better) to bank +${points} miles.`}
             </p>
 
             <div className="mt-5 space-y-6">
@@ -239,7 +239,7 @@ export function CoursePlayer({
                     <p className="font-semibold">
                       {result.passed
                         ? result.pointsAwarded && result.pointsAwarded > 0
-                          ? `Passed with ${result.score}% — +${result.pointsAwarded} points banked!`
+                          ? `Passed with ${result.score}% — +${result.pointsAwarded} miles banked!`
                           : `Passed with ${result.score}%.`
                         : `${result.score}% — not quite. Review the highlighted answers and try again.`}
                     </p>

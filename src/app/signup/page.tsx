@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -31,9 +31,12 @@ export default function SignupPage() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
+  const [escrow, setEscrow] = useState(0);
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
@@ -42,8 +45,25 @@ export default function SignupPage() {
       region: "UAE",
       category: "HAIR",
       collabType: "BOTH",
+      escrowMiles: 0,
     },
   });
+
+  // Guest side-quest miles held in escrow (see landing quests). The server
+  // re-validates and caps this — it's a claim, not a trusted value.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("ds_escrow");
+      if (!raw) return;
+      const miles = Math.max(0, Math.floor(JSON.parse(raw)?.miles ?? 0));
+      if (miles > 0) {
+        setEscrow(miles);
+        setValue("escrowMiles", miles);
+      }
+    } catch {
+      /* corrupted escrow is simply ignored */
+    }
+  }, [setValue]);
 
   async function onSubmit(data: SignupInput) {
     setServerError(null);
@@ -51,6 +71,11 @@ export default function SignupPage() {
     if (!result.ok) {
       setServerError(result.error);
       return;
+    }
+    try {
+      localStorage.removeItem("ds_escrow");
+    } catch {
+      /* ignore */
     }
     setDone(true);
     // Log the fresh creator straight in.
@@ -100,6 +125,16 @@ export default function SignupPage() {
                 </p>
               </div>
             </div>
+
+            {escrow > 0 && (
+              <div className="mb-5 flex items-center gap-3 rounded-xl border-2 border-dashed border-amber-300/60 bg-amber-400/15 px-4 py-3">
+                <span aria-hidden className="text-xl">🎟️</span>
+                <p className="text-sm text-amber-100">
+                  <strong className="font-game">{escrow} miles</strong> from your side quests are in
+                  escrow — creating this account banks them on top of your 50 welcome miles.
+                </p>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">

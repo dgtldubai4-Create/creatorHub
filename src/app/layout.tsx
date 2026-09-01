@@ -1,27 +1,49 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Baloo_2, IBM_Plex_Mono, Special_Elite, Spectral } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const fraunces = Fraunces({
+const spectral = Spectral({
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-serif",
+  display: "swap",
+});
+const baloo = Baloo_2({
+  weight: ["600", "700", "800"],
+  subsets: ["latin"],
+  variable: "--font-game",
+  display: "swap",
+});
+const plexMono = IBM_Plex_Mono({
+  weight: ["500", "600"],
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
+const specialElite = Special_Elite({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-stamp",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "DaburStars · Dabur Creator Hub",
+    default: "DaburStars · Creator Hub",
     template: "%s · DaburStars",
   },
   description:
-    "DaburStars — the Middle East creator program by Dabur. Tiered rewards, paid launches, a creator academy and a marketer cockpit in one hub.",
+    "DaburStars — Dabur's Middle East creator program. Earn miles and stamps on real campaigns, level from Scout to Ambassador, spend in the shop.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
+    <html
+      lang="en"
+      className={`${spectral.variable} ${baloo.variable} ${plexMono.variable} ${specialElite.variable}`}
+    >
       <body className="min-h-screen font-sans">
         <Providers>{children}</Providers>
       </body>

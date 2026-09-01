@@ -4,26 +4,27 @@
 
 @layer base {
   :root {
-    --background: 140 30% 98%;
-    --foreground: 152 45% 10%;
+    /* Miles & Stamps — light paper system */
+    --background: 42 56% 93%; /* #f7f1e3 paper */
+    --foreground: 41 29% 11%; /* #241f14 ink */
     --card: 0 0% 100%;
-    --card-foreground: 152 45% 10%;
+    --card-foreground: 41 29% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 152 45% 10%;
-    --primary: 145 65% 29%;
+    --popover-foreground: 41 29% 11%;
+    --primary: 151 71% 32%; /* #178a52 stamp green */
     --primary-foreground: 140 40% 98%;
-    --secondary: 140 25% 94%;
-    --secondary-foreground: 152 45% 14%;
-    --muted: 140 20% 94%;
-    --muted-foreground: 150 12% 40%;
-    --accent: 38 92% 55%;
-    --accent-foreground: 30 60% 12%;
-    --destructive: 0 72% 45%;
+    --secondary: 43 56% 90%; /* cream */
+    --secondary-foreground: 41 29% 14%;
+    --muted: 43 45% 89%;
+    --muted-foreground: 43 14% 42%;
+    --accent: 25 100% 55%; /* #ff7a1a tang orange */
+    --accent-foreground: 26 100% 15%;
+    --destructive: 4 58% 44%; /* stamp red */
     --destructive-foreground: 0 0% 98%;
-    --border: 142 22% 88%;
-    --input: 142 22% 84%;
-    --ring: 145 65% 29%;
-    --radius: 0.75rem;
+    --border: 43 41% 83%; /* #e6dcc2 */
+    --input: 43 35% 78%;
+    --ring: 151 71% 32%;
+    --radius: 0.9rem;
 
     /* Strong custom easings — built-in CSS easings are too weak. */
     --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
@@ -38,44 +39,33 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: "ss01", "cv01";
   }
 }
 
 @layer utilities {
-  /* Deep-green hero surface with drifting radial glows */
+  /* Deep-green accent surface (auth pages, dark panels like the leaderboard). */
   .hero-surface {
     background:
-      radial-gradient(1200px 500px at 85% -10%, rgba(245, 166, 35, 0.22), transparent 60%),
-      radial-gradient(900px 500px at -10% 110%, rgba(77, 185, 123, 0.28), transparent 55%),
-      linear-gradient(135deg, #082515 0%, #114327 45%, #166536 100%);
+      radial-gradient(1200px 500px at 85% -10%, rgba(255, 182, 72, 0.2), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(77, 185, 123, 0.25), transparent 55%),
+      linear-gradient(135deg, #0d3320 0%, #124a2f 45%, #17663f 100%);
   }
 
   .glass {
     @apply border border-white/15 bg-white/10 backdrop-blur-xl;
   }
 
+  /* Light card — the system's default surface. */
   .glass-card {
-    @apply rounded-2xl border border-dabur-100 bg-white/80 shadow-[0_8px_30px_rgb(8,37,21,0.06)] backdrop-blur-sm;
+    @apply rounded-2xl border border-border bg-card shadow-[0_10px_30px_-18px_rgba(36,31,20,0.25)];
   }
 
   .text-gradient-brand {
-    @apply bg-gradient-to-r from-dabur-300 via-emerald-200 to-amber-200 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-dabur-300 via-emerald-200 to-mango bg-clip-text text-transparent;
   }
 
   .text-gradient-green {
     @apply bg-gradient-to-r from-dabur-700 via-dabur-500 to-emerald-500 bg-clip-text text-transparent;
-  }
-
-  .shimmer-line {
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.35) 50%,
-      transparent 100%
-    );
-    background-size: 200% 100%;
-    @apply animate-shimmer;
   }
 
   .card-lift {
@@ -87,7 +77,7 @@
   @media (hover: hover) and (pointer: fine) {
     .card-lift:hover {
       transform: translateY(-4px);
-      box-shadow: 0 20px 45px -12px rgba(17, 67, 39, 0.25);
+      box-shadow: 0 20px 40px -18px rgba(36, 31, 20, 0.3);
     }
   }
 
@@ -98,7 +88,37 @@
     transform: scale(0.97);
   }
 
-  /* Tier ribbon shine for reward / tier cards */
+  /* Chunky arcade CTA: 3D press with 4px travel. */
+  .btn-3d {
+    @apply font-game font-bold text-white;
+    background: linear-gradient(180deg, #ff9440, #ff7a1a);
+    box-shadow: 0 5px 0 #c25404, 0 14px 22px -10px rgba(244, 119, 31, 0.45);
+    transition:
+      transform 140ms var(--ease-out-strong),
+      box-shadow 140ms var(--ease-out-strong),
+      filter 140ms ease;
+  }
+  .btn-3d:hover {
+    filter: brightness(1.04);
+  }
+  .btn-3d:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #c25404, 0 8px 14px -10px rgba(244, 119, 31, 0.45);
+  }
+  .btn-3d-green {
+    background: linear-gradient(180deg, #1ea25f, #178a52);
+    box-shadow: 0 5px 0 #0f5c36, 0 14px 22px -10px rgba(23, 138, 82, 0.4);
+  }
+  .btn-3d-green:active {
+    box-shadow: 0 1px 0 #0f5c36, 0 8px 14px -10px rgba(23, 138, 82, 0.4);
+  }
+
+  /* Rubber stamp text treatment. */
+  .stamped {
+    @apply font-stamp;
+    letter-spacing: 0.08em;
+  }
+
   .tier-shine {
     position: relative;
     overflow: hidden;
@@ -107,7 +127,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.28) 50%, transparent 60%);
+    background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.3) 50%, transparent 60%);
     transform: translateX(-120%);
     transition: transform 700ms var(--ease-out-strong);
     pointer-events: none;
@@ -119,9 +139,26 @@
   }
 }
 
+@keyframes stamp-slam {
+  from {
+    transform: rotate(var(--stamp-rot, -6deg)) scale(1.9);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(var(--stamp-rot, -6deg)) scale(1);
+    opacity: 1;
+  }
+}
+.animate-stamp-slam {
+  animation: stamp-slam 0.45s var(--ease-out-strong) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card-lift:hover {
     transform: none;
+  }
+  .animate-stamp-slam {
+    animation: none;
   }
   *,
   ::before,
@@ -140,10 +177,10 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(142 22% 82%);
+  background: hsl(43 30% 78%);
   border-radius: 999px;
-  border: 2px solid hsl(140 30% 98%);
+  border: 2px solid hsl(42 56% 93%);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(145 40% 60%);
+  background: hsl(151 40% 55%);
 }

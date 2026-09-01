@@ -56,12 +56,12 @@ export async function Shell({ children }: { children: ReactNode }) {
         region={session.user.region}
         pendingCount={pendingCount}
         notifications={notifications}
-        tier={tier ? { label: tier.label, emoji: tier.emoji, gradient: tier.gradient } : null}
+        tier={tier ? { label: tier.label, emoji: tier.emoji } : null}
         points={creator?.points}
       />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6">{children}</main>
-      <footer className="border-t bg-white/50 py-4 text-center text-xs text-muted-foreground">
-        DaburStars · Dabur Creator Hub · Middle East
+      <footer className="border-t border-border bg-card/60 py-4 text-center font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+        DaburStars · Earn → Level → Spend · Middle East
       </footer>
     </div>
   );

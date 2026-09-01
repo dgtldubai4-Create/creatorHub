@@ -58,7 +58,7 @@ export default async function CoursePage({ params }: { params: { slug: string } 
                   <Clock className="h-4 w-4" /> {course.minutes} min
                 </span>
                 <span className="flex items-center gap-1 font-semibold text-amber-700">
-                  <Coins className="h-4 w-4" /> +{course.points} pts on completion
+                  <Coins className="h-4 w-4" /> +{course.points} MI on completion
                 </span>
               </div>
             </div>

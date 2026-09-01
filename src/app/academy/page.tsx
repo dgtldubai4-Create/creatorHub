@@ -45,7 +45,7 @@ export default async function AcademyPage() {
               Creator <span className="text-gradient-green">Academy</span>
             </h1>
             <p className="mt-1 max-w-xl text-muted-foreground">
-              Short courses written with Dabur&apos;s regional teams. Every completion banks points
+              Short courses written with Dabur&apos;s regional teams. Every completion banks miles
               before you post a single frame.
             </p>
           </div>
@@ -57,7 +57,7 @@ export default async function AcademyPage() {
             <span className="h-4 w-px bg-dabur-100" />
             <span className="flex items-center gap-2 font-semibold text-amber-700">
               <Coins className="h-4 w-4" />
-              {formatPoints(earnedPoints)}/{formatPoints(totalPoints)} pts
+              {formatPoints(earnedPoints)}/{formatPoints(totalPoints)} MI
             </span>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default async function AcademyPage() {
                     <Clock className="h-3.5 w-3.5" /> {course.minutes} min
                   </span>
                   <span className="flex items-center gap-1 font-semibold text-amber-700">
-                    <Coins className="h-3.5 w-3.5" /> +{course.points} pts
+                    <Coins className="h-3.5 w-3.5" /> +{course.points} MI
                   </span>
                 </div>
 

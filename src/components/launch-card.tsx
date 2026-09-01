@@ -113,8 +113,8 @@ export function LaunchCard({
           >
             Read the full brief →
           </Link>
-          <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-800">
-            +{campaign.basePoints} pts / asset
+          <span className="rounded-full bg-tang-soft px-2.5 py-0.5 font-game text-xs font-bold text-tang-deep">
+            +{campaign.basePoints} MI / post
           </span>
         </div>
 
