@@ -388,7 +388,7 @@ export default async function HomePage() {
 
   const stats = [
     { label: "Active creators", value: activeCreators, icon: Users, href: "/creators", tint: "from-dabur-500 to-dabur-700" },
-    { label: "Live campaigns", value: liveCampaigns, icon: Rocket, href: "/launches", tint: "from-tealpop to-cyan-700" },
+    { label: "Live campaigns", value: liveCampaigns, icon: Rocket, href: "/admin/campaigns", tint: "from-tealpop to-cyan-700" },
     { label: "Casting requests", value: pendingApprovals, icon: ClipboardCheck, href: "/queue", tint: "from-mango to-tang" },
     { label: "Content in review", value: assetsAwaiting, icon: Film, href: "/queue", tint: "from-sky-500 to-indigo-600" },
   ];
@@ -415,6 +415,12 @@ export default async function HomePage() {
             >
               Open the Control Room ({pendingApprovals + assetsAwaiting})
               <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+            <Link
+              href="/admin"
+              className="press inline-flex items-center gap-2 rounded-xl border-2 border-border bg-card px-5 py-2.5 font-game text-sm font-bold text-dabur-800 transition-colors hover:border-dabur-400"
+            >
+              Admin panel
             </Link>
             <Link
               href="/insights"

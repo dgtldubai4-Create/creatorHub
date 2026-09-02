@@ -11,6 +11,7 @@ import {
   Home,
   Leaf,
   LogOut,
+  PanelsTopLeft,
   Rocket,
   Trophy,
   UserRound,
@@ -25,15 +26,20 @@ import { MilesChip } from "@/components/game/miles-chip";
 import type { ProgramTier } from "@/lib/program";
 
 const LINKS: Array<{ href: string; label: string; icon: typeof Home; roles: Role[] }> = [
+  // Creator side
   { href: "/", label: "Home", icon: Home, roles: ["CREATOR", "MARKETER", "BRAND_LEAD", "ADMIN"] },
-  { href: "/launches", label: "Campaigns", icon: Rocket, roles: ["CREATOR", "MARKETER", "BRAND_LEAD", "ADMIN"] },
+  { href: "/launches", label: "Campaigns", icon: Rocket, roles: ["CREATOR"] },
   { href: "/academy", label: "Academy", icon: GraduationCap, roles: ["CREATOR"] },
   { href: "/rewards", label: "Shop", icon: Gift, roles: ["CREATOR"] },
   { href: "/earnings", label: "Earnings", icon: Wallet, roles: ["CREATOR"] },
   { href: "/leaderboard", label: "Stars", icon: Trophy, roles: ["CREATOR"] },
   { href: "/me", label: "My Work", icon: UserRound, roles: ["CREATOR"] },
+  // Brand side (admin panel)
+  { href: "/admin", label: "Admin", icon: PanelsTopLeft, roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
+  { href: "/admin/campaigns", label: "Campaigns", icon: Rocket, roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
   { href: "/queue", label: "Control Room", icon: ClipboardCheck, roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
   { href: "/creators", label: "Creators", icon: Users, roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
+  { href: "/admin/shop", label: "Shop", icon: Gift, roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
   { href: "/insights", label: "Insights", icon: BarChart3, roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
 ];
 
@@ -81,8 +87,12 @@ export function Nav({
 
         <nav className="flex flex-1 items-center gap-0.5 overflow-x-auto" aria-label="Main">
           {links.map((link) => {
+            // "/" and "/admin" are exact matches so nested routes light up
+            // their own tab instead of two pills at once.
             const active =
-              link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+              link.href === "/" || link.href === "/admin"
+                ? pathname === link.href
+                : pathname.startsWith(link.href);
             const Icon = link.icon;
             return (
               <Link

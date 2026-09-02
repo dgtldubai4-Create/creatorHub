@@ -7,6 +7,7 @@ import { Shell } from "@/components/shell";
 import { FadeUp, Stagger, StaggerItem } from "@/components/motion";
 import { StatusBadge } from "@/components/status-badge";
 import { AssetTracker } from "@/components/asset-tracker";
+import { CreatorAdminControls } from "@/components/creator-admin-controls";
 import { Badge } from "@/components/ui/badge";
 import {
   ASSET_TYPE_LABELS,
@@ -121,6 +122,16 @@ export default async function CreatorDetailPage({ params }: { params: { id: stri
             </div>
           </div>
         </section>
+      </FadeUp>
+
+      <FadeUp delay={0.05}>
+        <div className="mb-8">
+          <CreatorAdminControls
+            creatorId={creator.id}
+            status={creator.status}
+            followerTier={creator.followerTier}
+          />
+        </div>
       </FadeUp>
 
       <div className="grid gap-6 lg:grid-cols-2">

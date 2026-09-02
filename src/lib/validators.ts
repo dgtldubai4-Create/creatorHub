@@ -1,11 +1,16 @@
 import { z } from "zod";
 import {
   ASSET_TYPES,
+  BRANDS,
+  CAMPAIGN_STATUSES,
   CATEGORIES,
   COLLAB_TYPES,
+  CREATOR_STATUSES,
+  FOLLOWER_TIERS,
   PLATFORMS,
   REGIONS,
 } from "@/lib/constants";
+import { PROGRAM_TIERS, REWARD_CATEGORIES } from "@/lib/program";
 
 export const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(80),
@@ -84,3 +89,67 @@ export const loginSchema = z.object({
   password: z.string().min(1),
 });
 export type LoginInput = z.infer<typeof loginSchema>;
+
+// ── Brand-side admin ────────────────────────────────────────────────────────
+
+export const campaignSchema = z
+  .object({
+    id: z.string().cuid().optional(), // present = update, absent = create
+    name: z.string().min(3, "Give the campaign a name (min 3 chars)").max(120),
+    brand: z.enum(BRANDS),
+    region: z.enum(REGIONS),
+    objective: z.string().min(10, "Describe the objective (min 10 chars)").max(600),
+    tagline: z.string().max(140).optional().or(z.literal("")),
+    startDate: z.coerce.date({ errorMap: () => ({ message: "Start date is required" }) }),
+    endDate: z.coerce.date({ errorMap: () => ({ message: "End date is required" }) }),
+    submissionDeadline: z.coerce.date().optional(),
+    status: z.enum(CAMPAIGN_STATUSES),
+    openToCreators: z.boolean(),
+    publicEntry: z.boolean(),
+    basePoints: z.coerce
+      .number()
+      .int()
+      .min(10, "Min 10 miles per post")
+      .max(1000, "Max 1,000 miles per post"),
+    compensation: z.string().max(300).optional().or(z.literal("")),
+    deliverables: z
+      .array(
+        z.object({
+          type: z.enum(ASSET_TYPES),
+          qty: z.coerce.number().int().min(1, "Qty ≥ 1").max(20, "Qty ≤ 20"),
+          notes: z.string().max(200).optional().or(z.literal("")),
+        }),
+      )
+      .min(1, "Add at least one deliverable")
+      .max(8),
+    dos: z.array(z.string().min(2).max(200)).max(10),
+    donts: z.array(z.string().min(2).max(200)).max(10),
+    kpis: z.array(z.object({ metric: z.string().min(1).max(40), target: z.string().min(1).max(40) })).max(8),
+  })
+  .refine((c) => c.endDate >= c.startDate, {
+    message: "End date must be after the start date",
+    path: ["endDate"],
+  });
+export type CampaignInput = z.infer<typeof campaignSchema>;
+
+const TIER_KEYS = PROGRAM_TIERS.map((t) => t.key) as [string, ...string[]];
+
+export const rewardSchema = z.object({
+  id: z.string().cuid().optional(),
+  title: z.string().min(3, "Title required").max(80),
+  description: z.string().min(5, "Description required").max(300),
+  category: z.enum(REWARD_CATEGORIES),
+  emoji: z.string().min(1, "Pick an emoji").max(8),
+  pointsCost: z.coerce.number().int().min(50, "Min 50 MI").max(100000),
+  minTier: z.enum(TIER_KEYS),
+  stock: z.coerce.number().int().min(0).max(10000),
+  active: z.boolean(),
+});
+export type RewardInput = z.infer<typeof rewardSchema>;
+
+export const creatorAdminSchema = z.object({
+  creatorId: z.string().cuid(),
+  status: z.enum(CREATOR_STATUSES).optional(),
+  followerTier: z.enum(FOLLOWER_TIERS).optional(),
+});
+export type CreatorAdminInput = z.infer<typeof creatorAdminSchema>;

@@ -5,6 +5,7 @@ import type { Role } from "@/lib/constants";
 // Route → allowed roles. Anything not listed here (and matched below) just
 // requires a signed-in session.
 const ROLE_RULES: Array<{ prefix: string; roles: Role[] }> = [
+  { prefix: "/admin", roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
   { prefix: "/queue", roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
   { prefix: "/creators", roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
   { prefix: "/insights", roles: ["MARKETER", "BRAND_LEAD", "ADMIN"] },
