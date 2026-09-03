@@ -63,6 +63,8 @@ function log(name, ok, detail) { results.push({ name, ok, detail }); console.log
   await page.click('.mcard >> nth=0');
   await page.waitForTimeout(200);
   log('single-size item adds directly', await page.locator('#cartCount').textContent() === '1');
+  log('toast confirms the add', (await page.locator('#toast.show').textContent().catch(() => '')).includes('added to cart'));
+  log('cart pill pops on add', await page.locator('.cart-pill.pop').count() >= 1);
   await page.click('.cat-btn:has-text("Cookies")');
   await page.click('.mcard:has-text("Build Your Own Cookie Box")');
   await page.waitForTimeout(200);

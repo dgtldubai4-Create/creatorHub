@@ -224,6 +224,38 @@
   .settings-card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;}
   .settings-card h3{font-size:14px;margin-bottom:4px;color:var(--text);}
   .settings-card p{font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.6;}
+  /* ---------- MOTION & INTERACTION LAYER ---------- */
+  @keyframes pageIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  .page.active{animation:pageIn 0.32s ease both;}
+  @keyframes cardIn{from{opacity:0;transform:translateY(14px) scale(0.98);}to{opacity:1;transform:none;}}
+  .menu-grid .mcard{animation:cardIn 0.4s cubic-bezier(.22,.9,.35,1) both;animation-delay:calc(var(--i,0)*45ms);}
+  #specialsHome .special-card{animation:cardIn 0.45s cubic-bezier(.22,.9,.35,1) both;animation-delay:calc(var(--i,0)*90ms);}
+  .cart-item{animation:cardIn 0.3s ease both;}
+  .mcard:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(155,75,107,0.13);}
+  .mcard:active{transform:translateY(-1px) scale(0.98);}
+  button{-webkit-tap-highlight-color:transparent;}
+  .btn-p:active,.btn-o:active,.wa-btn:active,.confirm-btn:active,.add-btn:active,.qbtn:active,.pchip:active,.slot:active{transform:scale(0.94);}
+  nav{transition:box-shadow 0.25s;}
+  nav.scrolled{box-shadow:0 4px 18px rgba(155,75,107,0.10);}
+  @keyframes pillPop{0%{transform:scale(1);}40%{transform:scale(1.22);}100%{transform:scale(1);}}
+  .cart-pill.pop{animation:pillPop 0.45s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes countBump{0%{transform:scale(0.4);}100%{transform:scale(1);}}
+  .cart-num.bump{animation:countBump 0.35s cubic-bezier(.34,1.56,.64,1);}
+  .fly-bite{position:fixed;z-index:300;font-size:22px;pointer-events:none;transition:transform 0.6s cubic-bezier(.5,-0.1,.7,.5),opacity 0.6s ease;}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(70px);background:var(--text);color:#fff;font-size:12.5px;padding:10px 18px;border-radius:30px;z-index:400;opacity:0;transition:transform .35s cubic-bezier(.22,.9,.35,1),opacity .35s;pointer-events:none;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(44,26,26,0.25);max-width:86vw;}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+  .hero>*:not(.hero-float){animation:cardIn .5s ease both;}
+  .hero h1{animation-delay:.06s;}
+  .hero .hero-sub{animation-delay:.12s;}
+  .hero .hero-by{animation-delay:.18s;}
+  .hero .hero-btns{animation-delay:.24s;}
+  .hero-float{position:absolute;font-size:26px;opacity:0.35;animation:floaty 6s ease-in-out infinite;pointer-events:none;}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-12px) rotate(5deg);}}
+  .hero h1 span{background:linear-gradient(90deg,var(--rose-deep),var(--lav-deep),var(--rose-deep));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;}
+  @keyframes shimmer{to{background-position:200% center;}}
+  @keyframes pulseNow{0%{box-shadow:0 0 0 0 rgba(155,75,107,0.45);}70%{box-shadow:0 0 0 9px rgba(155,75,107,0);}100%{box-shadow:0 0 0 0 rgba(155,75,107,0);}}
+  .tcirc.now{animation:pulseNow 1.8s ease-out infinite;}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}}
   @media (max-width:600px){
     .menu-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
     .admin-body{padding:16px;}
@@ -267,6 +299,10 @@
   <!-- HOME -->
   <div class="page active" id="page-home">
     <div class="hero">
+      <span class="hero-float" aria-hidden="true" style="top:16px;left:18px;">🍪</span>
+      <span class="hero-float" aria-hidden="true" style="top:34px;right:22px;animation-delay:1.4s;">🍰</span>
+      <span class="hero-float" aria-hidden="true" style="bottom:22px;left:34px;animation-delay:2.6s;font-size:20px;">🫐</span>
+      <span class="hero-float" aria-hidden="true" style="bottom:34px;right:40px;animation-delay:3.8s;font-size:19px;">🍫</span>
       <div class="hero-pill">Home baked · Dubai</div>
       <h1>Baked to <span>perfection</span>.</h1>
       <div class="hero-sub">Handmade pastries, cakes &amp; bread, made slowly and from the heart by Shweta, delivered straight to your door.</div>
@@ -393,6 +429,7 @@
   <div class="admin-body">
     <div class="admin-tabs">
       <button class="admin-tab active" data-tab="menu" onclick="setAdminTab('menu')">Menu</button>
+      <button class="admin-tab" data-tab="orders" onclick="setAdminTab('orders');adminLoadOrders()">Orders</button>
       <button class="admin-tab" data-tab="categories" onclick="setAdminTab('categories')">Categories</button>
       <button class="admin-tab" data-tab="specials" onclick="setAdminTab('specials')">Weekly specials</button>
       <button class="admin-tab" data-tab="settings" onclick="setAdminTab('settings')">Settings</button>
@@ -401,6 +438,14 @@
     <div class="admin-panel active" id="admin-menu">
       <div id="adminMenuList"></div>
       <button class="admin-add-btn" onclick="adminAddItem()">+ Add menu item</button>
+    </div>
+    <!-- ORDERS TAB -->
+    <div class="admin-panel" id="admin-orders">
+      <div class="admin-card">
+        <div class="admin-card-head"><h3>Incoming orders</h3><button class="mini-add" onclick="adminLoadOrders()">Refresh</button></div>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.6;">Live orders from every customer. Advancing a step moves the customer's tracker. Requires cloud sync (Settings tab).</p>
+        <div id="adminOrdersList"></div>
+      </div>
     </div>
     <!-- CATEGORIES TAB -->
     <div class="admin-panel" id="admin-categories">
@@ -445,6 +490,13 @@
         <p>Charged on delivery orders. Pickup is always free.</p>
         <label for="setFee">Delivery fee</label>
         <input id="setFee" type="number" min="0" step="1" placeholder="15">
+      </div>
+      <div class="settings-card">
+        <h3>Cloud sync</h3>
+        <p id="cloudStatus">Not configured.</p>
+        <label for="setToken">Admin token</label>
+        <input id="setToken" type="password" placeholder="paste the admin token" autocomplete="off">
+        <p style="font-size:11px;color:var(--text-muted);margin-top:8px;margin-bottom:0;line-height:1.6;">With cloud sync set up (see README.md next to this file), pressing Save also publishes your menu, prices and specials to every customer, and the Orders tab shows live orders you can advance. The token never leaves this device.</p>
       </div>
       <div class="settings-card">
         <h3>Admin PIN</h3>
@@ -548,7 +600,45 @@ const DEFAULT_SPECIALS = [
   {id:'s2',name:'Biscoff Cheesecake',e:'🍰',price:85,oldPrice:null,desc:'Creamy Biscoff cheesecake, 500g. A weekend favourite.',tag:'Popular',color:'peach'},
 ];
 const WA_PLACEHOLDER='971500000000'; // replace via Admin → Settings before going live
-const DEFAULT_SETTINGS = {waNumber:WA_PLACEHOLDER, deliveryFee:15, logo:'', adminPin:'2019'};
+const DEFAULT_SETTINGS = {waNumber:WA_PLACEHOLDER, deliveryFee:15, logo:'', adminPin:'2019', adminToken:''};
+/* ---------- CLOUD SYNC (optional backend) ----------
+ * Fill in url + anonKey after creating a Supabase project and running supabase-schema.sql
+ * (see README.md). The anon key is public by design — write access is guarded by the admin
+ * token checked server-side. When left empty the app runs fully offline, exactly as before.
+ * window.RUHH_CLOUD lets the test harness inject a mock backend.                         */
+const CLOUD=Object.assign({url:'',anonKey:''},window.RUHH_CLOUD||{});
+function cloudOn(){return !!(CLOUD.url&&CLOUD.anonKey);}
+async function rpc(fn,args){
+  const res=await fetch(CLOUD.url+'/rest/v1/rpc/'+fn,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':CLOUD.anonKey,'Authorization':'Bearer '+CLOUD.anonKey},
+    body:JSON.stringify(args||{})
+  });
+  if(!res.ok)throw new Error('rpc '+fn+' failed: '+res.status);
+  const t=await res.text();return t?JSON.parse(t):null;
+}
+function applySite(data){
+  if(!data)return;
+  if(Array.isArray(data.menu)&&data.menu.length)MENU=data.menu.map(migrateItem);
+  if(Array.isArray(data.cats)&&data.cats.length)CATS=data.cats.map(String);
+  if(Array.isArray(data.specials))SPECIALS=data.specials;
+  if(data.settings){
+    if(data.settings.waNumber)SETTINGS.waNumber=String(data.settings.waNumber);
+    if(data.settings.deliveryFee!=null)SETTINGS.deliveryFee=Number(data.settings.deliveryFee)||0;
+    SETTINGS.logo=data.settings.logo||SETTINGS.logo;
+  }
+  saveMenu();saveCats();saveSpecials();saveSettings();
+}
+async function syncPull(){
+  if(!cloudOn())return false;
+  try{
+    const res=await fetch(CLOUD.url+'/rest/v1/site?id=eq.1&select=data',{headers:{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.anonKey}});
+    if(!res.ok)return false;
+    const rows=await res.json();
+    if(rows&&rows[0]&&rows[0].data){applySite(rows[0].data);return true;}
+  }catch(e){}
+  return false;
+}
 const BG=['var(--rose)','var(--lav)','var(--sage)','var(--peach)'];
 /* ---------- STORAGE + MIGRATION ---------- */
 function safeLoad(key,fallback){
@@ -632,6 +722,41 @@ function addLine(line){
   const ex=cart.find(i=>cartKey(i)===cartKey(line));
   if(ex)ex.qty+=line.qty;else cart.push(line);
   updateCart();
+  pulseCart();
+  showToast((line.e?line.e+' ':'')+line.name+' added to cart');
+}
+/* ---------- MICRO-INTERACTIONS ---------- */
+let toastTimer=null;
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.className='toast';document.body.appendChild(t);}
+  t.textContent=msg;
+  t.classList.remove('show');void t.offsetWidth;
+  t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1900);
+}
+function pulseCart(){
+  const pill=document.querySelector('#customerApp .cart-pill'),num=document.getElementById('cartCount');
+  if(pill){pill.classList.remove('pop');void pill.offsetWidth;pill.classList.add('pop');}
+  if(num){num.classList.remove('bump');void num.offsetWidth;num.classList.add('bump');}
+}
+function flyToCart(fromEl,emoji){
+  try{
+    const pill=document.querySelector('#customerApp .cart-pill');
+    if(!pill||!fromEl)return;
+    const a=fromEl.getBoundingClientRect(),b=pill.getBoundingClientRect();
+    if(!a.width)return;
+    const el=document.createElement('div');
+    el.className='fly-bite';el.textContent=emoji||'🧁';
+    el.style.left=(a.left+a.width/2-11)+'px';
+    el.style.top=(a.top+a.height/2-11)+'px';
+    document.body.appendChild(el);
+    requestAnimationFrame(()=>{
+      el.style.transform=`translate(${b.left+b.width/2-(a.left+a.width/2)}px,${b.top+b.height/2-(a.top+a.height/2)}px) scale(0.25)`;
+      el.style.opacity='0.2';
+    });
+    setTimeout(()=>el.remove(),700);
+  }catch(e){}
 }
 /* ---------- MENU RENDER ---------- */
 function renderCatRow(){
@@ -648,7 +773,7 @@ function renderMenu(items){
     const multi=sizes.length>1;
     const flav=(m.flavours&&m.flavours.length)?m.flavours.slice(0,3).join(' · ')+(m.flavours.length>3?' …':''):'';
     const imgStyle=m.img?`background-color:${BG[i%4]};background-image:url('${m.img}');background-size:cover;background-position:center;`:`background:${BG[i%4]};`;
-    return `<div class="mcard" onclick="chooseItem('${m.id}')">
+    return `<div class="mcard" style="--i:${Math.min(i,10)}" onclick="chooseItem('${m.id}')">
       <div class="mcard-img" style="${imgStyle}">${m.img?'':m.e}${itemHasOptions(m)?'<span class="mcard-opt-badge">options</span>':''}</div>
       <div class="mcard-body">
         <div class="mcard-name">${escapeHtml(m.name)}</div>
@@ -684,6 +809,7 @@ function chooseItem(id){
   if(!itemPriced(m)&&!itemHasOptions(m)){askPrice(m.name,'');return;}
   if(!itemHasOptions(m)){
     const s=itemSizes(m)[0];
+    flyToCart(document.getElementById('addbtn-'+id),m.e);
     addLine({name:m.name,e:m.e,flavour:'',size:s.label,price:Number(s.price)||0,qty:1});
     flashAdd(id);
     return;
@@ -792,6 +918,7 @@ function addConfigured(){
   }else{
     flavour=pickerState.flavour||'';
   }
+  flyToCart(document.querySelector('#modalContent .modal-btns .btn-p'),m.e);
   addLine({name:m.name,e:m.e,flavour:flavour,size:pickerState.size,price:sizePrice(m,pickerState.size),qty:pickerState.qty});
   hideModal();
 }
@@ -800,9 +927,9 @@ function tagClass(color){return color==='lav'?'lav':color==='sage'?'sage':color=
 function renderSpecialsHome(){
   const el=document.getElementById('specialsHome');
   if(!SPECIALS.length){el.innerHTML='<p style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">No specials posted this week — check back soon.</p>';return;}
-  el.innerHTML=SPECIALS.map(s=>{
+  el.innerHTML=SPECIALS.map((s,i)=>{
     const colorVar=s.color||'rose';
-    return `<div class="special-card" style="${colorVar!=='rose'?`border-color:var(--${colorVar}-mid);`:''}">
+    return `<div class="special-card" style="--i:${Math.min(i,6)};${colorVar!=='rose'?`border-color:var(--${colorVar}-mid);`:''}">
       <div class="special-illo" style="background:var(--${colorVar});">${s.e}</div>
       <div class="special-body">
         <h3>${escapeHtml(s.name)} ${s.tag?`<span class="tag tag-${tagClass(colorVar)}">${escapeHtml(s.tag)}</span>`:''}</h3>
@@ -974,8 +1101,10 @@ function placeOrder(){
   const now=new Date();
   // random suffix: order counters are per-device, so a sequence number would collide across customers
   const id='RUH-'+String(now.getFullYear()).slice(2)+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
-  ORDERS.unshift({id,date:now.toISOString(),status:0,...o});
+  const key=Math.random().toString(36).slice(2,10)+Math.random().toString(36).slice(2,10); // secret for status lookups
+  ORDERS.unshift({id,key,date:now.toISOString(),status:0,...o});
   saveOrders();
+  if(cloudOn()){rpc('create_order',{p_code:id,p_key:key,p_payload:o}).catch(()=>{});}
   // open WhatsApp with the full order so it actually reaches Shweta
   openWA(buildWAMessage(Object.assign({},o,{ref:id})));
   // clear the cart but keep the confirmation visible (success box lives outside the cart form)
@@ -998,9 +1127,21 @@ function stepsFor(mode){
     :[{i:'&#9993;',l:'Order sent'},{i:'&#10003;',l:'Confirmed'},{i:'&#127856;',l:'Baking'},{i:'&#128663;',l:'On the way'},{i:'&#127969;',l:'Delivered'}];
 }
 function fmtDate(iso){try{return new Date(iso).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(e){return '';}}
+async function refreshOrderStatus(o){
+  if(!cloudOn()||!o||!o.key||o.status>=DONE_STATUS)return;
+  try{
+    const r=await rpc('get_order',{p_code:o.id,p_key:o.key});
+    const row=Array.isArray(r)?r[0]:r;
+    if(row&&typeof row.status==='number'&&row.status!==o.status){
+      o.status=row.status;saveOrders();
+      if(document.getElementById('page-track').classList.contains('active'))renderTrack();
+    }
+  }catch(e){}
+}
 function renderTrack(){
   const cur=document.getElementById('trackCurrent');
   const active=ORDERS.find(o=>o.status<DONE_STATUS);
+  if(active)refreshOrderStatus(active);
   if(!ORDERS.length){
     cur.innerHTML=`<div class="empty-c"><div class="ei">&#128230;</div><p>No orders yet.<br>Once you place an order it'll appear here.</p><button class="btn-p" onclick="goPage('menu')">Browse the menu</button></div>`;
     document.getElementById('trackPast').innerHTML='';return;
@@ -1059,9 +1200,51 @@ function openAdmin(){
   document.getElementById('setWa').value=SETTINGS.waNumber||'';
   document.getElementById('setFee').value=SETTINGS.deliveryFee;
   document.getElementById('setPin').value=SETTINGS.adminPin||'';
+  document.getElementById('setToken').value=SETTINGS.adminToken||'';
   document.getElementById('waWarn').style.display=(!SETTINGS.waNumber||SETTINGS.waNumber===WA_PLACEHOLDER)?'block':'none';
+  document.getElementById('cloudStatus').textContent=cloudOn()
+    ?'Connected to '+CLOUD.url+' — Save publishes to all customers.'
+    :'Not configured — the app is running offline; edits stay on this device only. See README.md to set up cloud sync.';
   updateLogoPreview();
   window.scrollTo(0,0);
+}
+/* --- orders admin (cloud) --- */
+async function adminLoadOrders(){
+  const el=document.getElementById('adminOrdersList');
+  if(!cloudOn()){el.innerHTML='<div class="admin-empty">Cloud sync is not configured, so orders only reach you on WhatsApp.<br>See README.md to enable this tab.</div>';return;}
+  const token=(SETTINGS.adminToken||'').trim();
+  if(!token){el.innerHTML='<div class="admin-empty">Enter the admin token in the Settings tab first, then Save.</div>';return;}
+  el.innerHTML='<div class="admin-empty">Loading orders…</div>';
+  try{
+    const rows=await rpc('list_orders',{p_token:token});
+    renderAdminOrders(rows||[]);
+  }catch(e){el.innerHTML='<div class="admin-empty">Could not load orders — check the admin token and your connection.</div>';}
+}
+function renderAdminOrders(rows){
+  const el=document.getElementById('adminOrdersList');
+  if(!rows.length){el.innerHTML='<div class="admin-empty">No orders yet.</div>';return;}
+  el.innerHTML=rows.map(r=>{
+    const o=r.payload||{};
+    const steps=stepsFor(o.mode);
+    const st=Math.min(Number(r.status)||0,steps.length-1);
+    const done=st>=DONE_STATUS;
+    const items=(o.items||[]).map(i=>`${i.qty}× ${lineLabel(i)}`).join(', ');
+    return `<div class="admin-card">
+      <div class="admin-card-head"><h3 style="font-size:13px;">#${escapeHtml(r.code)} · ${escapeHtml(o.name||'Customer')}</h3>
+        <span class="tag ${done?'tag-sage':'tag-peach'}">${escapeHtml(steps[st].l)}</span></div>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:6px;line-height:1.6;">${escapeHtml(items)}</p>
+      <p style="font-size:12px;margin-bottom:10px;">${o.mode==='pickup'?'Pickup':'Delivery — '+escapeHtml(o.addr||'')} · ${escapeHtml(o.day||'')} ${escapeHtml(o.slot||'')} · <b>AED ${Number(o.total)||0}</b>${o.phone?' · '+escapeHtml(o.phone):''}</p>
+      ${o.notes?`<p style="font-size:12px;color:var(--lav-deep);margin-bottom:10px;">“${escapeHtml(o.notes)}”</p>`:''}
+      ${done?'':`<button class="admin-add-btn" onclick="adminAdvanceOrder('${escapeHtml(r.code)}',${st+1})">Advance to “${escapeHtml(steps[Math.min(st+1,steps.length-1)].l)}”</button>`}
+    </div>`;
+  }).join('');
+}
+async function adminAdvanceOrder(code,status){
+  try{
+    await rpc('set_order_status',{p_token:(SETTINGS.adminToken||'').trim(),p_code:code,p_status:status});
+    showToast('Order updated ✓');
+    adminLoadOrders();
+  }catch(e){alert('Could not update the order — check the admin token.');}
 }
 function closeAdmin(){
   document.getElementById('adminApp').style.display='none';
@@ -1237,13 +1420,26 @@ function adminSave(){
   SETTINGS.waNumber=(document.getElementById('setWa').value||'').replace(/[^0-9]/g,'');
   SETTINGS.deliveryFee=Number(document.getElementById('setFee').value)||0;
   SETTINGS.adminPin=(document.getElementById('setPin').value||'').trim();
+  SETTINGS.adminToken=(document.getElementById('setToken').value||'').trim();
   const ok=[saveMenu(),saveCats(),saveSpecials(),saveSettings()].every(Boolean);
   try{localStorage.setItem('ruh_admin_touched','1');}catch(e){}
   renderBranding();
   document.getElementById('waWarn').style.display=(!SETTINGS.waNumber||SETTINGS.waNumber===WA_PLACEHOLDER)?'block':'none';
   const status=document.getElementById('saveStatus');
-  status.textContent=ok?'Saved just now':'⚠ Could not save everything — browser storage is full. Try smaller photos.';
-  setTimeout(()=>{status.textContent='';},ok?2800:6000);
+  const setStatus=(t,ms)=>{status.textContent=t;clearTimeout(adminSave._t);adminSave._t=setTimeout(()=>{status.textContent='';},ms||2800);};
+  if(!ok){
+    setStatus('⚠ Could not save everything — browser storage is full. Try smaller photos.',6000);
+  }else if(cloudOn()&&SETTINGS.adminToken){
+    setStatus('Saved — publishing to customers…',8000);
+    rpc('publish_site',{p_token:SETTINGS.adminToken,p_data:{
+      menu:MENU,cats:CATS,specials:SPECIALS,
+      settings:{waNumber:SETTINGS.waNumber,deliveryFee:SETTINGS.deliveryFee,logo:SETTINGS.logo}
+    }})
+      .then(()=>setStatus('Saved & published to all customers ✓',3500))
+      .catch(()=>setStatus('⚠ Saved on this device, but publishing failed — check the admin token.',6000));
+  }else{
+    setStatus(cloudOn()?'Saved on this device (enter the admin token to publish)':'Saved just now');
+  }
 }
 function adminResetDefaults(){
   if(!confirm('Reset menu, categories, specials and settings back to the original defaults? This cannot be undone.'))return;
@@ -1256,6 +1452,7 @@ function adminResetDefaults(){
   document.getElementById('setWa').value=SETTINGS.waNumber;
   document.getElementById('setFee').value=SETTINGS.deliveryFee;
   document.getElementById('setPin').value=SETTINGS.adminPin||'';
+  document.getElementById('setToken').value=SETTINGS.adminToken||'';
   document.getElementById('waWarn').style.display=(!SETTINGS.waNumber||SETTINGS.waNumber===WA_PLACEHOLDER)?'block':'none';
   updateLogoPreview();renderBranding();
   const status=document.getElementById('saveStatus');
@@ -1276,8 +1473,18 @@ function renderBranding(){
 }
 /* ---------- GLOBAL ---------- */
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('modal').style.display==='flex')hideModal();});
+window.addEventListener('scroll',()=>{
+  const n=document.querySelector('#customerApp nav');
+  if(n)n.classList.toggle('scrolled',window.scrollY>8);
+},{passive:true});
 /* ---------- INIT ---------- */
 renderCatRow();filterMenu();renderSpecialsHome();renderDateOptions();updateCart();renderBranding();
+// Pull the live menu from the cloud (if configured) and re-render what it may have changed.
+if(cloudOn()){
+  syncPull().then(ok=>{
+    if(ok){activeCat='All';renderCatRow();filterMenu();renderSpecialsHome();renderCart();renderBranding();}
+  });
+}
 </script>
 </body>
 </html>

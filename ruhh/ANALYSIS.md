@@ -139,3 +139,30 @@ In rough priority order — these are the gaps between "demo" and "business":
 
 **Before going live:** set `waNumber` in `DEFAULT_SETTINGS` to the real number, fill in bark
 prices in `DEFAULT_MENU`, change the default admin PIN, and bump `DATA_VERSION`.
+
+---
+
+## 5. Update — round 2: backend sync + frontend motion layer
+
+Items **§3.1** (backend) and the tracker/menu-publishing gaps are now addressed:
+
+- **Cloud sync (optional, Supabase-ready).** `supabase-schema.sql` + a small client adapter in
+  `index.html` (`CLOUD` constant). When configured: admin **Save publishes** the menu/prices/
+  specials to every customer; orders are stored centrally as well as sent on WhatsApp; a new
+  **admin Orders tab** lists live orders with one-tap "Advance" buttons; the customer's tracker
+  polls and **actually moves**. All writes except order creation are guarded by an admin token
+  checked server-side; customers read only their own order status via a per-order secret; the
+  published settings never include the PIN or token. With `CLOUD` left empty the app runs
+  exactly as before (offline, localStorage). Setup steps in `README.md`.
+- **Look & feel — the three changes** (with animations/interactions throughout):
+  1. **Motion system** — page transitions, staggered card/special/cart entrances, hero text
+     cascade, all under `prefers-reduced-motion: reduce`.
+  2. **Cart micro-interactions** — fly-to-cart morsel, cart-pill pop + count bump, and a toast
+     ("🍪 … added to cart") on every add.
+  3. **Hero & depth polish** — shimmering gradient on the headline, floating pastry accents,
+     richer card hover lift + shadows, pressed-state scaling on all buttons, nav shadow on
+     scroll, pulsing "current step" dot on the tracker.
+- **Tests:** offline suite grew to **33 checks**; a new `test/cloud-test.js` drives two browser
+  contexts (Shweta + a customer) against a mock Supabase backend for **10 more** — publish →
+  second device sees it; order → Orders tab; advance ×2 → customer tracker shows "Baking".
+  **43/43 passing.**
