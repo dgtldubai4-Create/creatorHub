@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Trophy, Users, XCircle } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { FadeUp } from "@/components/motion";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { ChallengeEntryForm } from "@/components/challenge-entry-form";
 import { ProductImage } from "@/components/product-image";
 import { Stamp } from "@/components/game/stamp";
@@ -38,6 +39,7 @@ export default async function ChallengePage() {
   const donts = parseStringList(campaign.donts);
 
   return (
+    <SmoothScroll>
     <div className="bg-paper">
       {/* Challenge hero — the shabab lane */}
       <div className="bg-gradient-to-br from-slate-800 to-zinc-950 text-white">
@@ -137,5 +139,6 @@ export default async function ChallengePage() {
         </FadeUp>
       </div>
     </div>
+    </SmoothScroll>
   );
 }

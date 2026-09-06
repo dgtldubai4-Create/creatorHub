@@ -13,6 +13,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Shell } from "@/components/shell";
 import { Landing } from "@/components/landing";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { CreatorCardHero } from "@/components/program/creator-card-hero";
 import { CountUp, FadeUp, Stagger, StaggerItem } from "@/components/motion";
 import { StatusBadge } from "@/components/status-badge";
@@ -69,15 +70,17 @@ export default async function HomePage() {
       }),
     ]);
     return (
-      <Landing
-        stats={{
-          creators,
-          liveCampaigns,
-          milesAwarded: pointsAgg._sum.points ?? 0,
-          regions: REGIONS.length,
-        }}
-        flagship={flagship}
-      />
+      <SmoothScroll>
+        <Landing
+          stats={{
+            creators,
+            liveCampaigns,
+            milesAwarded: pointsAgg._sum.points ?? 0,
+            regions: REGIONS.length,
+          }}
+          flagship={flagship}
+        />
+      </SmoothScroll>
     );
   }
 
