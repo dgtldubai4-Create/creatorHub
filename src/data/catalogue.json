@@ -1,0 +1,1376 @@
+{
+  "source": "https://www.daburinternational.com/uae",
+  "syncedAt": null,
+  "note": "Starter catalogue. Every product carries pendingSync: true until `npm run sync:products` replaces this file with the live Dabur UAE catalogue.",
+  "brands": [
+    {
+      "id": "vatika",
+      "name": "Vatika",
+      "localisedName": {
+        "en": "Vatika",
+        "ar": "فاتيكا"
+      },
+      "category": "Hair care",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/vatika",
+      "hue": "#1B7A3E"
+    },
+    {
+      "id": "dabur-amla",
+      "name": "Dabur Amla",
+      "localisedName": {
+        "en": "Dabur Amla",
+        "ar": "دابر أملا"
+      },
+      "category": "Hair care",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/dabur-amla",
+      "hue": "#0E5C31"
+    },
+    {
+      "id": "dabur-herbl",
+      "name": "Dabur Herb'l",
+      "localisedName": {
+        "en": "Dabur Herb'l",
+        "ar": "دابر هيربل"
+      },
+      "category": "Oral care",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/dabur-herbl",
+      "hue": "#0F766E"
+    },
+    {
+      "id": "meswak",
+      "name": "Meswak",
+      "localisedName": {
+        "en": "Dabur Meswak",
+        "ar": "دابر مسواك"
+      },
+      "category": "Oral care",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/meswak",
+      "hue": "#7C4A1D"
+    },
+    {
+      "id": "dabur-red",
+      "name": "Dabur Red",
+      "localisedName": {
+        "en": "Dabur Red",
+        "ar": "دابر ريد"
+      },
+      "category": "Oral care",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/dabur-red",
+      "hue": "#B3261E"
+    },
+    {
+      "id": "real",
+      "name": "Real",
+      "localisedName": {
+        "en": "Real Fruit Power",
+        "ar": "ريل فروت باور"
+      },
+      "category": "Foods",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/real",
+      "hue": "#D9731A"
+    },
+    {
+      "id": "hajmola",
+      "name": "Hajmola",
+      "localisedName": {
+        "en": "Hajmola",
+        "ar": "هاجمولا"
+      },
+      "category": "Digestives",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/hajmola",
+      "hue": "#C2410C"
+    },
+    {
+      "id": "fem",
+      "name": "Fem",
+      "localisedName": {
+        "en": "Fem",
+        "ar": "فيم"
+      },
+      "category": "Skin care",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/fem",
+      "hue": "#B23A6E"
+    },
+    {
+      "id": "dabur-honey",
+      "name": "Dabur Honey",
+      "localisedName": {
+        "en": "Dabur Honey",
+        "ar": "عسل دابر"
+      },
+      "category": "Health care",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/dabur-honey",
+      "hue": "#B8860B"
+    },
+    {
+      "id": "chyawanprash",
+      "name": "Dabur Chyawanprash",
+      "localisedName": {
+        "en": "Dabur Chyawanprash",
+        "ar": "دابر تشاوانبراش"
+      },
+      "category": "Health care",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/dabur-chyawanprash",
+      "hue": "#7F1D1D"
+    },
+    {
+      "id": "odonil",
+      "name": "Odonil",
+      "localisedName": {
+        "en": "Odonil",
+        "ar": "أودونيل"
+      },
+      "category": "Home care",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/odonil",
+      "hue": "#2F6F9F"
+    },
+    {
+      "id": "dermoviva",
+      "name": "Dermoviva",
+      "localisedName": {
+        "en": "Dermoviva",
+        "ar": "ديرموفيفا"
+      },
+      "category": "Skin care",
+      "catalogueUrl": "https://www.daburinternational.com/uae/brands/dermoviva",
+      "hue": "#C08497"
+    }
+  ],
+  "products": [
+    {
+      "id": "vatika-coconut-hair-oil",
+      "brandId": "vatika",
+      "names": {
+        "en": "Vatika Naturals Enriched Coconut Hair Oil",
+        "ar": "زيت جوز الهند المعزز من فاتيكا ناتشورالز"
+      },
+      "type": "Hair oil",
+      "packType": "bottle",
+      "description": {
+        "en": "Coconut oil enriched with henna, amla and lemon for hair that feels stronger and looks healthier.",
+        "ar": "زيت جوز الهند معزز بالحناء والأملا والليمون لشعر أقوى وأكثر صحة."
+      },
+      "ingredients": [
+        "Coconut oil",
+        "Henna",
+        "Amla",
+        "Lemon"
+      ],
+      "benefits": [
+        {
+          "en": "Helps reduce hair fall",
+          "ar": "يساعد على تقليل تساقط الشعر"
+        },
+        {
+          "en": "Adds natural shine",
+          "ar": "يمنح لمعاناً طبيعياً"
+        },
+        {
+          "en": "Light, non-sticky feel",
+          "ar": "ملمس خفيف غير لزج"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Warm a small amount between your palms.",
+          "ar": "دفّئ كمية صغيرة بين راحتي يديك."
+        },
+        {
+          "en": "Massage into the scalp with fingertips for two to three minutes.",
+          "ar": "دلّك فروة الرأس بأطراف الأصابع لمدة دقيقتين إلى ثلاث."
+        },
+        {
+          "en": "Leave for an hour or overnight, then wash as usual.",
+          "ar": "اتركه لساعة أو طوال الليل ثم اغسل الشعر كالمعتاد."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/vatika-coconut-hair-oil",
+      "pendingSync": true
+    },
+    {
+      "id": "vatika-olive-hair-oil",
+      "brandId": "vatika",
+      "names": {
+        "en": "Vatika Naturals Olive Enriched Hair Oil",
+        "ar": "زيت الزيتون المعزز من فاتيكا ناتشورالز"
+      },
+      "type": "Hair oil",
+      "packType": "bottle",
+      "description": {
+        "en": "Olive oil blended with almond and cactus to nourish and protect hair.",
+        "ar": "زيت زيتون ممزوج باللوز والصبار لتغذية الشعر وحمايته."
+      },
+      "ingredients": [
+        "Olive oil",
+        "Almond",
+        "Cactus"
+      ],
+      "benefits": [
+        {
+          "en": "Deep nourishment",
+          "ar": "تغذية عميقة"
+        },
+        {
+          "en": "Helps protect against breakage",
+          "ar": "يساعد على الحماية من التقصف"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Warm a small amount between your palms.",
+          "ar": "دفّئ كمية صغيرة بين راحتي يديك."
+        },
+        {
+          "en": "Massage into the scalp with fingertips for two to three minutes.",
+          "ar": "دلّك فروة الرأس بأطراف الأصابع لمدة دقيقتين إلى ثلاث."
+        },
+        {
+          "en": "Leave for an hour or overnight, then wash as usual.",
+          "ar": "اتركه لساعة أو طوال الليل ثم اغسل الشعر كالمعتاد."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/vatika-olive-hair-oil",
+      "pendingSync": true
+    },
+    {
+      "id": "vatika-black-seed-hair-oil",
+      "brandId": "vatika",
+      "names": {
+        "en": "Vatika Naturals Black Seed Enriched Hair Oil",
+        "ar": "زيت الحبة السوداء المعزز من فاتيكا ناتشورالز"
+      },
+      "type": "Hair oil",
+      "packType": "bottle",
+      "description": {
+        "en": "Black seed oil with olive and almond, made for hair that keeps falling.",
+        "ar": "زيت الحبة السوداء مع الزيتون واللوز لشعر يقاوم التساقط."
+      },
+      "ingredients": [
+        "Black seed oil",
+        "Olive oil",
+        "Almond oil"
+      ],
+      "benefits": [
+        {
+          "en": "Strengthens roots",
+          "ar": "يقوي الجذور"
+        },
+        {
+          "en": "Helps reduce hair fall",
+          "ar": "يساعد على تقليل تساقط الشعر"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Warm a small amount between your palms.",
+          "ar": "دفّئ كمية صغيرة بين راحتي يديك."
+        },
+        {
+          "en": "Massage into the scalp with fingertips for two to three minutes.",
+          "ar": "دلّك فروة الرأس بأطراف الأصابع لمدة دقيقتين إلى ثلاث."
+        },
+        {
+          "en": "Leave for an hour or overnight, then wash as usual.",
+          "ar": "اتركه لساعة أو طوال الليل ثم اغسل الشعر كالمعتاد."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/vatika-black-seed-hair-oil",
+      "pendingSync": true
+    },
+    {
+      "id": "vatika-argan-hair-oil",
+      "brandId": "vatika",
+      "names": {
+        "en": "Vatika Naturals Argan Enriched Hair Oil",
+        "ar": "زيت الأرغان المعزز من فاتيكا ناتشورالز"
+      },
+      "type": "Hair oil",
+      "packType": "bottle",
+      "description": {
+        "en": "Argan oil with olive and almond for softer, more manageable hair.",
+        "ar": "زيت الأرغان مع الزيتون واللوز لشعر أنعم وأسهل تصفيفاً."
+      },
+      "ingredients": [
+        "Argan oil",
+        "Olive oil",
+        "Almond oil"
+      ],
+      "benefits": [
+        {
+          "en": "Softens and smooths",
+          "ar": "ينعّم ويلطّف"
+        },
+        {
+          "en": "Tames frizz",
+          "ar": "يهدّئ التجعّد"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Warm a small amount between your palms.",
+          "ar": "دفّئ كمية صغيرة بين راحتي يديك."
+        },
+        {
+          "en": "Massage into the scalp with fingertips for two to three minutes.",
+          "ar": "دلّك فروة الرأس بأطراف الأصابع لمدة دقيقتين إلى ثلاث."
+        },
+        {
+          "en": "Leave for an hour or overnight, then wash as usual.",
+          "ar": "اتركه لساعة أو طوال الليل ثم اغسل الشعر كالمعتاد."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/vatika-argan-hair-oil",
+      "pendingSync": true
+    },
+    {
+      "id": "vatika-garlic-hair-oil",
+      "brandId": "vatika",
+      "names": {
+        "en": "Vatika Naturals Garlic Enriched Hair Oil",
+        "ar": "زيت الثوم المعزز من فاتيكا ناتشورالز"
+      },
+      "type": "Hair oil",
+      "packType": "bottle",
+      "description": {
+        "en": "Garlic-enriched oil that supports thicker-looking, stronger hair.",
+        "ar": "زيت معزز بالثوم يدعم شعراً أكثر كثافة وقوة."
+      },
+      "ingredients": [
+        "Garlic",
+        "Olive oil",
+        "Almond oil"
+      ],
+      "benefits": [
+        {
+          "en": "Supports thicker-looking hair",
+          "ar": "يدعم مظهراً أكثر كثافة"
+        },
+        {
+          "en": "Strengthens from root to tip",
+          "ar": "يقوّي من الجذور حتى الأطراف"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Warm a small amount between your palms.",
+          "ar": "دفّئ كمية صغيرة بين راحتي يديك."
+        },
+        {
+          "en": "Massage into the scalp with fingertips for two to three minutes.",
+          "ar": "دلّك فروة الرأس بأطراف الأصابع لمدة دقيقتين إلى ثلاث."
+        },
+        {
+          "en": "Leave for an hour or overnight, then wash as usual.",
+          "ar": "اتركه لساعة أو طوال الليل ثم اغسل الشعر كالمعتاد."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/vatika-garlic-hair-oil",
+      "pendingSync": true
+    },
+    {
+      "id": "vatika-hammam-zaith",
+      "brandId": "vatika",
+      "names": {
+        "en": "Vatika Naturals Hammam Zaith Hot Oil Treatment",
+        "ar": "حمام زيت فاتيكا ناتشورالز"
+      },
+      "type": "Hot oil treatment",
+      "packType": "jar",
+      "description": {
+        "en": "A rich hot oil treatment with olive and almond for deep conditioning.",
+        "ar": "علاج حمام زيت غني بالزيتون واللوز لترطيب عميق."
+      },
+      "ingredients": [
+        "Olive oil",
+        "Almond oil",
+        "Cactus"
+      ],
+      "benefits": [
+        {
+          "en": "Intensive conditioning",
+          "ar": "ترطيب مكثف"
+        },
+        {
+          "en": "Restores softness",
+          "ar": "يعيد النعومة"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Apply generously to damp hair.",
+          "ar": "ضع كمية وافرة على الشعر الرطب."
+        },
+        {
+          "en": "Cover with a warm towel for 15 minutes.",
+          "ar": "غطِّ الشعر بمنشفة دافئة لمدة 15 دقيقة."
+        },
+        {
+          "en": "Rinse and shampoo.",
+          "ar": "اشطف ثم اغسل بالشامبو."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/vatika-hammam-zaith",
+      "pendingSync": true
+    },
+    {
+      "id": "vatika-black-seed-shampoo",
+      "brandId": "vatika",
+      "names": {
+        "en": "Vatika Naturals Black Seed Hair Fall Control Shampoo",
+        "ar": "شامبو فاتيكا ناتشورالز بالحبة السوداء للتحكم في التساقط"
+      },
+      "type": "Shampoo",
+      "packType": "bottle",
+      "description": {
+        "en": "Black seed shampoo that cleanses gently while helping to control hair fall.",
+        "ar": "شامبو بالحبة السوداء ينظف بلطف ويساعد في التحكم بتساقط الشعر."
+      },
+      "ingredients": [
+        "Black seed",
+        "Wheat protein"
+      ],
+      "benefits": [
+        {
+          "en": "Helps control hair fall",
+          "ar": "يساعد في التحكم بتساقط الشعر"
+        },
+        {
+          "en": "Gentle daily cleanse",
+          "ar": "تنظيف يومي لطيف"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Apply to wet hair and work into a lather.",
+          "ar": "ضع على الشعر المبلل وافركه حتى تتكوّن الرغوة."
+        },
+        {
+          "en": "Rinse thoroughly.",
+          "ar": "اشطف جيداً."
+        },
+        {
+          "en": "Follow with the matching conditioner.",
+          "ar": "اتبعه بالبلسم المناسب."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/vatika-black-seed-shampoo",
+      "pendingSync": true
+    },
+    {
+      "id": "vatika-argan-shampoo",
+      "brandId": "vatika",
+      "names": {
+        "en": "Vatika Naturals Argan Moisture Treatment Shampoo",
+        "ar": "شامبو فاتيكا ناتشورالز بالأرغان للترطيب"
+      },
+      "type": "Shampoo",
+      "packType": "bottle",
+      "description": {
+        "en": "Moisture-rich argan shampoo for dry, frizzy hair.",
+        "ar": "شامبو بالأرغان غني بالترطيب للشعر الجاف والمجعد."
+      },
+      "ingredients": [
+        "Argan oil",
+        "Vitamin E"
+      ],
+      "benefits": [
+        {
+          "en": "Restores moisture",
+          "ar": "يعيد الترطيب"
+        },
+        {
+          "en": "Leaves hair soft and shiny",
+          "ar": "يترك الشعر ناعماً ولامعاً"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Apply to wet hair and work into a lather.",
+          "ar": "ضع على الشعر المبلل وافركه حتى تتكوّن الرغوة."
+        },
+        {
+          "en": "Rinse thoroughly.",
+          "ar": "اشطف جيداً."
+        },
+        {
+          "en": "Follow with the matching conditioner.",
+          "ar": "اتبعه بالبلسم المناسب."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/vatika-argan-shampoo",
+      "pendingSync": true
+    },
+    {
+      "id": "vatika-black-seed-conditioner",
+      "brandId": "vatika",
+      "names": {
+        "en": "Vatika Naturals Black Seed Repair and Restore Conditioner",
+        "ar": "بلسم فاتيكا ناتشورالز بالحبة السوداء للإصلاح والترميم"
+      },
+      "type": "Conditioner",
+      "packType": "bottle",
+      "description": {
+        "en": "Conditioner with black seed and olive that detangles and strengthens.",
+        "ar": "بلسم بالحبة السوداء والزيتون يفك التشابك ويقوي الشعر."
+      },
+      "ingredients": [
+        "Black seed",
+        "Olive oil"
+      ],
+      "benefits": [
+        {
+          "en": "Detangles",
+          "ar": "يفك التشابك"
+        },
+        {
+          "en": "Strengthens weak strands",
+          "ar": "يقوي الخصلات الضعيفة"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "After shampoo, apply from mid-length to ends.",
+          "ar": "بعد الشامبو، ضعه من منتصف الشعر حتى الأطراف."
+        },
+        {
+          "en": "Leave for two minutes and rinse.",
+          "ar": "اتركه دقيقتين ثم اشطفه."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/vatika-black-seed-conditioner",
+      "pendingSync": true
+    },
+    {
+      "id": "vatika-styling-cream-antidandruff",
+      "brandId": "vatika",
+      "names": {
+        "en": "Vatika Naturals Anti-Dandruff Styling Hair Cream",
+        "ar": "كريم تصفيف فاتيكا ناتشورالز ضد القشرة"
+      },
+      "type": "Styling cream",
+      "packType": "jar",
+      "description": {
+        "en": "A styling cream with lemon and tea tree that holds hair while helping keep dandruff away.",
+        "ar": "كريم تصفيف بالليمون وشجرة الشاي يثبت الشعر ويساعد على إبعاد القشرة."
+      },
+      "ingredients": [
+        "Lemon",
+        "Tea tree oil",
+        "Olive oil"
+      ],
+      "benefits": [
+        {
+          "en": "Natural hold",
+          "ar": "تثبيت طبيعي"
+        },
+        {
+          "en": "Helps control dandruff",
+          "ar": "يساعد في السيطرة على القشرة"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Take a small amount and rub between palms.",
+          "ar": "خذ كمية صغيرة وافركها بين راحتيك."
+        },
+        {
+          "en": "Style damp or dry hair.",
+          "ar": "صفف الشعر رطباً أو جافاً."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/vatika-styling-cream-antidandruff",
+      "pendingSync": true
+    },
+    {
+      "id": "dabur-amla-hair-oil",
+      "brandId": "dabur-amla",
+      "names": {
+        "en": "Dabur Amla Hair Oil",
+        "ar": "زيت دابر أملا للشعر"
+      },
+      "type": "Hair oil",
+      "packType": "bottle",
+      "description": {
+        "en": "The original amla hair oil, trusted for generations for long, strong, beautiful hair.",
+        "ar": "زيت الأملا الأصلي الموثوق عبر الأجيال لشعر طويل وقوي وجميل."
+      },
+      "ingredients": [
+        "Amla (Indian gooseberry)",
+        "Mineral oil",
+        "Vegetable oil"
+      ],
+      "benefits": [
+        {
+          "en": "Nourishes the scalp",
+          "ar": "يغذي فروة الرأس"
+        },
+        {
+          "en": "Supports long, strong hair",
+          "ar": "يدعم شعراً طويلاً وقوياً"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Warm a small amount between your palms.",
+          "ar": "دفّئ كمية صغيرة بين راحتي يديك."
+        },
+        {
+          "en": "Massage into the scalp with fingertips for two to three minutes.",
+          "ar": "دلّك فروة الرأس بأطراف الأصابع لمدة دقيقتين إلى ثلاث."
+        },
+        {
+          "en": "Leave for an hour or overnight, then wash as usual.",
+          "ar": "اتركه لساعة أو طوال الليل ثم اغسل الشعر كالمعتاد."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dabur-amla-hair-oil",
+      "pendingSync": true
+    },
+    {
+      "id": "dabur-amla-jasmine-hair-oil",
+      "brandId": "dabur-amla",
+      "names": {
+        "en": "Dabur Amla Jasmine Hair Oil",
+        "ar": "زيت دابر أملا بالياسمين"
+      },
+      "type": "Hair oil",
+      "packType": "bottle",
+      "description": {
+        "en": "Amla with the fragrance of jasmine, a lighter feel for daily use.",
+        "ar": "الأملا مع عبير الياسمين، ملمس أخف للاستخدام اليومي."
+      },
+      "ingredients": [
+        "Amla",
+        "Jasmine fragrance",
+        "Vegetable oil"
+      ],
+      "benefits": [
+        {
+          "en": "Light daily nourishment",
+          "ar": "تغذية يومية خفيفة"
+        },
+        {
+          "en": "Fresh jasmine scent",
+          "ar": "رائحة ياسمين منعشة"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Warm a small amount between your palms.",
+          "ar": "دفّئ كمية صغيرة بين راحتي يديك."
+        },
+        {
+          "en": "Massage into the scalp with fingertips for two to three minutes.",
+          "ar": "دلّك فروة الرأس بأطراف الأصابع لمدة دقيقتين إلى ثلاث."
+        },
+        {
+          "en": "Leave for an hour or overnight, then wash as usual.",
+          "ar": "اتركه لساعة أو طوال الليل ثم اغسل الشعر كالمعتاد."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dabur-amla-jasmine-hair-oil",
+      "pendingSync": true
+    },
+    {
+      "id": "dabur-amla-gold-hair-oil",
+      "brandId": "dabur-amla",
+      "names": {
+        "en": "Dabur Amla Gold Hair Oil",
+        "ar": "زيت دابر أملا غولد"
+      },
+      "type": "Hair oil",
+      "packType": "bottle",
+      "description": {
+        "en": "Amla enriched with almond and henna for nourished, shiny hair.",
+        "ar": "أملا معززة باللوز والحناء لشعر مغذّى ولامع."
+      },
+      "ingredients": [
+        "Amla",
+        "Almond oil",
+        "Henna"
+      ],
+      "benefits": [
+        {
+          "en": "Adds shine",
+          "ar": "يضيف لمعاناً"
+        },
+        {
+          "en": "Nourishes deeply",
+          "ar": "يغذي بعمق"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Warm a small amount between your palms.",
+          "ar": "دفّئ كمية صغيرة بين راحتي يديك."
+        },
+        {
+          "en": "Massage into the scalp with fingertips for two to three minutes.",
+          "ar": "دلّك فروة الرأس بأطراف الأصابع لمدة دقيقتين إلى ثلاث."
+        },
+        {
+          "en": "Leave for an hour or overnight, then wash as usual.",
+          "ar": "اتركه لساعة أو طوال الليل ثم اغسل الشعر كالمعتاد."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dabur-amla-gold-hair-oil",
+      "pendingSync": true
+    },
+    {
+      "id": "dabur-amla-kids-hair-oil",
+      "brandId": "dabur-amla",
+      "names": {
+        "en": "Dabur Amla Kids Hair Oil",
+        "ar": "زيت دابر أملا للأطفال"
+      },
+      "type": "Hair oil",
+      "packType": "bottle",
+      "description": {
+        "en": "Gentle amla oil made for children's hair, with olive and almond.",
+        "ar": "زيت أملا لطيف لشعر الأطفال مع الزيتون واللوز."
+      },
+      "ingredients": [
+        "Amla",
+        "Olive oil",
+        "Almond oil"
+      ],
+      "benefits": [
+        {
+          "en": "Gentle on young scalps",
+          "ar": "لطيف على فروة رأس الأطفال"
+        },
+        {
+          "en": "Easy to comb",
+          "ar": "سهل التمشيط"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Warm a small amount between your palms.",
+          "ar": "دفّئ كمية صغيرة بين راحتي يديك."
+        },
+        {
+          "en": "Massage into the scalp with fingertips for two to three minutes.",
+          "ar": "دلّك فروة الرأس بأطراف الأصابع لمدة دقيقتين إلى ثلاث."
+        },
+        {
+          "en": "Leave for an hour or overnight, then wash as usual.",
+          "ar": "اتركه لساعة أو طوال الليل ثم اغسل الشعر كالمعتاد."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dabur-amla-kids-hair-oil",
+      "pendingSync": true
+    },
+    {
+      "id": "dabur-herbl-charcoal-toothpaste",
+      "brandId": "dabur-herbl",
+      "names": {
+        "en": "Dabur Herb'l Activated Charcoal Toothpaste",
+        "ar": "معجون أسنان دابر هيربل بالفحم النشط"
+      },
+      "type": "Toothpaste",
+      "packType": "tube",
+      "description": {
+        "en": "Activated charcoal toothpaste for whiter teeth and fresh breath.",
+        "ar": "معجون أسنان بالفحم النشط لأسنان أكثر بياضاً ونفس منعش."
+      },
+      "ingredients": [
+        "Activated charcoal",
+        "Mint"
+      ],
+      "benefits": [
+        {
+          "en": "Whitens naturally",
+          "ar": "يبيّض بشكل طبيعي"
+        },
+        {
+          "en": "Long-lasting freshness",
+          "ar": "انتعاش يدوم"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Brush twice a day for two minutes.",
+          "ar": "نظّف الأسنان مرتين يومياً لمدة دقيقتين."
+        },
+        {
+          "en": "Spit out. Do not swallow.",
+          "ar": "ابصق ولا تبلع."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dabur-herbl-charcoal-toothpaste",
+      "pendingSync": true
+    },
+    {
+      "id": "dabur-herbl-clove-toothpaste",
+      "brandId": "dabur-herbl",
+      "names": {
+        "en": "Dabur Herb'l Clove Toothpaste",
+        "ar": "معجون أسنان دابر هيربل بالقرنفل"
+      },
+      "type": "Toothpaste",
+      "packType": "tube",
+      "description": {
+        "en": "Clove toothpaste for strong teeth and healthy gums.",
+        "ar": "معجون أسنان بالقرنفل لأسنان قوية ولثة صحية."
+      },
+      "ingredients": [
+        "Clove",
+        "Calcium"
+      ],
+      "benefits": [
+        {
+          "en": "Strengthens teeth",
+          "ar": "يقوي الأسنان"
+        },
+        {
+          "en": "Supports gum health",
+          "ar": "يدعم صحة اللثة"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Brush twice a day for two minutes.",
+          "ar": "نظّف الأسنان مرتين يومياً لمدة دقيقتين."
+        },
+        {
+          "en": "Spit out. Do not swallow.",
+          "ar": "ابصق ولا تبلع."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dabur-herbl-clove-toothpaste",
+      "pendingSync": true
+    },
+    {
+      "id": "dabur-herbl-neem-toothpaste",
+      "brandId": "dabur-herbl",
+      "names": {
+        "en": "Dabur Herb'l Neem Toothpaste",
+        "ar": "معجون أسنان دابر هيربل بالنيم"
+      },
+      "type": "Toothpaste",
+      "packType": "tube",
+      "description": {
+        "en": "Neem toothpaste for germ protection and healthy gums.",
+        "ar": "معجون أسنان بالنيم للحماية من الجراثيم ولثة صحية."
+      },
+      "ingredients": [
+        "Neem",
+        "Mint"
+      ],
+      "benefits": [
+        {
+          "en": "Germ protection",
+          "ar": "حماية من الجراثيم"
+        },
+        {
+          "en": "Healthy gums",
+          "ar": "لثة صحية"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Brush twice a day for two minutes.",
+          "ar": "نظّف الأسنان مرتين يومياً لمدة دقيقتين."
+        },
+        {
+          "en": "Spit out. Do not swallow.",
+          "ar": "ابصق ولا تبلع."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dabur-herbl-neem-toothpaste",
+      "pendingSync": true
+    },
+    {
+      "id": "meswak-toothpaste",
+      "brandId": "meswak",
+      "names": {
+        "en": "Dabur Meswak Toothpaste",
+        "ar": "معجون أسنان دابر مسواك"
+      },
+      "type": "Toothpaste",
+      "packType": "tube",
+      "description": {
+        "en": "Toothpaste made with extract of the Miswak tree for complete oral care.",
+        "ar": "معجون أسنان بخلاصة شجرة المسواك للعناية الكاملة بالفم."
+      },
+      "ingredients": [
+        "Miswak (Salvadora persica) extract"
+      ],
+      "benefits": [
+        {
+          "en": "Fights plaque",
+          "ar": "يحارب البلاك"
+        },
+        {
+          "en": "Keeps gums healthy",
+          "ar": "يحافظ على صحة اللثة"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Brush twice a day for two minutes.",
+          "ar": "نظّف الأسنان مرتين يومياً لمدة دقيقتين."
+        },
+        {
+          "en": "Spit out. Do not swallow.",
+          "ar": "ابصق ولا تبلع."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/meswak-toothpaste",
+      "pendingSync": true
+    },
+    {
+      "id": "dabur-red-toothpaste",
+      "brandId": "dabur-red",
+      "names": {
+        "en": "Dabur Red Toothpaste",
+        "ar": "معجون أسنان دابر ريد"
+      },
+      "type": "Toothpaste",
+      "packType": "tube",
+      "description": {
+        "en": "Ayurvedic toothpaste with clove, mint and tomar for all-round dental care.",
+        "ar": "معجون أسنان أيورفيدي بالقرنفل والنعناع والتومار للعناية الشاملة بالأسنان."
+      },
+      "ingredients": [
+        "Clove",
+        "Mint",
+        "Tomar",
+        "Pudina"
+      ],
+      "benefits": [
+        {
+          "en": "Fights germs",
+          "ar": "يحارب الجراثيم"
+        },
+        {
+          "en": "Freshens breath",
+          "ar": "ينعش النفس"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Brush twice a day for two minutes.",
+          "ar": "نظّف الأسنان مرتين يومياً لمدة دقيقتين."
+        },
+        {
+          "en": "Spit out. Do not swallow.",
+          "ar": "ابصق ولا تبلع."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dabur-red-toothpaste",
+      "pendingSync": true
+    },
+    {
+      "id": "real-mango-juice",
+      "brandId": "real",
+      "names": {
+        "en": "Real Fruit Power Mango Juice",
+        "ar": "عصير ريل فروت باور بالمانجو"
+      },
+      "type": "Fruit juice",
+      "packType": "carton",
+      "description": {
+        "en": "Mango juice drink with no added preservatives, in a 1 litre carton.",
+        "ar": "عصير مانجو بدون مواد حافظة مضافة، في عبوة لتر واحد."
+      },
+      "ingredients": [
+        "Mango pulp",
+        "Water",
+        "Sugar"
+      ],
+      "benefits": [
+        {
+          "en": "Real fruit taste",
+          "ar": "طعم الفاكهة الحقيقي"
+        },
+        {
+          "en": "No added preservatives",
+          "ar": "بدون مواد حافظة مضافة"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Shake well and serve chilled.",
+          "ar": "رجّ جيداً وقدّمه بارداً."
+        },
+        {
+          "en": "Refrigerate after opening.",
+          "ar": "يُحفظ في الثلاجة بعد الفتح."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/real-mango-juice",
+      "pendingSync": true
+    },
+    {
+      "id": "real-orange-juice",
+      "brandId": "real",
+      "names": {
+        "en": "Real Fruit Power Orange Juice",
+        "ar": "عصير ريل فروت باور بالبرتقال"
+      },
+      "type": "Fruit juice",
+      "packType": "carton",
+      "description": {
+        "en": "Orange juice drink with the taste of fresh oranges.",
+        "ar": "عصير برتقال بطعم البرتقال الطازج."
+      },
+      "ingredients": [
+        "Orange concentrate",
+        "Water",
+        "Sugar"
+      ],
+      "benefits": [
+        {
+          "en": "Vitamin C",
+          "ar": "فيتامين سي"
+        },
+        {
+          "en": "No added preservatives",
+          "ar": "بدون مواد حافظة مضافة"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Shake well and serve chilled.",
+          "ar": "رجّ جيداً وقدّمه بارداً."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/real-orange-juice",
+      "pendingSync": true
+    },
+    {
+      "id": "hajmola-regular",
+      "brandId": "hajmola",
+      "names": {
+        "en": "Hajmola Regular",
+        "ar": "هاجمولا ريغولار"
+      },
+      "type": "Digestive tablet",
+      "packType": "jar",
+      "description": {
+        "en": "Tangy Ayurvedic digestive tablets, the classic taste.",
+        "ar": "أقراص هضمية أيورفيدية بطعم لاذع، النكهة الكلاسيكية."
+      },
+      "ingredients": [
+        "Black salt",
+        "Cumin",
+        "Dry ginger",
+        "Black pepper"
+      ],
+      "benefits": [
+        {
+          "en": "Supports digestion",
+          "ar": "يدعم الهضم"
+        },
+        {
+          "en": "Tangy taste",
+          "ar": "طعم لاذع"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Take one or two tablets after a meal.",
+          "ar": "تناول قرصاً أو قرصين بعد الوجبة."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/hajmola-regular",
+      "pendingSync": true
+    },
+    {
+      "id": "hajmola-imli",
+      "brandId": "hajmola",
+      "names": {
+        "en": "Hajmola Imli",
+        "ar": "هاجمولا إيملي"
+      },
+      "type": "Digestive tablet",
+      "packType": "jar",
+      "description": {
+        "en": "Hajmola with the sweet and sour taste of tamarind.",
+        "ar": "هاجمولا بطعم التمر الهندي الحلو والحامض."
+      },
+      "ingredients": [
+        "Tamarind",
+        "Black salt",
+        "Cumin"
+      ],
+      "benefits": [
+        {
+          "en": "Supports digestion",
+          "ar": "يدعم الهضم"
+        },
+        {
+          "en": "Tamarind flavour",
+          "ar": "نكهة التمر الهندي"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Take one or two tablets after a meal.",
+          "ar": "تناول قرصاً أو قرصين بعد الوجبة."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/hajmola-imli",
+      "pendingSync": true
+    },
+    {
+      "id": "fem-gold-creme-bleach",
+      "brandId": "fem",
+      "names": {
+        "en": "Fem Gold Creme Bleach",
+        "ar": "فيم غولد كريم بليتش"
+      },
+      "type": "Facial bleach",
+      "packType": "box",
+      "description": {
+        "en": "Gold creme bleach for a radiant, even-toned look.",
+        "ar": "كريم بليتش ذهبي لمظهر مشرق وموحّد اللون."
+      },
+      "ingredients": [
+        "Gold shine particles",
+        "Aloe vera"
+      ],
+      "benefits": [
+        {
+          "en": "Radiant glow",
+          "ar": "إشراقة متألقة"
+        },
+        {
+          "en": "Gentle on skin",
+          "ar": "لطيف على البشرة"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Mix as directed on the pack.",
+          "ar": "اخلط حسب التعليمات على العبوة."
+        },
+        {
+          "en": "Apply for the stated time, then rinse.",
+          "ar": "ضعه للمدة المحددة ثم اشطف."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/fem-gold-creme-bleach",
+      "pendingSync": true
+    },
+    {
+      "id": "fem-hair-removal-cream-rose",
+      "brandId": "fem",
+      "names": {
+        "en": "Fem Hair Removal Cream Rose",
+        "ar": "كريم فيم لإزالة الشعر بالورد"
+      },
+      "type": "Hair removal cream",
+      "packType": "tube",
+      "description": {
+        "en": "Hair removal cream with rose extract for soft, smooth skin.",
+        "ar": "كريم إزالة شعر بخلاصة الورد لبشرة ناعمة وملساء."
+      },
+      "ingredients": [
+        "Rose extract",
+        "Moisturisers"
+      ],
+      "benefits": [
+        {
+          "en": "Removes hair in minutes",
+          "ar": "يزيل الشعر في دقائق"
+        },
+        {
+          "en": "Leaves skin soft",
+          "ar": "يترك البشرة ناعمة"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Apply an even layer and wait as directed.",
+          "ar": "ضع طبقة متساوية وانتظر حسب التعليمات."
+        },
+        {
+          "en": "Remove with the spatula and rinse.",
+          "ar": "أزله بالملعقة ثم اشطف."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/fem-hair-removal-cream-rose",
+      "pendingSync": true
+    },
+    {
+      "id": "dabur-honey",
+      "brandId": "dabur-honey",
+      "names": {
+        "en": "Dabur Honey",
+        "ar": "عسل دابر"
+      },
+      "type": "Honey",
+      "packType": "bottle",
+      "description": {
+        "en": "Pure honey in a squeezy bottle for everyday goodness.",
+        "ar": "عسل نقي في عبوة سهلة الضغط لفوائد يومية."
+      },
+      "ingredients": [
+        "Honey"
+      ],
+      "benefits": [
+        {
+          "en": "Natural sweetness",
+          "ar": "حلاوة طبيعية"
+        },
+        {
+          "en": "Everyday energy",
+          "ar": "طاقة يومية"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Squeeze over breakfast or into warm water.",
+          "ar": "اعصره على الفطور أو في ماء دافئ."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dabur-honey",
+      "pendingSync": true
+    },
+    {
+      "id": "dabur-chyawanprash",
+      "brandId": "chyawanprash",
+      "names": {
+        "en": "Dabur Chyawanprash",
+        "ar": "دابر تشاوانبراش"
+      },
+      "type": "Health supplement",
+      "packType": "jar",
+      "description": {
+        "en": "Ayurvedic health supplement with amla and over 40 herbs to support immunity.",
+        "ar": "مكمل صحي أيورفيدي بالأملا وأكثر من 40 عشبة لدعم المناعة."
+      },
+      "ingredients": [
+        "Amla",
+        "Ashwagandha",
+        "Giloy",
+        "Honey"
+      ],
+      "benefits": [
+        {
+          "en": "Supports immunity",
+          "ar": "يدعم المناعة"
+        },
+        {
+          "en": "Daily strength",
+          "ar": "قوة يومية"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Take one teaspoon twice a day.",
+          "ar": "تناول ملعقة صغيرة مرتين يومياً."
+        },
+        {
+          "en": "Follow with warm milk or water.",
+          "ar": "اتبعها بحليب أو ماء دافئ."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dabur-chyawanprash",
+      "pendingSync": true
+    },
+    {
+      "id": "odonil-gel-air-freshener",
+      "brandId": "odonil",
+      "names": {
+        "en": "Odonil Gel Air Freshener",
+        "ar": "معطر جو أودونيل جل"
+      },
+      "type": "Air freshener",
+      "packType": "box",
+      "description": {
+        "en": "Gel air freshener that keeps rooms and bathrooms smelling fresh for weeks.",
+        "ar": "معطر جو جل يحافظ على انتعاش الغرف والحمامات لأسابيع."
+      },
+      "ingredients": [
+        "Fragrance gel"
+      ],
+      "benefits": [
+        {
+          "en": "Lasts for weeks",
+          "ar": "يدوم لأسابيع"
+        },
+        {
+          "en": "Fresh fragrance",
+          "ar": "عطر منعش"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Remove the seal and place in the room.",
+          "ar": "أزل الغطاء وضعه في الغرفة."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/odonil-gel-air-freshener",
+      "pendingSync": true
+    },
+    {
+      "id": "dermoviva-skin-naturals-lotion",
+      "brandId": "dermoviva",
+      "names": {
+        "en": "Dermoviva Skin Naturals Moisturising Lotion",
+        "ar": "لوشن ديرموفيفا سكين ناتشورالز المرطب"
+      },
+      "type": "Body lotion",
+      "packType": "bottle",
+      "description": {
+        "en": "Everyday moisturising lotion with natural extracts for soft skin.",
+        "ar": "لوشن ترطيب يومي بخلاصات طبيعية لبشرة ناعمة."
+      },
+      "ingredients": [
+        "Aloe vera",
+        "Vitamin E"
+      ],
+      "benefits": [
+        {
+          "en": "24-hour moisture",
+          "ar": "ترطيب لمدة 24 ساعة"
+        },
+        {
+          "en": "Fast absorbing",
+          "ar": "سريع الامتصاص"
+        }
+      ],
+      "usageSteps": [
+        {
+          "en": "Apply to clean skin daily.",
+          "ar": "ضعه على بشرة نظيفة يومياً."
+        }
+      ],
+      "image": null,
+      "sourceUrl": "https://www.daburinternational.com/uae/products/dermoviva-skin-naturals-lotion",
+      "pendingSync": true
+    }
+  ]
+}

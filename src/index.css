@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+/* ---------- Fonts: self-hosted, inlined in the single-file build ---------- */
+@font-face {
+  font-family: "Outfit Variable";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Readex Pro Variable";
+  font-style: normal;
+  font-weight: 160 700;
+  font-display: swap;
+  src: url("@fontsource-variable/readex-pro/files/readex-pro-arabic-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0898-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: "Readex Pro Variable";
+  font-style: normal;
+  font-weight: 160 700;
+  font-display: swap;
+  src: url("@fontsource-variable/readex-pro/files/readex-pro-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ---------- Palette: one green, one marigold accent, tinted neutrals ---------- */
+:root {
+  color-scheme: light;
+  --bg: #f2f6f0;
+  --surface: #fcfdfb;
+  --surface-2: #e7efe4;
+  --surface-3: #d9e5d6;
+  --ink: #10261a;
+  --ink-2: #4a6154;
+  --ink-3: #7d9284;
+  --line: #d3dfd2;
+  --line-2: #bfcfbf;
+  --leaf: #178a47;
+  --leaf-deep: #0f5a33;
+  --leaf-soft: #d5efdc;
+  --leaf-ink: #06331a;
+  --marigold: #f2b33d;
+  --marigold-soft: #fbe9bf;
+  --marigold-ink: #3d2a05;
+  --rose: #c8473f;
+  --rose-soft: #f7dcda;
+  --sky: #2f6f9f;
+  --shadow: 16 38 26;
+  --font-sans: "Outfit Variable", "Readex Pro Variable", ui-sans-serif, system-ui, sans-serif;
+}
+:root:not([data-theme="light"]) {
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+    --bg: #0b1610;
+    --surface: #13221a;
+    --surface-2: #1a2d22;
+    --surface-3: #22392c;
+    --ink: #eaf2ec;
+    --ink-2: #a9bbb0;
+    --ink-3: #7c9286;
+    --line: #26402f;
+    --line-2: #34503f;
+    --leaf: #38b56d;
+    --leaf-deep: #7fd6a2;
+    --leaf-soft: #17392a;
+    --leaf-ink: #dcf5e5;
+    --marigold: #f4bc4f;
+    --marigold-soft: #4a3a14;
+    --marigold-ink: #fbe9bf;
+    --rose: #e6736b;
+    --rose-soft: #4a2320;
+    --sky: #7fb3dd;
+    --shadow: 0 0 0;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b1610;
+  --surface: #13221a;
+  --surface-2: #1a2d22;
+  --surface-3: #22392c;
+  --ink: #eaf2ec;
+  --ink-2: #a9bbb0;
+  --ink-3: #7c9286;
+  --line: #26402f;
+  --line-2: #34503f;
+  --leaf: #38b56d;
+  --leaf-deep: #7fd6a2;
+  --leaf-soft: #17392a;
+  --leaf-ink: #dcf5e5;
+  --marigold: #f4bc4f;
+  --marigold-soft: #4a3a14;
+  --marigold-ink: #fbe9bf;
+  --rose: #e6736b;
+  --rose-soft: #4a2320;
+  --sky: #7fb3dd;
+  --shadow: 0 0 0;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-leaf: var(--leaf);
+  --color-leaf-deep: var(--leaf-deep);
+  --color-leaf-soft: var(--leaf-soft);
+  --color-leaf-ink: var(--leaf-ink);
+  --color-marigold: var(--marigold);
+  --color-marigold-soft: var(--marigold-soft);
+  --color-marigold-ink: var(--marigold-ink);
+  --color-rose: var(--rose);
+  --color-rose-soft: var(--rose-soft);
+  --color-sky: var(--sky);
+  --font-sans: var(--font-sans);
+  --radius-card: 1.25rem;
+  --radius-field: 0.75rem;
+  --shadow-card: 0 10px 30px -14px rgb(var(--shadow) / 0.25), 0 1px 0 rgb(var(--shadow) / 0.04);
+  --shadow-float: 0 24px 60px -24px rgb(var(--shadow) / 0.35);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Base ---------- */
+html { -webkit-text-size-adjust: 100%; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv11";
+  overflow-x: hidden;
+}
+html[dir="rtl"] body { font-family: "Readex Pro Variable", "Outfit Variable", system-ui, sans-serif; letter-spacing: 0; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+::selection { background: var(--marigold-soft); color: var(--marigold-ink); }
+:focus-visible { outline: 2px solid var(--leaf); outline-offset: 3px; border-radius: 6px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; text-wrap: balance; }
+html[dir="rtl"] h1, html[dir="rtl"] h2, html[dir="rtl"] h3 { letter-spacing: 0; line-height: 1.3; }
+p { margin: 0; }
+img { max-width: 100%; display: block; }
+
+/* Scrollbars stay quiet */
+* { scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
+
+/* ---------- Components ---------- */
+@utility card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+@utility card-soft {
+  background: var(--surface-2);
+  border-radius: var(--radius-card);
+}
+@utility press {
+  transition: transform 160ms var(--ease-out-quint), box-shadow 160ms var(--ease-out-quint), background-color 160ms;
+  &:active { transform: translateY(1px) scale(0.985); }
+}
+@utility field {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-field);
+  padding: 0.65rem 0.9rem;
+  color: var(--ink);
+  transition: border-color 160ms, box-shadow 160ms;
+  &::placeholder { color: var(--ink-3); }
+  &:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 4px color-mix(in oklab, var(--leaf) 18%, transparent); }
+}
+@utility text-balance { text-wrap: balance; }
+@utility tabular { font-variant-numeric: tabular-nums; }
+@utility hide-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* Leaf sticker: a rounded-leaf shape used as a brand motif */
+@utility leaf-shape { border-radius: 70% 0 70% 0 / 70% 0 70% 0; }
+
+/* Grain overlay lives on one fixed element only */
+.grain {
+  position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: 0.045; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+:root[data-theme="dark"] .grain, :root:not([data-theme="light"]) .grain { @media (prefers-color-scheme: dark) { mix-blend-mode: screen; opacity: 0.035; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

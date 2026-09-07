@@ -1,101 +1,111 @@
-# Dabur Creator Hub 🌿
+# Dabur Squad
 
-The creator-facing front door and marketer approval cockpit for Dabur's Middle East digital
-marketing team — the MVP module of a larger creator-marketing platform.
+The creator-community portal for Dabur in the UAE and KSA. One codebase, two seats
+behind one sign-in: a **creator** seat (invitations, kits, uploads, feedback, rewards)
+and a **brand-team** seat (campaigns, shortlists, review queue, logistics, loyalty,
+product catalogue). Bilingual English and Arabic, LTR and RTL, with language as global state.
 
-- **Creators** sign up, browse open campaign launches (Dabur Amla, Vatika, Hajmola, Herb'l, Real),
-  request to join or propose barter collabs, submit content, and track every request/asset through
-  an animated state tracker.
-- **Marketers** work a region-scoped approval queue (join requests + submitted assets — rejections
-  always require a reason that flows back to the creator) and browse a searchable creator directory.
-- **Brand Leads / Admins** see everything across all seven regions.
+Everything runs in the browser. There is no backend, no network call at runtime and no
+payment. State persists to browser storage and rehydrates on boot.
 
-## Tech stack
-
-Next.js 14 (App Router) · TypeScript · Tailwind CSS + shadcn-style components · framer-motion ·
-Prisma (SQLite locally, Postgres-ready) · NextAuth credentials + JWT with role-based middleware ·
-Zod + React Hook Form.
-
-## Quick start
+## Run it
 
 ```bash
 npm install
-npx prisma migrate dev   # creates prisma/dev.db and applies the schema
-npm run db:seed          # 12 creators, 5 campaigns, requests & assets
-npm run dev              # http://localhost:3000
+npm run dev            # http://localhost:5173
+npm run build          # production bundle in dist/
+npm run build:single   # one self-contained HTML file in dist-single/index.html
+npm test               # domain tests (stage machine, permissions, simulation, reducer, seed)
+npm run typecheck
 ```
 
-Copy `.env.example` to `.env` first if it doesn't exist (the defaults work for local dev).
+The single-file build inlines JavaScript, CSS and both variable fonts, and switches to
+hash routing so it opens from disk for offline review.
 
-## Demo logins
+## Demo seats
 
-Password for all accounts: **`dabur2026`**
+Pick a seat at `/login`. No passwords.
 
-| Role       | Email                        | What you'll see                                        |
-| ---------- | ---------------------------- | ------------------------------------------------------ |
-| CREATOR    | `layla@creators.example`     | Launches board, barter flow, submissions, status tracker |
-| MARKETER   | `marketer.uae@dabur.example` | Approval queue scoped to **UAE** only                  |
-| BRAND_LEAD | `brandlead@dabur.example`    | Full queue + creator directory across all regions       |
-| ADMIN      | `admin@dabur.example`        | Everything                                              |
+| Seat | Sign in as | What you can do |
+| --- | --- | --- |
+| Creator | any of the 20 seeded creators | Layla Al Mansoori has data at most stages |
+| Brand team | Super Admin | all six permissions |
+| Brand team | Brand Manager | campaigns, invite, review, products |
+| Brand team | Campaign Manager | campaigns, invite, review |
+| Brand team | Content Reviewer | review |
+| Brand team | Logistics | logistics |
+| Brand team | Finance | loyalty |
 
-(A second marketer, `marketer.ksa@dabur.example`, demonstrates KSA scoping.)
+Switch seat or role from the top bar; the whole seat re-scopes. "Reset demo data" in
+the avatar menu wipes browser storage and reloads the seed.
 
-## Route map
-
-| Route            | Access                       | Purpose                                            |
-| ---------------- | ---------------------------- | -------------------------------------------------- |
-| `/signup`        | Public                       | Creator self-signup → `Creator` + `User(CREATOR)`  |
-| `/login`         | Public                       | Credentials sign-in (demo account quick-fill)      |
-| `/`              | All roles                    | Dashboard with live counts                         |
-| `/launches`      | All roles                    | Open launches board, region/category filters, join + barter flows |
-| `/submit`        | CREATOR                      | Asset submission (approved campaigns only)         |
-| `/me`            | CREATOR                      | Join requests + assets state tracker with feedback |
-| `/queue`         | MARKETER / BRAND_LEAD / ADMIN | Approval queue (marketers region-scoped)          |
-| `/creators`      | MARKETER / BRAND_LEAD / ADMIN | Searchable/filterable directory + detail pages    |
-
-Role enforcement happens twice: in `src/middleware.ts` (route protection) and again inside every
-server action (`src/actions/*`) with Zod validation — the UI is never the security boundary.
-
-## Deploying (Vercel / Netlify)
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdgtldubai4-Create%2FcreatorHub&env=DATABASE_URL,NEXTAUTH_SECRET&envDescription=Postgres%20connection%20string%20and%20a%20random%2032-byte%20auth%20secret&project-name=dabur-creator-hub)
-
-The backend is intentionally simple — server actions + Prisma, no separate API service.
-
-1. Provision a hosted Postgres (Neon, Supabase, or Vercel Postgres).
-2. In `prisma/schema.prisma`, change `provider = "sqlite"` → `"postgresql"`.
-3. Set `DATABASE_URL`, `NEXTAUTH_SECRET` (32+ random bytes), and `NEXTAUTH_URL` in the host's
-   environment variables.
-4. Run `npx prisma migrate deploy && npm run db:seed` once against the production DB.
-
-SQLite is for local dev only — serverless filesystems are ephemeral.
-
-## How the data model extends to future modules
-
-The schema is deliberately normalized around three permanent anchors — **Creator**, **Campaign**,
-and **Asset** — all keyed by stable `cuid()` IDs that future modules reference directly:
-
-- **Grading module** — attaches a `Grade`/`Scorecard` table keyed by `assetId`; the reserved
-  `Asset.score` and `Creator.avgScore` fields are its write targets (nothing in the MVP writes
-  them). Roll-ups flow Asset → Creator.
-- **Sentiment module** — attaches `SentimentSnapshot` rows keyed by `assetId` (comment analysis
-  per published asset) and aggregates per `campaignId`.
-- **Brand Books module** — attaches `BrandBook`/`BrandRule` tables keyed by brand, with
-  per-`campaignId` overrides; asset review in the queue can then surface rule checks inline.
-
-Enum-like fields are `String` (SQLite limitation) with the exact value sets documented in the
-schema and enforced by Zod + TS union types in `src/lib/constants.ts` — on Postgres they can be
-promoted to native enums without data changes. JSON payloads (`handles`, `tags`, `kpis`) are
-stringified for SQLite and become `Jsonb` on Postgres.
-
-## Project layout
+## Where things live
 
 ```
-prisma/schema.prisma    # data model (read the header comment)
-prisma/seed.ts          # demo data + logins
-src/middleware.ts       # role-based route protection
-src/lib/                # auth config, prisma client, zod validators, enum constants
-src/actions/            # all mutations (server actions, zod-validated, role-checked)
-src/app/                # App Router pages
-src/components/         # UI primitives + feature components
+src/domain/       types, stage machine, permissions, reducer, seed, simulations, selectors, persistence
+src/data/         catalogue.json (product catalogue, read-only in the app)
+src/i18n/         every UI string in English and Arabic
+src/app/          store provider, router, seat shells
+src/ui/           primitives, motion helpers, the journey trail, product art
+src/screens/      public, creator and admin screens
+scripts/          sync-products.ts
+tests/            vitest suites for the domain layer
 ```
+
+### The journey state machine
+
+`src/domain/stages.ts` holds the one ordered stage list. Every participation sits at
+exactly one stage and only moves along an explicit edge; `canTransition` refuses skips
+and regressions, and the `changes_requested -> revised_cut -> manual_review` loop is the
+only edge that points back. Every move appends to an immutable stage log with a
+timestamp, and the log drives every progress display (the trail, phase strips, funnels).
+Points are written to the ledger exactly once, at `points_released`, only after
+`post_verified`.
+
+### Reducer and actions
+
+`src/domain/reducer.ts` is one reducer over one state object with a typed action union
+(`respondInvite`, `upload`, `review`, `publish`, `verifyPost`, `releasePoints`,
+`advanceShipment`, `joinQuest`, `redeem`, `invite`, `saveCampaign`, `registerCreator`
+and more). Brand-team mutations check `can(role, permission)`; creator mutations check
+the signed-in creator. `safeReducer` turns thrown errors into a transient `lastError`
+that the UI surfaces as a toast.
+
+### Simulated services
+
+Everything external is simulated in-process and labelled "Simulated" in the interface:
+
+- **Automated content check**: hashes `filename:size:version` (FNV-1a) into bit fields and
+  evaluates the campaign's acceptance criteria into a weighted 0-100 score with a note
+  per check. Same input, same result. Each new version adds an independent chance per
+  check, so the revise loop converges.
+- **Courier tracking**: status advances on command with generated tracking numbers per courier.
+- **Identity and social verification**: state transitions only.
+- **Email and push**: written to the notification log, never sent.
+
+## Product catalogue
+
+`src/data/catalogue.json` is treated as read-only by the app. It ships with a starter
+catalogue of 29 Dabur UAE products flagged `pendingSync: true` (the admin Products
+screen shows a "Pending sync" chip on each).
+
+```bash
+npm run sync:products                          # crawl daburinternational.com/uae
+npm run sync:products -- --from saved-page.html   # parse a saved product page offline
+```
+
+The script reads schema.org Product JSON-LD first and falls back to Open Graph and
+headings. It copies text verbatim, leaves fields the page does not expose empty, and
+writes product image URLs into `image`. It could not be run from the build sandbox
+because outbound access to the Dabur site was blocked there; run it locally, then
+commit the regenerated JSON.
+
+## Design notes
+
+- Palette: one green, one marigold accent, green-tinted neutrals. Light and dark follow
+  the system preference.
+- Type: Outfit for Latin, Readex Pro for Arabic, both self-hosted variable fonts.
+- Motion: `motion/react` springs for state changes, Lenis for smooth scrolling, a
+  confetti burst on the moments that deserve one. Everything collapses under
+  `prefers-reduced-motion`.
+- Icons: Phosphor.
