@@ -26,6 +26,7 @@ export const STRINGS = {
   loyalty: ["Loyalty", "الولاء"],
   products: ["Products", "المنتجات"],
   resetDemo: ["Reset demo data", "إعادة ضبط البيانات"],
+  resetArmed: ["Click again to wipe and reseed", "انقر مرة أخرى للمسح وإعادة التحميل"],
   resetConfirm: ["This wipes everything saved in this browser and reloads the seed. Continue?", "سيمسح هذا كل ما حُفظ في هذا المتصفح ويعيد تحميل البيانات الأولية. هل تريد المتابعة؟"],
   role: ["Role", "الدور"],
   // roles

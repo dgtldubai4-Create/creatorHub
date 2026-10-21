@@ -89,12 +89,16 @@ function UserMenu({ name, hue, profileTo }: { name: string; hue: number; profile
   const reset = useReset();
   const nav = useNavigate();
   const [open, setOpen] = useState(false);
+  const [armed, setArmed] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!open) return;
     const onDoc = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
+  useEffect(() => {
+    if (!open) setArmed(false);
   }, [open]);
   return (
     <div ref={ref} className="relative">
@@ -107,7 +111,7 @@ function UserMenu({ name, hue, profileTo }: { name: string; hue: number; profile
           <motion.div role="menu" initial={{ opacity: 0, y: 6, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.98 }} transition={springSnappy} className="card absolute end-0 top-full z-40 mt-2 w-56 overflow-hidden p-1.5">
             <div className="px-3 py-2 text-[13px] font-medium">{name}</div>
             {profileTo && <MenuItem icon={<SealCheck size={16} />} onClick={() => { setOpen(false); nav(profileTo); }}>{t("profile")}</MenuItem>}
-            <MenuItem icon={<ArrowsClockwise size={16} />} onClick={() => { if (window.confirm(t("resetConfirm"))) { reset(); setOpen(false); nav("/"); } }}>{t("resetDemo")}</MenuItem>
+            <MenuItem icon={<ArrowsClockwise size={16} />} onClick={() => { if (!armed) { setArmed(true); return; } reset(); setArmed(false); setOpen(false); nav("/"); }}>{armed ? t("resetArmed") : t("resetDemo")}</MenuItem>
             <MenuItem icon={<SignOut size={16} />} onClick={() => { dispatch({ type: "signOut" }); setOpen(false); nav("/"); }}>{t("signOut")}</MenuItem>
           </motion.div>
         )}
