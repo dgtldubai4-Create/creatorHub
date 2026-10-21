@@ -1,9 +1,18 @@
 # Dabur Squad
 
-The creator-community portal for Dabur in the UAE and KSA. One codebase, two seats
-behind one sign-in: a **creator** seat (invitations, kits, uploads, feedback, rewards)
-and a **brand-team** seat (campaigns, shortlists, review queue, logistics, loyalty,
-product catalogue). Bilingual English and Arabic, LTR and RTL, with language as global state.
+The always-on creator community for Dabur across six GCC markets (UAE, KSA, Kuwait,
+Qatar, Oman, Bahrain). One codebase, two seats behind one sign-in.
+
+- **Creator seat**: a mission board (starter, routine, monthly, team, review, event,
+  Academy and referral missions), campaign journeys with kits and timestamped feedback,
+  Sparks and levels that reset every season, a leaderboard and the Ambassador round,
+  the Creator Academy with six tracks, mentoring and certificates, rewards and a ledger.
+- **Brand-team seat**: campaigns and match-scored shortlists, the mission builder and
+  mission-post review, seasons and Ambassador selection, Academy progress, creator
+  directory with verification, the cut-review player, logistics, loyalty, and the
+  read-only product catalogue.
+
+Bilingual English and Arabic, LTR and RTL, with language as global state.
 
 Everything runs in the browser. There is no backend, no network call at runtime and no
 payment. State persists to browser storage and rehydrates on boot.
@@ -28,7 +37,7 @@ Pick a seat at `/login`. No passwords.
 
 | Seat | Sign in as | What you can do |
 | --- | --- | --- |
-| Creator | any of the 20 seeded creators | Layla Al Mansoori has data at most stages |
+| Creator | any of the 24 seeded creators | Layla Al Mansoori is a Pro with data at most stages; Zahra Al Lawati is a new Member |
 | Brand team | Super Admin | all six permissions |
 | Brand team | Brand Manager | campaigns, invite, review, products |
 | Brand team | Campaign Manager | campaigns, invite, review |
@@ -51,6 +60,24 @@ src/screens/      public, creator and admin screens
 scripts/          sync-products.ts
 tests/            vitest suites for the domain layer
 ```
+
+### The program loop
+
+- **Missions** (`src/domain/types.ts`, `Mission`) carry type, Sparks, window, market,
+  language, niche and level filters, required hashtags, optional squads, a surprise-drop
+  deadline and per-creator entries. `missionsFor` filters the board; `missionCheck` runs
+  the hashtag, disclosure and timing pre-check on every submission; `reviewMission`
+  approves or asks for changes and writes Sparks to the ledger (doubled during a drop).
+- **Levels** are derived, never stored: `level()` combines season Sparks, a quality
+  score (approved share of reviewed cuts and posts blended with auto-check scores) and
+  the current season's Ambassador cohort. Thresholds live in `LEVEL_RULES`.
+- **Seasons** hold the Ambassador round: `advanceSeason` opens wildcards then voting
+  (pulling the top Pros onto the shortlist), creators `enterWildcard` and
+  `voteAmbassador` once each, and `selectAmbassadors` confirms the cohort.
+- **Streaks** are monthly and computed from the ledger; the first Sparks-earning action
+  in a month after an active month adds a streak bonus entry.
+- **Academy** tracks gate on level; completing every module in a track issues a
+  certificate and Sparks. Mentoring sessions have seats and level gates.
 
 ### The journey state machine
 
@@ -99,6 +126,26 @@ headings. It copies text verbatim, leaves fields the page does not expose empty,
 writes product image URLs into `image`. It could not be run from the build sandbox
 because outbound access to the Dabur site was blocked there; run it locally, then
 commit the regenerated JSON.
+
+## Generated art
+
+Every illustration slot in the interface is listed in `src/art/manifest.ts` with its
+placement, prompt, size and provider. Until a file exists the `ArtSlot` component shows
+a labelled tile in the slot's hue, so nothing pretends to be art that is not there.
+
+```bash
+RECRAFT_API_KEY=... HF_TOKEN=... npm run art          # all 42 slots
+npm run art -- --only level-pro,mission-team         # a subset
+npm run art -- --tool hf                             # one provider
+npm run art -- --dry-run                             # print the plan
+```
+
+Recraft handles the vector and illustration work (level emblems, mission art, Academy
+covers, badge icons). A Hugging Face image model (FLUX.1-schnell by default, override
+with `HF_MODEL`) handles photographic hero and season imagery. Output lands in
+`src/art/generated/` and is picked up on the next build. Neither service is called at
+runtime, and the sandbox this was built in could not reach either, so the files are
+not committed yet.
 
 ## Design notes
 

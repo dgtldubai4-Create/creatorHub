@@ -17,7 +17,12 @@ import { CreatorHome } from "../screens/creator/Home";
 import { Invitations } from "../screens/creator/Invitations";
 import { CreatorCampaigns } from "../screens/creator/Campaigns";
 import { Journey } from "../screens/creator/Journey";
-import { SideQuests } from "../screens/creator/SideQuests";
+import { Missions } from "../screens/creator/Missions";
+import { Academy } from "../screens/creator/Academy";
+import { SeasonPage } from "../screens/creator/Season";
+import { AdminMissions } from "../screens/admin/Missions";
+import { AdminSeasons } from "../screens/admin/Seasons";
+import { AdminAcademy } from "../screens/admin/Academy";
 import { Rewards } from "../screens/creator/Rewards";
 import { Profile } from "../screens/creator/Profile";
 import { Notifications } from "../screens/shared/Notifications";
@@ -111,8 +116,12 @@ export function App() {
                 <Route path="campaigns" element={<CreatorCampaigns />} />
                 <Route path="campaigns/:id" element={<JourneyRoute />} />
                 <Route path="campaigns/:id/:tab" element={<JourneyRoute />} />
-                <Route path="side-quests" element={<SideQuests />} />
-                <Route path="side-quests/:id" element={<SideQuests />} />
+                <Route path="missions" element={<Missions />} />
+                <Route path="missions/:id" element={<Missions />} />
+                <Route path="side-quests" element={<Navigate to="/creator/missions" replace />} />
+                <Route path="academy" element={<Academy />} />
+                <Route path="academy/:trackId" element={<Academy />} />
+                <Route path="season" element={<SeasonPage />} />
                 <Route path="rewards" element={<Rewards />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="notifications" element={<Notifications audience="creator" />} />
@@ -121,6 +130,10 @@ export function App() {
                 <Route index element={<AdminOverview />} />
                 <Route path="campaigns" element={<RequirePermission permission="campaigns"><AdminCampaigns /></RequirePermission>} />
                 <Route path="campaigns/:id" element={<RequirePermission permission="campaigns"><AdminCampaignDetail /></RequirePermission>} />
+                <Route path="missions" element={<RequirePermission permission="review"><AdminMissions /></RequirePermission>} />
+                <Route path="missions/:id" element={<RequirePermission permission="review"><AdminMissions /></RequirePermission>} />
+                <Route path="seasons" element={<RequirePermission permission="campaigns"><AdminSeasons /></RequirePermission>} />
+                <Route path="academy" element={<RequirePermission permission="campaigns"><AdminAcademy /></RequirePermission>} />
                 <Route path="creators" element={<RequirePermission permission="invite"><AdminCreators /></RequirePermission>} />
                 <Route path="creators/:id" element={<RequirePermission permission="invite"><AdminCreators /></RequirePermission>} />
                 <Route path="review" element={<RequirePermission permission="review"><AdminReview /></RequirePermission>} />

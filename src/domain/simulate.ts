@@ -129,3 +129,45 @@ export function addMinutes(iso: string, minutes: number): string {
 export function addDays(iso: string, days: number): string {
   return addMinutes(iso, days * 24 * 60);
 }
+
+// ---------- Mission submission check ----------
+
+/**
+ * Pre-review check on a mission post: required hashtags present, an ad or gifted
+ * disclosure present, and the post inside the mission window. Pure and deterministic.
+ */
+export function missionCheck(caption: string, requiredHashtags: string[], at: string, window: { start: string; end: string }): import("./types").MissionCheck {
+  const text = caption.toLowerCase();
+  const hashtags = requiredHashtags.every((h) => text.includes(h.toLowerCase()));
+  const disclosure = /#ad\b|#gifted\b|#paidpartnership\b|paid partnership|#اعلان|#إعلان|#هدية/.test(text);
+  const day = at.slice(0, 10);
+  const timing = day >= window.start && day <= window.end;
+  return { hashtags, disclosure, timing, passed: hashtags && disclosure && timing, simulated: true };
+}
+
+// ---------- OTP and social connect ----------
+
+/** The one-time code is derived from the number so the demo can show it on screen. */
+export function otpFor(mobile: string): string {
+  return ((fnv1a(mobile.replace(/\D/g, "")) % 9000) + 1000).toString();
+}
+
+/** Stands in for the Instagram and TikTok APIs: audience numbers derived from the handle. */
+export function connectAccount(platform: "instagram" | "tiktok", handle: string, at: string): import("./types").ConnectedAccount {
+  const h = fnv1a(`${platform}:${handle.toLowerCase()}`);
+  const followers = 800 + (h % 180_000);
+  const engagementRate = Math.round((1.2 + ((h >>> 8) % 70) / 10) * 10) / 10;
+  return { handle: handle.replace(/^@/, ""), followers, engagementRate, connectedAt: at, simulated: true };
+}
+
+// ---------- Season helpers ----------
+
+export function monthKey(iso: string): string {
+  return iso.slice(0, 7);
+}
+
+export function prevMonthKey(key: string): string {
+  const [y, m] = key.split("-").map(Number);
+  const d = new Date(Date.UTC(y, m - 2, 1));
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+}

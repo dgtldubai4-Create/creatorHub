@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
-import { Bell, CaretDown, Compass, Gift, House, Leaf, Megaphone, Package, Path, SealCheck, SignOut, Sparkle, Translate, Users, ArrowsClockwise, Coins, ListChecks, PlayCircle, MapTrifold } from "@phosphor-icons/react";
+import { Bell, CaretDown, Gift, House, Leaf, Megaphone, Package, Path, SealCheck, SignOut, Translate, Users, ArrowsClockwise, Coins, ListChecks, PlayCircle, MapTrifold, Lightning, GraduationCap, Trophy } from "@phosphor-icons/react";
 import { useDispatch, useReset, useStore } from "./store";
 import { useT, useToggleLang } from "../i18n";
 import { Avatar } from "../ui/primitives";
@@ -127,16 +127,16 @@ function MenuItem({ icon, children, onClick }: { icon: ReactNode; children: Reac
 
 interface NavItem { to: string; label: string; icon: ReactNode; end?: boolean; permission?: Permission | null }
 
-function TopNav({ items }: { items: NavItem[] }) {
+function TopNav({ items, compact }: { items: NavItem[]; compact?: boolean }) {
   return (
     <nav className="hide-scrollbar flex items-center gap-0.5 overflow-x-auto" aria-label="Primary">
       {items.map((it) => (
-        <NavLink key={it.to} to={it.to} end={it.end} className={({ isActive }) => cn("relative flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[13.5px] font-medium transition-colors", isActive ? "text-ink" : "text-ink-2 hover:text-ink")}>
+        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[13.5px] font-medium transition-colors", isActive ? "text-ink" : "text-ink-2 hover:text-ink")}>
           {({ isActive }) => (
             <>
               {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-surface-2" transition={springSnappy} />}
               {it.icon}
-              {it.label}
+              <span className={cn(compact && "hidden xl:inline")}>{it.label}</span>
             </>
           )}
         </NavLink>
@@ -163,8 +163,8 @@ function BottomTabs({ items }: { items: NavItem[] }) {
 function Frame({ children, nav, bottom }: { children: ReactNode; nav: ReactNode; bottom?: ReactNode }) {
   const location = useLocation();
   return (
-    <div className="min-h-[100dvh] bg-bg">
-      <header className="sticky top-0 z-40 border-b border-line/70 bg-bg/85 backdrop-blur-md">
+    <div className="min-h-[100dvh] bg-canvas">
+      <header className="sticky top-0 z-40 border-b border-line/70 bg-canvas/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 md:px-6">{nav}</div>
       </header>
       <main className="mx-auto max-w-[1400px] px-4 pb-28 pt-6 md:px-6 md:pb-16 md:pt-8">
@@ -185,9 +185,10 @@ export function CreatorShell() {
   const creator = state.creators.find((c) => c.id === state.session.creatorId) ?? state.creators[0];
   const items: NavItem[] = [
     { to: "/creator", label: t("home"), icon: <House size={18} weight="duotone" />, end: true },
-    { to: "/creator/invitations", label: t("invitations"), icon: <Sparkle size={18} weight="duotone" /> },
+    { to: "/creator/missions", label: t("missions"), icon: <Lightning size={18} weight="duotone" /> },
     { to: "/creator/campaigns", label: t("campaigns"), icon: <Path size={18} weight="duotone" /> },
-    { to: "/creator/side-quests", label: t("sideQuests"), icon: <Compass size={18} weight="duotone" /> },
+    { to: "/creator/academy", label: t("academy"), icon: <GraduationCap size={18} weight="duotone" /> },
+    { to: "/creator/season", label: t("season"), icon: <Trophy size={18} weight="duotone" /> },
     { to: "/creator/rewards", label: t("rewards"), icon: <Gift size={18} weight="duotone" /> },
   ];
   return (
@@ -219,6 +220,9 @@ export function AdminShell() {
   const all: NavItem[] = [
     { to: "/admin", label: t("overview"), icon: <MapTrifold size={18} weight="duotone" />, end: true, permission: null },
     { to: "/admin/campaigns", label: t("campaigns"), icon: <Megaphone size={18} weight="duotone" />, permission: "campaigns" },
+    { to: "/admin/missions", label: t("missions"), icon: <Lightning size={18} weight="duotone" />, permission: "review" },
+    { to: "/admin/seasons", label: t("seasons"), icon: <Trophy size={18} weight="duotone" />, permission: "campaigns" },
+    { to: "/admin/academy", label: t("academy"), icon: <GraduationCap size={18} weight="duotone" />, permission: "campaigns" },
     { to: "/admin/creators", label: t("creators"), icon: <Users size={18} weight="duotone" />, permission: "invite" },
     { to: "/admin/review", label: t("review"), icon: <PlayCircle size={18} weight="duotone" />, permission: "review" },
     { to: "/admin/logistics", label: t("logistics"), icon: <Package size={18} weight="duotone" />, permission: "logistics" },
@@ -231,7 +235,7 @@ export function AdminShell() {
       nav={
         <>
           <NavLink to="/admin" className="shrink-0"><Logo compact /></NavLink>
-          <div className="hidden lg:block"><TopNav items={items} /></div>
+          <div className="hidden lg:block"><TopNav items={items} compact /></div>
           <div className="ms-auto flex items-center gap-2">
             <div className="hidden sm:block"><SeatSwitch /></div>
             <RoleSwitch />

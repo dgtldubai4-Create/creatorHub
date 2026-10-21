@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Gift, Ticket, Star, Rocket, Package, Leaf } from "@phosphor-icons/react";
+import { Gift, Ticket, Star, Rocket, Package } from "@phosphor-icons/react";
 import { useDispatch, useStore } from "../../app/store";
 import { useFormat, useL, useT } from "../../i18n";
-import { Button, Chip, PageHeader, Section, Segmented, Sheet, ProgressRing } from "../../ui/primitives";
+import { Button, Chip, PageHeader, Section, Segmented, Sheet } from "../../ui/primitives";
 import { Counter, Item, Stagger, Tilt, useCelebrate } from "../../ui/motion";
 import { useToast } from "../../ui/toast";
-import { balance, lifetimePoints, standing } from "../../domain/selectors";
-import { BrandMark, useCurrentCreator } from "../shared/bits";
+import { balance, lifetimeSparks, level } from "../../domain/selectors";
+import { BrandMark, LevelEmblem, useCurrentCreator } from "../shared/bits";
 import type { Reward } from "../../domain/types";
 import { cn } from "../../ui/cn";
 
@@ -25,8 +25,8 @@ export function Rewards() {
   const [k, setK] = useState<K>("all");
   const [confirm, setConfirm] = useState<Reward | null>(null);
   const bal = balance(s, me.id);
-  const life = lifetimePoints(s, me.id);
-  const st = standing(s, me.id);
+  const life = lifetimeSparks(s, me.id);
+  const lv = level(s, me.id);
   const list = s.rewards.filter((r) => k === "all" || r.kind === k);
   const mine = s.redemptions.filter((r) => r.creatorId === me.id).reverse();
   const ledger = s.ledger.filter((l) => l.creatorId === me.id).slice().reverse();
@@ -54,11 +54,11 @@ export function Rewards() {
           </div>
         </div>
         <div className="card flex items-center gap-4 p-5">
-          <ProgressRing value={st.progress} size={64} stroke={7}><Leaf size={22} weight="fill" className="text-leaf" /></ProgressRing>
+          <LevelEmblem level={lv.level} size={64} />
           <div>
-            <div className="text-[13px] text-ink-3">{t("standing")}</div>
-            <div className="text-lg font-semibold">{t(`st_${st.tier}` as const)}</div>
-            <div className="text-[12.5px] text-ink-3">{st.next ? `${num(st.toNext)} ${t("toNext", { tier: t(`st_${st.next}` as const) })}` : t("topStanding")}</div>
+            <div className="text-[13px] text-ink-3">{t("level")}</div>
+            <div className="text-lg font-semibold">{t(`lv_${lv.level}` as const)}</div>
+            <div className="text-[12.5px] text-ink-3">{lv.next && lv.next !== "ambassador" ? t("toNextLevel", { n: num(lv.toNext), level: t(`lv_${lv.next}` as const) }) : lv.next === "ambassador" ? t("ambassadorsSelected") : t("topLevel")}</div>
           </div>
         </div>
       </div>

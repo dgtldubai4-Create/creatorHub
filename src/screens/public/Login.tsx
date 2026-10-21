@@ -29,7 +29,7 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-bg">
+    <div className="min-h-[100dvh] bg-canvas">
       <header className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-4 md:px-6">
         <Link to="/"><Logo /></Link>
         <button onClick={toggle} className="press inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"><Translate size={15} weight="bold" />{t("language")}</button>

@@ -88,8 +88,8 @@ export function AdminReview() {
                 <Link to="/admin/campaigns" className="hidden" aria-hidden><ArrowLeft /></Link>
               </div>
               {/* Simulated player: a scrubbable timeline. No media is stored. */}
-              <div className="mt-4 rounded-2xl bg-ink p-4 text-bg">
-                <div className="mb-2 flex items-center justify-between text-[12px] opacity-70"><span>{t("player")}</span><SimulatedTag className="border-bg/30 text-bg/70" /></div>
+              <div className="mt-4 rounded-2xl bg-ink p-4 text-canvas">
+                <div className="mb-2 flex items-center justify-between text-[12px] opacity-70"><span>{t("player")}</span><SimulatedTag className="border-canvas/30 text-canvas/70" /></div>
                 <Scrubber bars={bars} duration={duration} pos={pos} onChange={setPos} notes={[...notes, ...p.reviews.flatMap((r) => r.notes)]} />
                 <div className="mt-2 flex items-center justify-between text-[13px] tabular"><span>{clock(pos)}</span><span className="opacity-70">{clock(duration)}</span></div>
                 <p className="mt-2 text-[11.5px] opacity-60">{t("playerHint")}</p>
@@ -158,10 +158,10 @@ function Scrubber({ bars, duration, pos, onChange, notes }: { bars: number[]; du
   return (
     <div className="relative h-16 cursor-pointer select-none touch-none" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); seek(e); }} onPointerMove={(e) => { if (e.buttons) seek(e); }} role="slider" aria-valuemin={0} aria-valuemax={duration} aria-valuenow={Math.round(pos)} tabIndex={0} onKeyDown={(e) => { if (e.key === "ArrowRight") onChange(Math.min(duration, pos + 1)); if (e.key === "ArrowLeft") onChange(Math.max(0, pos - 1)); }}>
       <div className="absolute inset-0 flex items-end gap-[2px]">
-        {bars.map((b, i) => <span key={i} className={cn("flex-1 rounded-sm", i / bars.length <= pos / duration ? "bg-marigold" : "bg-bg/25")} style={{ height: `${b * 100}%` }} />)}
+        {bars.map((b, i) => <span key={i} className={cn("flex-1 rounded-sm", i / bars.length <= pos / duration ? "bg-marigold" : "bg-canvas/25")} style={{ height: `${b * 100}%` }} />)}
       </div>
       {notes.map((n, i) => <span key={i} className="absolute top-0 h-full w-0.5 bg-leaf-deep" style={{ insetInlineStart: `${(n.t / duration) * 100}%` }} title={n.text} />)}
-      <motion.span className="absolute top-0 h-full w-0.5 bg-bg" style={{ insetInlineStart: left }} />
+      <motion.span className="absolute top-0 h-full w-0.5 bg-canvas" style={{ insetInlineStart: left }} />
     </div>
   );
 }

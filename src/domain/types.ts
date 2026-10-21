@@ -4,7 +4,10 @@
 export type Lang = "en" | "ar";
 export type Localised = { en: string; ar: string };
 
-export type Market = "UAE" | "KSA";
+export type Market = "UAE" | "KSA" | "Kuwait" | "Qatar" | "Oman" | "Bahrain";
+export type Language = "ar" | "en";
+/** Program levels. Recalculated each season from Sparks and quality; Ambassador is selected. */
+export type Level = "member" | "insider" | "pro" | "ambassador";
 export type Platform = "instagram" | "tiktok";
 export type Seat = "creator" | "brand";
 export type VerificationState = "pending" | "verified" | "action";
@@ -79,10 +82,30 @@ export interface Creator {
     tiktok: VerificationState;
   };
   socials: Partial<Record<Platform, string>>;
+  /** Audience data pulled through the (simulated) platform APIs on connect. */
+  connected: Partial<Record<Platform, ConnectedAccount>>;
+  languages: Language[];
+  /** The playful one-liner from the application: "your vibe". */
+  vibe: Localised;
+  favouritePosts: string[];
+  email: string;
+  mobile: string;
+  mobileVerified: boolean;
+  /** Creator advertising licence (required for paid content in UAE and KSA). */
+  licence: { state: VerificationState; number?: string };
   address: Address;
   joinedAt: string;
-  /** Consecutive weeks with at least one completed action. */
-  streakWeeks: number;
+  /** Consecutive months with at least one Sparks-earning action. */
+  streakMonths: number;
+  referredBy?: string;
+}
+
+export interface ConnectedAccount {
+  handle: string;
+  followers: number;
+  engagementRate: number;
+  connectedAt: string;
+  simulated: true;
 }
 
 // ---------- Campaign ----------
@@ -230,21 +253,137 @@ export interface Participation {
   invitedAt: string;
 }
 
-// ---------- Side quests ----------
+// ---------- Missions ----------
 
-export type QuestState = "open" | "joined" | "submitted" | "reviewed" | "completed";
+export type MissionType = "starter" | "routine" | "monthly" | "team" | "review" | "event" | "academy" | "referral";
+export type MissionStatus = "draft" | "live" | "closed";
+export type EntryState = "joined" | "submitted" | "approved" | "changes" | "completed";
 
-export interface SideQuest {
+/** Deterministic pre-review check on a mission submission. */
+export interface MissionCheck {
+  hashtags: boolean;
+  disclosure: boolean;
+  timing: boolean;
+  passed: boolean;
+  simulated: true;
+}
+
+export interface MissionSubmission {
   id: string;
+  url: string;
+  caption: string;
+  at: string;
+  check: MissionCheck;
+  decision?: "approved" | "changes";
+  note?: string;
+  reviewedAt?: string;
+  reviewerName?: string;
+}
+
+export interface MissionEntry {
+  state: EntryState;
+  joinedAt: string;
+  squadId?: string;
+  submissions: MissionSubmission[];
+  /** Sparks actually awarded (doubled during a surprise drop). */
+  awarded?: number;
+}
+
+export interface Squad {
+  id: string;
+  name: Localised;
+  memberIds: string[];
+}
+
+export interface Mission {
+  id: string;
+  type: MissionType;
+  status: MissionStatus;
   title: Localised;
   prompt: Localised;
   brandId: string | null;
-  points: number;
-  deadline: string;
-  /** Per-creator state map. A creator absent from the map sees the quest as "open". */
-  states: Record<string, QuestState>;
-  submissions: Record<string, { filename: string; at: string }>;
-  emojiFree: true;
+  sparks: number;
+  /** Sparks the creator gets if the mission is paid work (Pro level and up). */
+  paid: boolean;
+  window: { start: string; end: string };
+  markets: Market[];
+  languages: Language[];
+  niches: Niche[];
+  levelRequired: Level;
+  requiredHashtags: string[];
+  /** Surprise drop: double Sparks until this time. */
+  doubleSparksUntil?: string;
+  /** Routine missions wrap a campaign journey. */
+  campaignId?: string;
+  /** Academy missions require this track to be completed first. */
+  trackId?: string;
+  place?: Localised;
+  squads?: Squad[];
+  entries: Record<string, MissionEntry>;
+}
+
+// ---------- Seasons & Ambassadors ----------
+
+export type AmbassadorPhase = "upcoming" | "wildcard_open" | "voting" | "selected";
+
+export interface Season {
+  id: string;
+  name: Localised;
+  theme: Localised;
+  start: string;
+  end: string;
+  finalePrize: Localised;
+  ambassadors: {
+    phase: AmbassadorPhase;
+    /** Top Pro creators invited by Sparks and quality. */
+    shortlist: string[];
+    /** Public wildcard entries from newcomers. */
+    wildcards: string[];
+    /** voterId -> candidateId. One vote per creator per season. */
+    votes: Record<string, string>;
+    cohort: string[];
+  };
+}
+
+// ---------- Academy ----------
+
+export type ModuleKind = "video" | "live" | "workshop" | "walkthrough" | "session";
+
+export interface AcademyModule {
+  id: string;
+  title: Localised;
+  summary: Localised;
+  minutes: number;
+  kind: ModuleKind;
+}
+
+export interface AcademyTrack {
+  id: string;
+  title: Localised;
+  blurb: Localised;
+  format: Localised;
+  levelRequired: Level;
+  sparks: number;
+  modules: AcademyModule[];
+}
+
+export interface MentorSession {
+  id: string;
+  title: Localised;
+  kind: "group" | "one_to_one";
+  mentor: string;
+  at: string;
+  levelRequired: Level;
+  seats: number;
+  bookedBy: string[];
+}
+
+export interface Referral {
+  id: string;
+  referrerId: string;
+  handle: string;
+  status: "pending" | "approved" | "rejected";
+  at: string;
 }
 
 // ---------- Loyalty ----------
@@ -254,7 +393,7 @@ export interface LedgerEntry {
   creatorId: string;
   delta: number;
   reason: Localised;
-  ref: { kind: "participation" | "quest" | "redemption" | "bonus"; id: string };
+  ref: { kind: "participation" | "mission" | "academy" | "referral" | "streak" | "redemption" | "bonus"; id: string };
   at: string;
 }
 
@@ -283,7 +422,21 @@ export interface Badge {
   title: Localised;
   description: Localised;
   /** Predicate key evaluated by selectors. */
-  rule: "first_campaign" | "three_campaigns" | "first_quest" | "streak_4" | "all_verified" | "first_publish" | "five_published" | "revision_free" | "early_bird";
+  rule:
+    | "first_campaign"
+    | "three_campaigns"
+    | "first_mission"
+    | "streak_3"
+    | "all_verified"
+    | "first_publish"
+    | "five_published"
+    | "revision_free"
+    | "early_bird"
+    | "first_paid"
+    | "academy_graduate"
+    | "top_voted"
+    | "squad_player"
+    | "referrer";
   icon: string;
 }
 
@@ -332,7 +485,17 @@ export interface AppState {
   creators: Creator[];
   campaigns: Campaign[];
   participations: Participation[];
-  quests: SideQuest[];
+  missions: Mission[];
+  seasons: Season[];
+  academy: {
+    tracks: AcademyTrack[];
+    /** creatorId -> moduleId -> completedAt */
+    progress: Record<string, Record<string, string>>;
+    /** creatorId -> trackIds with a certificate */
+    certificates: Record<string, string[]>;
+  };
+  mentorSessions: MentorSession[];
+  referrals: Referral[];
   ledger: LedgerEntry[];
   rewards: Reward[];
   redemptions: Redemption[];

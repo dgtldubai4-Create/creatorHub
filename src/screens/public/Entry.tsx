@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
-import { ArrowRight, Package, ChatCenteredText, Coins, Compass, Leaf } from "@phosphor-icons/react";
+import { ArrowRight, Package, Coins, Leaf, GameController, GraduationCap, Gift, Lightning, Crown, Check } from "@phosphor-icons/react";
+import { ArtSlot } from "../../ui/ArtSlot";
+import { LevelEmblem, MissionTypeChip } from "../shared/bits";
+import { LEVEL_ORDER, LEVEL_RULES } from "../../domain/selectors";
 import { useStore } from "../../app/store";
 import { useL, useT, useToggleLang } from "../../i18n";
 import { Button, Chip } from "../../ui/primitives";
@@ -8,6 +11,7 @@ import { Float, Magnetic, Reveal, Tilt, Item, Stagger } from "../../ui/motion";
 import { ProductArt } from "../../ui/ProductArt";
 import { JourneyTrail, PhaseTrail } from "../../ui/JourneyTrail";
 import { Logo } from "../../app/shell";
+import { cn } from "../../ui/cn";
 import { BrandMark, StageChip } from "../shared/bits";
 import { STAGES } from "../../domain/stages";
 import { Translate } from "@phosphor-icons/react";
@@ -24,8 +28,8 @@ export function Entry() {
   const marquee = [...s.products, ...s.products];
 
   return (
-    <div className="min-h-[100dvh] bg-bg">
-      <header className="sticky top-0 z-40 bg-bg/80 backdrop-blur-md">
+    <div className="min-h-[100dvh] bg-canvas">
+      <header className="sticky top-0 z-40 bg-canvas/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-4 md:px-6">
           <Logo />
           <div className="flex items-center gap-2">
@@ -129,63 +133,118 @@ export function Entry() {
         </div>
       </section>
 
-      {/* Perks bento: four cells, two tinted */}
+      {/* Pillars bento: one tall cell, two stacked */}
       <section className="mx-auto max-w-[1400px] px-4 pb-16 md:px-6 lg:pb-24">
         <Reveal>
-          <h2 className="text-3xl md:text-4xl">{t("perksTitle")}</h2>
+          <h2 className="text-3xl md:text-4xl">{t("pillarsTitle")}</h2>
         </Reveal>
-        <Stagger className="mt-8 grid gap-4 md:grid-cols-6">
-          <Item className="md:col-span-4">
+        <Stagger className="mt-8 grid gap-4 md:grid-cols-5">
+          <Item className="md:col-span-3 md:row-span-2">
             <div className="card-soft flex h-full flex-col justify-between gap-8 bg-leaf-soft p-7 text-leaf-ink">
-              <Package size={30} weight="duotone" />
+              <GameController size={32} weight="duotone" />
               <div>
-                <h3 className="text-2xl">{t("perk1Title")}</h3>
-                <p className="mt-2 max-w-[50ch] text-[15px] opacity-80">{t("perk1Body")}</p>
+                <h3 className="text-2xl">{t("pillar_play")}</h3>
+                <p className="mt-2 max-w-[50ch] text-[15px] opacity-80">{t("pillar_play_body")}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
-                  {(["address_confirmed", "preparing", "dispatched", "out_for_delivery", "delivered"] as const).map((st) => <Chip key={st} tone="leaf" className="bg-surface/70">{t(`sh_${st}` as const)}</Chip>)}
+                  {(["starter", "monthly", "team", "review", "event", "academy", "referral"] as const).map((k) => <MissionTypeChip key={k} type={k} className="bg-surface/70" />)}
+                  <Chip tone="marigold" icon={<Lightning size={13} weight="fill" />}>{t("doubleSparks")}</Chip>
                 </div>
               </div>
             </div>
           </Item>
           <Item className="md:col-span-2">
-            <div className="card-soft flex h-full flex-col justify-between gap-8 bg-marigold-soft p-7 text-marigold-ink">
-              <Coins size={30} weight="duotone" />
+            <div className="card flex h-full flex-col justify-between gap-6 p-7">
+              <GraduationCap size={32} weight="duotone" className="text-leaf" />
               <div>
-                <h3 className="text-2xl">{t("perk3Title")}</h3>
-                <p className="mt-2 text-[15px] opacity-80">{t("perk3Body")}</p>
+                <h3 className="text-2xl">{t("pillar_grow")}</h3>
+                <p className="mt-2 text-[15px] text-ink-2">{t("pillar_grow_body")}</p>
               </div>
             </div>
           </Item>
-          <Item className="md:col-span-3">
-            <div className="card flex h-full flex-col justify-between gap-8 p-7">
-              <ChatCenteredText size={30} weight="duotone" className="text-leaf" />
+          <Item className="md:col-span-2">
+            <div className="card-soft flex h-full flex-col justify-between gap-6 bg-marigold-soft p-7 text-marigold-ink">
+              <Gift size={32} weight="duotone" />
               <div>
-                <h3 className="text-2xl">{t("perk2Title")}</h3>
-                <p className="mt-2 text-[15px] text-ink-2">{t("perk2Body")}</p>
-                <div className="mt-5 flex flex-col gap-1.5 text-[13px]">
-                  <span className="inline-flex items-center gap-2"><span className="rounded-md bg-surface-2 px-1.5 py-0.5 font-semibold tabular">0:04</span> Hook lands late, cut the first 2 seconds.</span>
-                  <span className="inline-flex items-center gap-2"><span className="rounded-md bg-surface-2 px-1.5 py-0.5 font-semibold tabular">0:15</span> Great massage shot.</span>
-                </div>
-              </div>
-            </div>
-          </Item>
-          <Item className="md:col-span-3">
-            <div className="card flex h-full flex-col justify-between gap-8 p-7">
-              <Compass size={30} weight="duotone" className="text-leaf" />
-              <div>
-                <h3 className="text-2xl">{t("perk4Title")}</h3>
-                <p className="mt-2 text-[15px] text-ink-2">{t("perk4Body")}</p>
+                <h3 className="text-2xl">{t("pillar_reward")}</h3>
+                <p className="mt-2 text-[15px] opacity-80">{t("pillar_reward_body")}</p>
               </div>
             </div>
           </Item>
         </Stagger>
       </section>
 
+      {/* Levels: a four-step ladder */}
+      <section className="border-y border-line bg-surface py-16 lg:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 md:px-6">
+          <Reveal>
+            <h2 className="text-3xl md:text-4xl">{t("levelsTitle")}</h2>
+            <p className="mt-3 max-w-[60ch] text-ink-2">{t("levelsSub")}</p>
+          </Reveal>
+          <Stagger className="mt-10 grid gap-4 md:grid-cols-4">
+            {LEVEL_ORDER.map((l, i) => {
+              const how = l === "insider" ? t("lvHow_insider", { sparks: LEVEL_RULES.insider.sparks, quality: LEVEL_RULES.insider.quality }) : l === "pro" ? t("lvHow_pro", { sparks: LEVEL_RULES.pro.sparks, quality: LEVEL_RULES.pro.quality }) : t(`lvHow_${l}` as const);
+              return (
+                <Item key={l}>
+                  <div className={cn("relative flex h-full flex-col gap-4 rounded-[var(--radius-card)] p-6", i === 3 ? "bg-leaf text-white" : "bg-surface-2")}>
+                    <LevelEmblem level={l} size={56} className={cn(i === 3 && "bg-white/15 text-white")} />
+                    <div>
+                      <div className="text-xl font-semibold">{t(`lv_${l}` as const)}</div>
+                      <div className={cn("mt-1 text-[12.5px]", i === 3 ? "opacity-80" : "text-ink-3")}>{how}</div>
+                    </div>
+                    <p className={cn("mt-auto text-[14px]", i === 3 ? "opacity-90" : "text-ink-2")}>{t(`lvUnlock_${l}` as const)}</p>
+                    {i < 3 && <ArrowRight size={18} weight="bold" className="absolute -end-3 top-1/2 hidden -translate-y-1/2 text-ink-3 md:block rtl:rotate-180" />}
+                  </div>
+                </Item>
+              );
+            })}
+          </Stagger>
+        </div>
+      </section>
+
+      {/* Academy: six covers */}
+      <section className="mx-auto max-w-[1400px] px-4 py-16 md:px-6 lg:py-24">
+        <Reveal>
+          <h2 className="text-3xl md:text-4xl">{t("academyTitle")}</h2>
+          <p className="mt-3 max-w-[60ch] text-ink-2">{t("academySubEntry")}</p>
+        </Reveal>
+        <Stagger className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+          {s.academy.tracks.map((tr) => (
+            <Item key={tr.id}>
+              <div className="card overflow-hidden">
+                <div className="aspect-[4/3]"><ArtSlot id={`track-${tr.id.replace("tr_", "")}`} /></div>
+                <div className="p-3">
+                  <div className="text-[14px] font-semibold leading-snug">{L(tr.title)}</div>
+                  <div className="mt-0.5 text-[12px] text-ink-3">{tr.modules.length} {t("modules")}</div>
+                </div>
+              </div>
+            </Item>
+          ))}
+        </Stagger>
+      </section>
+
+      {/* Seasons and Ambassadors: split with photo */}
+      <section className="mx-auto max-w-[1400px] px-4 pb-16 md:px-6 lg:pb-24">
+        <Reveal className="card grid overflow-hidden lg:grid-cols-2">
+          <div className="min-h-64 lg:min-h-full"><ArtSlot id="season-golden-hour" /></div>
+          <div className="flex flex-col gap-5 p-7 lg:p-10">
+            <Chip tone="marigold" icon={<Crown size={13} weight="fill" />} className="self-start">{t("ambassadorRound")}</Chip>
+            <h2 className="text-3xl md:text-4xl">{t("seasonTitle")}</h2>
+            <p className="text-ink-2">{t("seasonSubEntry")}</p>
+            <ul className="grid gap-2 text-[14px]">
+              {[t("ap_wildcard_open"), t("ap_voting"), t("ap_selected"), t("circleCamp")].map((x) => <li key={x} className="flex items-center gap-2"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-leaf-soft text-leaf"><Check size={12} weight="bold" /></span>{x}</li>)}
+            </ul>
+          </div>
+        </Reveal>
+      </section>
+
       <section className="mx-auto max-w-[1400px] px-4 pb-20 md:px-6">
         <Reveal className="card-soft flex flex-col items-start gap-6 bg-leaf p-8 text-white md:flex-row md:items-center md:justify-between md:p-12">
           <div className="flex items-center gap-4">
             <span className="leaf-shape flex h-14 w-14 shrink-0 items-center justify-center bg-white/15"><Leaf size={26} weight="fill" /></span>
-            <h2 className="text-2xl md:text-3xl">{t("heroTitle")}</h2>
+            <div>
+              <h2 className="text-2xl md:text-3xl">{t("heroTitle")}</h2>
+              <div className="mt-2 flex flex-wrap gap-2 text-[13px] opacity-90"><span>{t("noMinimum")}</span><span>·</span><span>{t("sixMarkets")}</span><span>·</span><span>{t("twoLanguages")}</span></div>
+            </div>
           </div>
           <Magnetic><Button size="lg" variant="accent" to="/join" iconEnd={<ArrowRight size={18} weight="bold" className="rtl:rotate-180" />}>{t("heroCta")}</Button></Magnetic>
         </Reveal>

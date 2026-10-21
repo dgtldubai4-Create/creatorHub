@@ -66,7 +66,7 @@ const TONE: Record<Tone, string> = {
   marigold: "bg-marigold-soft text-marigold-ink",
   rose: "bg-rose-soft text-rose",
   sky: "bg-sky/12 text-sky",
-  ink: "bg-ink text-bg",
+  ink: "bg-ink text-canvas",
 };
 
 export function Chip({ tone = "neutral", className, children, icon }: { tone?: Tone; className?: string; children: ReactNode; icon?: ReactNode }) {
@@ -80,7 +80,7 @@ export function Chip({ tone = "neutral", className, children, icon }: { tone?: T
 
 export function ChipButton({ selected, className, children, ...rest }: ButtonHTMLAttributes<HTMLButtonElement> & { selected?: boolean }) {
   return (
-    <button className={cn("press h-9 whitespace-nowrap rounded-full border px-3.5 text-[13.5px] font-medium", selected ? "border-ink bg-ink text-bg" : "border-line-2 bg-surface text-ink-2 hover:border-ink-3 hover:text-ink", className)} {...rest}>
+    <button className={cn("press h-9 whitespace-nowrap rounded-full border px-3.5 text-[13.5px] font-medium", selected ? "border-ink bg-ink text-canvas" : "border-line-2 bg-surface text-ink-2 hover:border-ink-3 hover:text-ink", className)} {...rest}>
       {children}
     </button>
   );
@@ -269,7 +269,7 @@ export function ToastViewport({ items, onDismiss }: { items: ToastItem[]; onDism
     <div className="pointer-events-none fixed inset-x-0 bottom-20 z-[70] flex flex-col items-center gap-2 px-4 sm:bottom-6">
       <AnimatePresence>
         {items.map((tst) => (
-          <motion.button key={tst.id} onClick={() => onDismiss(tst.id)} layout initial={{ opacity: 0, y: 16, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.96 }} transition={spring} className={cn("pointer-events-auto flex max-w-md items-center gap-2.5 rounded-full px-4 py-2.5 text-[14px] font-medium shadow-float", tst.kind === "error" ? "bg-rose text-white" : tst.kind === "success" ? "bg-leaf text-white" : "bg-ink text-bg")}>
+          <motion.button key={tst.id} onClick={() => onDismiss(tst.id)} layout initial={{ opacity: 0, y: 16, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.96 }} transition={spring} className={cn("pointer-events-auto flex max-w-md items-center gap-2.5 rounded-full px-4 py-2.5 text-[14px] font-medium shadow-float", tst.kind === "error" ? "bg-rose text-white" : tst.kind === "success" ? "bg-leaf text-white" : "bg-ink text-canvas")}>
             {tst.kind === "error" ? <Warning size={18} weight="fill" /> : tst.kind === "success" ? <CheckCircle size={18} weight="fill" /> : <Info size={18} weight="fill" />}
             <span className="text-start">{tst.text}</span>
           </motion.button>

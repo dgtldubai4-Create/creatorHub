@@ -25,6 +25,7 @@ export function AdminOverview() {
 
   const queues = [
     can(role, "review") && { label: t("awaitingReview"), value: o.pendingReview, to: "/admin/review", tone: o.pendingReview ? "marigold" : "neutral" },
+    can(role, "review") && { label: t("missionPostsToReview"), value: o.missionReview, to: "/admin/missions", tone: o.missionReview ? "marigold" : "neutral" },
     can(role, "logistics") && { label: t("kitsToShip"), value: o.toShip, to: "/admin/logistics", tone: o.toShip ? "marigold" : "neutral" },
     can(role, "review") && { label: t("linksToVerify"), value: o.toVerify, to: "/admin/campaigns", tone: o.toVerify ? "marigold" : "neutral" },
     can(role, "loyalty") && { label: t("pointsToRelease"), value: o.toRelease, to: "/admin/loyalty", tone: o.toRelease ? "marigold" : "neutral" },
@@ -34,16 +35,17 @@ export function AdminOverview() {
   return (
     <div className="flex flex-col gap-10">
       <PageHeader title={<>{user?.name.split(" ")[0]}, {t("adminGreeting").toLowerCase()}</>} sub={`${t(`role_${role}` as const)} · ${t("seat")}: ${t("brandSeat")}`} />
-      <Stagger className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <Stagger className="grid grid-cols-2 gap-3 md:grid-cols-5">
         <Item><Stat label={t("liveCampaigns")} value={num(o.live)} to={can(role, "campaigns") ? "/admin/campaigns" : undefined} tone="leaf" /></Item>
-        <Item><Stat label={t("inFlight")} value={num(o.inFlight)} /></Item>
+        <Item><Stat label={t("liveMissions")} value={num(o.liveMissions)} to={can(role, "review") ? "/admin/missions" : undefined} /></Item>
+        <Item><Stat label={t("monthActive")} value={num(o.monthActive)} hint={`${num(o.inFlight)} ${t("inFlight").toLowerCase()}`} /></Item>
         <Item><Stat label={t("verifiedCreators")} value={`${num(o.verifiedCreators)}/${num(o.creators)}`} to={can(role, "invite") ? "/admin/creators" : undefined} /></Item>
         <Item><Stat label={t("pointsOut")} value={num(o.pointsOut)} /></Item>
       </Stagger>
 
       {queues.length > 0 && (
         <Section title={t("queues")}>
-          <Stagger className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
+          <Stagger className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
             {queues.map((q) => <Item key={q.label}><Stat label={q.label} value={num(q.value)} to={q.to} tone={q.tone} /></Item>)}
           </Stagger>
         </Section>

@@ -6,7 +6,7 @@ import { useFormat, useL, useT } from "../../i18n";
 import { Avatar, Button, Chip, ChipButton, IconButton, Input, PageHeader, Select, Sheet } from "../../ui/primitives";
 import { Item, Stagger } from "../../ui/motion";
 import { PhaseTrail } from "../../ui/JourneyTrail";
-import { balance, completedFor, matchScore, participationsFor, standing } from "../../domain/selectors";
+import { balance, completedFor, matchScore, participationsFor, level } from "../../domain/selectors";
 import { StageChip, VerificationChip } from "../shared/bits";
 import type { Niche, VerificationState } from "../../domain/types";
 import { cn } from "../../ui/cn";
@@ -44,7 +44,7 @@ export function AdminCreators() {
       </div>
       <Stagger className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3" gap={0.02}>
         {list.map(({ cr, m }) => {
-          const st = standing(s, cr.id);
+          const lv = level(s, cr.id);
           return (
             <Item key={cr.id}>
               <button onClick={() => nav(`/admin/creators/${cr.id}`)} className="card press flex w-full items-center gap-3 p-4 text-start hover:border-ink-3">
@@ -52,7 +52,7 @@ export function AdminCreators() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2"><span className="truncate text-[15px] font-medium">{cr.name}</span>{Object.values(cr.verification).every((v) => v === "verified") && <Chip tone="leaf" className="h-5 px-1.5 text-[10.5px]">{t("vs_verified")}</Chip>}</div>
                   <div className="truncate text-[12.5px] text-ink-3">{t(`niche_${cr.niche}` as const)} · {t(`tier_${cr.tier}` as const)} · {cr.city}</div>
-                  <div className="mt-1 text-[12px] text-ink-2">{t(`st_${st.tier}` as const)} · {num(cr.followers)} {t("followers")}</div>
+                  <div className="mt-1 text-[12px] text-ink-2">{t(`lv_${lv.level}` as const)} · {num(cr.followers)} {t("followers")} · {t(`market_${cr.market}` as const)}</div>
                 </div>
                 <div className="text-end"><div className={cn("text-xl font-semibold tabular leading-none", m.score >= 70 ? "text-leaf" : m.score >= 40 ? "text-marigold-ink" : "text-ink-3")}>{m.score}</div><div className="text-[11px] text-ink-3">{t("match")}</div></div>
               </button>

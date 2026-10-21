@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Fire, Compass, Sparkle, Lock, Leaf, Repeat, SealCheck, Broadcast, Confetti, Target, SunHorizon, type Icon } from "@phosphor-icons/react";
+import { ArrowRight, Fire, Compass, Sparkle, Lock, Repeat, SealCheck, Broadcast, Confetti, Target, SunHorizon, Coins, GraduationCap, Star, UsersThree, Handshake, Lightning, type Icon } from "@phosphor-icons/react";
 import { useStore } from "../../app/store";
 import { useFormat, useL, useT } from "../../i18n";
-import { Button, Chip, ProgressRing, Section, EmptyState } from "../../ui/primitives";
+import { Button, Chip, Section, EmptyState } from "../../ui/primitives";
 import { Counter, Item, Reveal, Stagger } from "../../ui/motion";
 import { PhaseTrail } from "../../ui/JourneyTrail";
-import { activeFor, balance, earnedBadges, nextBestAction, standing, campaignById, creatorById } from "../../domain/selectors";
-import { BrandMark, Points, StageChip, useBrand, useCurrentCreator } from "../shared/bits";
+import { activeFor, balance, earnedBadges, nextBestAction, level, campaignById, currentSeason, daysLeftInSeason, monthlyStreak, missionById } from "../../domain/selectors";
+import { ArtSlot } from "../../ui/ArtSlot";
+import { BrandMark, LevelEmblem, Points, StageChip, useBrand, useCurrentCreator } from "../shared/bits";
 import type { Badge } from "../../domain/types";
 import { cn } from "../../ui/cn";
 
-const BADGE_ICONS: Record<string, Icon> = { Sparkle, Repeat, Compass, Fire, SealCheck, Broadcast, Confetti, Target, SunHorizon };
+const BADGE_ICONS: Record<string, Icon> = { Sparkle, Repeat, Compass, Fire, SealCheck, Broadcast, Confetti, Target, SunHorizon, Coins, GraduationCap, Star, UsersThree, Handshake };
 
 function BadgeIcon({ badge, size = 22 }: { badge: Badge; size?: number }) {
   const I = BADGE_ICONS[badge.icon] ?? Sparkle;
@@ -26,7 +27,9 @@ export function CreatorHome() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? t("goodMorning") : hour < 18 ? t("goodAfternoon") : t("goodEvening");
   const nba = nextBestAction(s, me.id);
-  const st = standing(s, me.id);
+  const lv = level(s, me.id);
+  const season = currentSeason(s);
+  const streak = monthlyStreak(s, me.id);
   const bal = balance(s, me.id);
   const active = activeFor(s, me.id);
   const earned = earnedBadges(s, me.id);
@@ -35,8 +38,10 @@ export function CreatorHome() {
 
   const campaign = nba.participation ? campaignById(s, nba.participation.campaignId) : undefined;
   const reviewer = nba.participation?.reviews.at(-1)?.reviewerName ?? "";
-  const vars = { campaign: campaign ? L(campaign.title) : "", courier: nba.participation?.shipment?.courier ?? "", reviewer, stage: nba.participation ? t(`stage_${nba.participation.stage}` as const) : "" };
-  const nbaLink = nba.kind === "respond" ? "/creator/invitations" : nba.kind === "quest" ? `/creator/side-quests/${nba.questId}` : nba.participation ? `/creator/campaigns/${nba.participation.id}/${{ confirm_address: "kit", track: "kit", shoot: "kit", upload: "upload", revise: "feedback", publish: "publish", wait: "brief" }[nba.kind as string] ?? "brief"}` : "/creator/side-quests";
+  const mission = nba.missionId ? missionById(s, nba.missionId) : undefined;
+  const track = nba.trackId ? s.academy.tracks.find((x) => x.id === nba.trackId) : undefined;
+  const vars = { campaign: campaign ? L(campaign.title) : "", courier: nba.participation?.shipment?.courier ?? "", reviewer, stage: nba.participation ? t(`stage_${nba.participation.stage}` as const) : "", mission: mission ? L(mission.title) : "", track: track ? L(track.title) : "" };
+  const nbaLink = nba.kind === "respond" ? "/creator/invitations" : nba.kind === "mission" ? `/creator/missions/${nba.missionId}` : nba.kind === "academy" ? `/creator/academy/${nba.trackId}` : nba.kind === "vote" ? "/creator/season" : nba.participation ? `/creator/campaigns/${nba.participation.id}/${{ confirm_address: "kit", track: "kit", shoot: "kit", upload: "upload", revise: "feedback", publish: "publish", wait: "brief" }[nba.kind as string] ?? "brief"}` : "/creator/missions";
   const brand = useBrand(campaign?.brandId);
 
   return (
@@ -48,17 +53,17 @@ export function CreatorHome() {
             <h1 className="text-4xl md:text-5xl">{me.name.split(" ")[0]}.</h1>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <div className="card flex items-center gap-3 px-4 py-3">
-              <ProgressRing value={st.progress} size={46} stroke={5}><Leaf size={16} weight="fill" className="text-leaf" /></ProgressRing>
+            <Link to="/creator/season" className="card press flex items-center gap-3 px-4 py-3 hover:border-ink-3">
+              <LevelEmblem level={lv.level} size={46} />
               <div>
-                <div className="text-[13px] font-semibold">{t(`st_${st.tier}` as const)}</div>
-                <div className="text-[12px] text-ink-3">{st.next ? `${num(st.toNext)} ${t("toNext", { tier: t(`st_${st.next}` as const) })}` : t("topStanding")}</div>
+                <div className="text-[13px] font-semibold">{t(`lv_${lv.level}` as const)}</div>
+                <div className="text-[12px] text-ink-3">{lv.next && lv.next !== "ambassador" ? t("toNextLevel", { n: num(lv.toNext), level: t(`lv_${lv.next}` as const) }) : t("seasonEndsIn", { n: daysLeftInSeason(s, season) })}</div>
               </div>
-            </div>
+            </Link>
             <div className="card flex items-center gap-3 px-4 py-3">
-              <span className={cn("flex h-11 w-11 items-center justify-center rounded-full", me.streakWeeks > 0 ? "bg-marigold-soft text-marigold-ink" : "bg-surface-2 text-ink-3")}><Fire size={22} weight={me.streakWeeks > 0 ? "fill" : "regular"} /></span>
+              <span className={cn("flex h-11 w-11 items-center justify-center rounded-full", streak > 0 ? "bg-marigold-soft text-marigold-ink" : "bg-surface-2 text-ink-3")}><Fire size={22} weight={streak > 0 ? "fill" : "regular"} /></span>
               <div>
-                <div className="text-[13px] font-semibold"><Counter value={me.streakWeeks} /> {t("weeks")}</div>
+                <div className="text-[13px] font-semibold">{t("streakMonths", { n: streak })}</div>
                 <div className="text-[12px] text-ink-3">{t("streak")}</div>
               </div>
             </div>
@@ -87,6 +92,18 @@ export function CreatorHome() {
             </div>
             <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-marigold-ink text-marigold-soft transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1"><ArrowRight size={20} weight="bold" className="rtl:rotate-180" /></span>
           </div>
+        </Link>
+      </Reveal>
+
+      <Reveal inView={false} delay={0.12}>
+        <Link to="/creator/season" className="card press flex items-center gap-4 overflow-hidden p-0 hover:border-ink-3">
+          <div className="h-20 w-28 shrink-0"><ArtSlot id={`season-${season.id === "sn_1" ? "summer-hair-rescue" : season.id === "sn_2" ? "golden-hour" : "winter-glow"}`} showLabel={false} /></div>
+          <div className="min-w-0 flex-1 py-3">
+            <div className="flex items-center gap-2 text-[12.5px] text-ink-3"><Lightning size={14} weight="fill" className="text-marigold" />{t("thisSeason")} · {t("seasonEndsIn", { n: daysLeftInSeason(s, season) })}</div>
+            <div className="truncate text-[16px] font-semibold">{L(season.name)}</div>
+            <div className="truncate text-[13px] text-ink-2">{t("seasonSparks")}: {num(lv.seasonSparks)} · {t("finalePrize")}: {L(season.finalePrize)}</div>
+          </div>
+          <ArrowRight size={18} weight="bold" className="me-5 shrink-0 text-ink-3 rtl:rotate-180" />
         </Link>
       </Reveal>
 
@@ -151,7 +168,6 @@ export function CreatorHome() {
           </Section>
         </div>
       </div>
-      {creatorById(s, me.id) ? null : null}
     </div>
   );
 }
