@@ -33,11 +33,12 @@ function AcademyHub() {
   ] as const;
   return (
     <div className="flex flex-col gap-10">
-      <div className="card grid overflow-hidden lg:grid-cols-5">
-        <div className="flex flex-col justify-center gap-3 p-6 lg:col-span-3 lg:p-10">
-          <h1 className="text-3xl md:text-4xl">{t("academy")}</h1>
-          <p className="max-w-[55ch] text-ink-2">{t("academySub")}</p>
-          <div className="mt-2 flex flex-wrap items-center gap-2"><LevelChip level={lv.level} />{certs.length > 0 && <Chip tone="leaf" icon={<Certificate size={14} weight="fill" />}>{certs.length} {t("certificates").toLowerCase()}</Chip>}</div>
+      <div className="relative -mx-4 grid overflow-hidden bg-forest text-white md:mx-0 md:rounded-[var(--radius-card)] lg:grid-cols-5">
+        <div className="relative flex flex-col justify-center gap-3 p-6 lg:col-span-3 lg:p-10">
+          <div className="pattern-grid absolute inset-0 text-lime/10" />
+          <h1 className="relative text-4xl font-extrabold tracking-[-0.04em] text-white md:text-5xl">{t("academy")}<span className="text-lime">.</span></h1>
+          <p className="relative max-w-[55ch] text-white/80">{t("academySub")}</p>
+          <div className="relative mt-2 flex flex-wrap items-center gap-2"><LevelChip level={lv.level} />{certs.length > 0 && <span className="sticker bg-lime text-lime-ink" style={{ ["--tilt" as string]: "-3deg" }}><Certificate size={14} weight="fill" />{certs.length} {t("certificates").toLowerCase()}</span>}</div>
         </div>
         <div className="h-48 lg:col-span-2 lg:h-full"><ArtSlot id="academy-hero" /></div>
       </div>
@@ -49,7 +50,7 @@ function AcademyHub() {
             const ok = meetsLevel(s, me.id, tr.levelRequired);
             return (
               <Item key={tr.id}>
-                <Link to={`/creator/academy/${tr.id}`} className={cn("card press flex h-full flex-col overflow-hidden hover:border-ink-3", !ok && "opacity-75")}>
+                <Link to={`/creator/academy/${tr.id}`} className={cn("lift card flex h-full flex-col overflow-hidden", !ok && "opacity-75")}>
                   <div className="relative h-36"><ArtSlot id={`track-${tr.id.replace("tr_", "")}`} />
                     <div className="absolute end-3 top-3">{p.complete ? <Chip tone="leaf" icon={<Certificate size={13} weight="fill" />}>{t("trackComplete")}</Chip> : !ok ? <Chip icon={<Lock size={12} weight="bold" />}>{t("levelLocked", { level: t(`lv_${tr.levelRequired}` as const) })}</Chip> : null}</div>
                   </div>

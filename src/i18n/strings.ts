@@ -149,6 +149,9 @@ export const STRINGS = {
   justNow: ["Just now", "الآن"],
   nothingHere: ["Nothing here yet", "لا شيء هنا بعد"],
   // public
+  heroLine1: ["Your next", "التالي لك:"],
+  heroWords: ["hair glow-up|mask night|golden hour|honey hack|unboxing", "تجديد شعر|ليلة ماسك|ساعة ذهبية|حيلة عسل|فتح صندوق"],
+  heroLine2: ["pays in Sparks.", "يُدفع بالسباركس."],
   heroTitle: ["Make something people actually watch.", "اصنع محتوى يشاهده الناس فعلاً."],
   heroSub: ["Missions across Dabur brands, Sparks you can spend, and an Academy that makes you better at this.", "مهام عبر علامات دابر وسباركس تُستبدل وأكاديمية تجعلك أفضل في هذا المجال."],
   heroCta: ["Join the Squad", "انضم إلى السكواد"],
@@ -204,6 +207,8 @@ export const STRINGS = {
   goodAfternoon: ["Good afternoon", "مساء الخير"],
   goodEvening: ["Good evening", "مساء الخير"],
   nextUp: ["Next up", "التالي"],
+  yourTicket: ["Your ticket for today", "تذكرتك لليوم"],
+  letsGo: ["Let's go", "هيا بنا"],
   nba_respond: ["An invitation is waiting", "دعوة بانتظارك"],
   nba_respond_body: ["{campaign} wants you. Accept or decline before the window closes.", "{campaign} تريدك. اقبل أو اعتذر قبل انتهاء المهلة."],
   nba_confirm_address: ["Confirm your address", "أكّد عنوانك"],

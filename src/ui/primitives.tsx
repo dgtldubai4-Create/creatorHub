@@ -12,10 +12,10 @@ type Variant = "primary" | "secondary" | "ghost" | "accent" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const VARIANT: Record<Variant, string> = {
-  primary: "bg-leaf text-white hover:bg-leaf-deep shadow-[0_8px_20px_-10px_rgb(23_138_71/0.7)]",
+  primary: "bg-leaf text-white hover:bg-leaf-deep shadow-[0_10px_24px_-10px_rgb(23_153_79/0.8)] font-bold",
   secondary: "bg-surface text-ink border border-line-2 hover:border-ink-3 hover:bg-surface-2",
   ghost: "bg-transparent text-ink-2 hover:bg-surface-2 hover:text-ink",
-  accent: "bg-marigold text-marigold-ink hover:brightness-95 shadow-[0_8px_20px_-10px_rgb(242_179_61/0.8)]",
+  accent: "bg-marigold text-marigold-ink hover:brightness-95 shadow-[0_10px_24px_-10px_rgb(255_178_36/0.9)] font-bold",
   danger: "bg-rose-soft text-rose hover:brightness-95",
 };
 const SIZE: Record<Size, string> = { sm: "h-9 px-3.5 text-[13px] gap-1.5", md: "h-11 px-5 text-[15px] gap-2", lg: "h-13 px-7 text-base gap-2.5" };
@@ -150,7 +150,7 @@ export function PageHeader({ title, sub, actions, eyebrow, className }: { title:
     <div className={cn("flex flex-col gap-4 md:flex-row md:items-end md:justify-between", className)}>
       <div className="max-w-[60ch]">
         {eyebrow && <div className="mb-2">{eyebrow}</div>}
-        <h1 className="text-3xl md:text-4xl">{title}</h1>
+        <h1 className="text-4xl font-extrabold tracking-[-0.04em] md:text-5xl">{title}</h1>
         {sub && <p className="mt-2 text-[15px] text-ink-2">{sub}</p>}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}

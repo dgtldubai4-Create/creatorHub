@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Fire, Compass, Sparkle, Lock, Repeat, SealCheck, Broadcast, Confetti, Target, SunHorizon, Coins, GraduationCap, Star, UsersThree, Handshake, Lightning, type Icon } from "@phosphor-icons/react";
 import { useStore } from "../../app/store";
 import { useFormat, useL, useT } from "../../i18n";
-import { Button, Chip, Section, EmptyState } from "../../ui/primitives";
+import { Button, Section, EmptyState } from "../../ui/primitives";
 import { Counter, Item, Reveal, Stagger } from "../../ui/motion";
 import { PhaseTrail } from "../../ui/JourneyTrail";
 import { activeFor, balance, earnedBadges, nextBestAction, level, campaignById, currentSeason, daysLeftInSeason, monthlyStreak, missionById } from "../../domain/selectors";
@@ -47,60 +47,43 @@ export function CreatorHome() {
   return (
     <div className="flex flex-col gap-10">
       <Reveal inView={false}>
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-[15px] text-ink-2">{greeting},</p>
-            <h1 className="text-4xl md:text-5xl">{me.name.split(" ")[0]}.</h1>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Link to="/creator/season" className="card press flex items-center gap-3 px-4 py-3 hover:border-ink-3">
-              <LevelEmblem level={lv.level} size={46} />
-              <div>
-                <div className="text-[13px] font-semibold">{t(`lv_${lv.level}` as const)}</div>
-                <div className="text-[12px] text-ink-3">{lv.next && lv.next !== "ambassador" ? t("toNextLevel", { n: num(lv.toNext), level: t(`lv_${lv.next}` as const) }) : t("seasonEndsIn", { n: daysLeftInSeason(s, season) })}</div>
-              </div>
-            </Link>
-            <div className="card flex items-center gap-3 px-4 py-3">
-              <span className={cn("flex h-11 w-11 items-center justify-center rounded-full", streak > 0 ? "bg-marigold-soft text-marigold-ink" : "bg-surface-2 text-ink-3")}><Fire size={22} weight={streak > 0 ? "fill" : "regular"} /></span>
-              <div>
-                <div className="text-[13px] font-semibold">{t("streakMonths", { n: streak })}</div>
-                <div className="text-[12px] text-ink-3">{t("streak")}</div>
+        <div className="relative -mx-4 overflow-hidden bg-forest px-4 pb-8 pt-7 text-white md:mx-0 md:rounded-[var(--radius-card)] md:px-8 md:pb-10 md:pt-9">
+          <div className="pattern-dots absolute inset-0 text-lime/15" />
+          <div className="blob absolute -end-16 -top-24 h-72 w-72 bg-marigold/90" />
+          <div className="relative grid gap-8 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-7">
+              <p className="text-[15px] font-medium text-white/70">{greeting},</p>
+              <h1 className="text-5xl font-extrabold tracking-[-0.04em] text-white md:text-6xl">{me.name.split(" ")[0]}<span className="text-lime">.</span></h1>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <Link to="/creator/season" className="sticker bg-lime text-lime-ink" style={{ ["--tilt" as string]: "-3deg" }}><LevelEmblem level={lv.level} size={22} className="bg-forest text-lime" />{t(`lv_${lv.level}` as const)}{lv.next && lv.next !== "ambassador" && <span className="opacity-70">· {t("toNextLevel", { n: num(lv.toNext), level: t(`lv_${lv.next}` as const) })}</span>}</Link>
+                <span className="sticker bg-marigold text-marigold-ink" style={{ ["--tilt" as string]: "2deg" }}><Fire size={14} weight="fill" />{t("streakMonths", { n: streak })}</span>
+                <Link to="/creator/rewards" className="sticker bg-white text-forest" style={{ ["--tilt" as string]: "-2deg" }}><Sparkle size={14} weight="fill" className="text-marigold" /><Counter value={bal} format={num} /> {t("sparks")}</Link>
               </div>
             </div>
-            <Link to="/creator/rewards" className="card press flex items-center gap-3 px-4 py-3 hover:border-ink-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-leaf-soft text-leaf"><Sparkle size={22} weight="fill" /></span>
-              <div>
-                <div className="text-[13px] font-semibold"><Counter value={bal} /> {t("pts")}</div>
-                <div className="text-[12px] text-ink-3">{t("balance")}</div>
+            <Link to={nbaLink} className="group relative lg:col-span-5">
+              <div className="lift relative rotate-[-1.5deg] rounded-2xl bg-white p-5 text-ink shadow-float transition-transform group-hover:rotate-0">
+                <span className="absolute -top-3 start-5 sticker bg-marigold text-marigold-ink" style={{ ["--tilt" as string]: "-4deg" }}>{t("nextUp")}</span>
+                <div className="mt-2 flex items-start gap-3">
+                  <div className="min-w-0 flex-1">
+                    {brand && <BrandMark brand={brand} size="sm" />}
+                    <h2 className="mt-1 text-2xl font-extrabold leading-tight">{t(`nba_${nba.kind}` as const)}</h2>
+                    <p className="mt-1.5 text-[14px] text-ink-2">{t(`nba_${nba.kind}_body` as const, vars)}</p>
+                  </div>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest text-lime transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1"><ArrowRight size={20} weight="bold" className="rtl:rotate-180" /></span>
+                </div>
+                <div className="mt-4 border-t border-dashed border-line-2 pt-3 text-[12.5px] font-semibold uppercase tracking-wide text-ink-3">{t("yourTicket")}</div>
               </div>
             </Link>
           </div>
         </div>
       </Reveal>
 
-      <Reveal inView={false} delay={0.08}>
-        <Link to={nbaLink} className="card-soft press group relative block overflow-hidden bg-marigold-soft p-6 text-marigold-ink md:p-8">
-          <div className="absolute -end-10 -top-10 h-48 w-48 rounded-full bg-marigold/30 transition-transform duration-700 group-hover:scale-125" />
-          <div className="relative flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-            <div className="max-w-[60ch]">
-              <div className="mb-3 flex items-center gap-2">
-                <Chip tone="ink" className="bg-marigold-ink text-marigold-soft">{t("nextUp")}</Chip>
-                {brand && <BrandMark brand={brand} size="sm" className="!text-marigold-ink" />}
-              </div>
-              <h2 className="text-2xl md:text-3xl">{t(`nba_${nba.kind}` as const)}</h2>
-              <p className="mt-2 text-[15px] opacity-80">{t(`nba_${nba.kind}_body` as const, vars)}</p>
-            </div>
-            <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-marigold-ink text-marigold-soft transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1"><ArrowRight size={20} weight="bold" className="rtl:rotate-180" /></span>
-          </div>
-        </Link>
-      </Reveal>
-
       <Reveal inView={false} delay={0.12}>
-        <Link to="/creator/season" className="card press flex items-center gap-4 overflow-hidden p-0 hover:border-ink-3">
-          <div className="h-20 w-28 shrink-0"><ArtSlot id={`season-${season.id === "sn_1" ? "summer-hair-rescue" : season.id === "sn_2" ? "golden-hour" : "winter-glow"}`} showLabel={false} /></div>
+        <Link to="/creator/season" className="lift card flex items-center gap-4 overflow-hidden p-0">
+          <div className="h-20 w-28 shrink-0"><ArtSlot id={`season-${season.id === "sn_1" ? "summer-hair-rescue" : season.id === "sn_2" ? "golden-hour" : "winter-glow"}`} /></div>
           <div className="min-w-0 flex-1 py-3">
             <div className="flex items-center gap-2 text-[12.5px] text-ink-3"><Lightning size={14} weight="fill" className="text-marigold" />{t("thisSeason")} · {t("seasonEndsIn", { n: daysLeftInSeason(s, season) })}</div>
-            <div className="truncate text-[16px] font-semibold">{L(season.name)}</div>
+            <div className="truncate text-[17px] font-bold">{L(season.name)}</div>
             <div className="truncate text-[13px] text-ink-2">{t("seasonSparks")}: {num(lv.seasonSparks)} · {t("finalePrize")}: {L(season.finalePrize)}</div>
           </div>
           <ArrowRight size={18} weight="bold" className="me-5 shrink-0 text-ink-3 rtl:rotate-180" />
@@ -119,7 +102,7 @@ export function CreatorHome() {
                 const last = p.stageLog[p.stageLog.length - 1];
                 return (
                   <Item key={p.id}>
-                    <Link to={`/creator/campaigns/${p.id}`} className="card press flex items-center gap-4 p-4 hover:border-ink-3">
+                    <Link to={`/creator/campaigns/${p.id}`} className="lift card flex items-center gap-4 p-4">
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <BrandMark brand={b} size="sm" />

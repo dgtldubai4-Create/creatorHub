@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "motion/react";
 import { Trophy, Crown, Star, CalendarBlank, Fire, Tent, Check } from "@phosphor-icons/react";
 import { useDispatch, useStore } from "../../app/store";
 import { useFormat, useL, useT } from "../../i18n";
@@ -37,16 +38,17 @@ export function SeasonPage() {
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="card grid overflow-hidden lg:grid-cols-5">
-        <div className="relative h-52 lg:col-span-2 lg:h-full"><ArtSlot id={bannerId} /></div>
-        <div className="flex flex-col gap-4 p-6 lg:col-span-3 lg:p-8">
-          <div className="flex flex-wrap items-center gap-2"><Chip tone="marigold" icon={<CalendarBlank size={13} />}>{t("seasonEndsIn", { n: daysLeftInSeason(s, season) })}</Chip><Chip>{date(season.start)} - {date(season.end)}</Chip></div>
-          <h1 className="text-3xl md:text-4xl">{L(season.name)}</h1>
-          <p className="max-w-[60ch] text-ink-2">{L(season.theme)}</p>
-          <div className="mt-auto grid gap-3 pt-2 sm:grid-cols-3">
-            <div className="rounded-2xl bg-surface-2 p-4"><div className="text-[12px] text-ink-3">{t("seasonSparks")}</div><div className="text-2xl font-semibold tabular"><Counter value={lv.seasonSparks} format={num} /></div></div>
-            <div className="rounded-2xl bg-surface-2 p-4"><div className="text-[12px] text-ink-3">{t("leaderboardTitle")}</div><div className="text-2xl font-semibold tabular">{myRank > 0 ? `#${myRank}` : "-"}</div></div>
-            <div className="rounded-2xl bg-marigold-soft p-4 text-marigold-ink"><div className="text-[12px] opacity-70">{t("finalePrize")}</div><div className="text-[14px] font-semibold leading-snug">{L(season.finalePrize)}</div></div>
+      <div className="relative -mx-4 grid overflow-hidden bg-forest text-white md:mx-0 md:rounded-[var(--radius-card)] lg:grid-cols-5">
+        <div className="relative h-56 lg:col-span-2 lg:h-full"><ArtSlot id={bannerId} /></div>
+        <div className="relative flex flex-col gap-4 p-6 lg:col-span-3 lg:p-9">
+          <div className="pattern-dots absolute inset-0 text-lime/12" />
+          <div className="relative flex flex-wrap items-center gap-2"><span className="sticker bg-marigold text-marigold-ink" style={{ ["--tilt" as string]: "-3deg" }}><CalendarBlank size={14} weight="bold" />{t("seasonEndsIn", { n: daysLeftInSeason(s, season) })}</span><Chip className="bg-white/10 text-white">{date(season.start)} - {date(season.end)}</Chip></div>
+          <h1 className="relative text-4xl font-extrabold tracking-[-0.04em] text-white md:text-5xl">{L(season.name)}</h1>
+          <p className="relative max-w-[60ch] text-white/80">{L(season.theme)}</p>
+          <div className="relative mt-auto grid gap-3 pt-2 sm:grid-cols-3">
+            <div className="rounded-2xl bg-white/10 p-4"><div className="text-[12px] text-white/70">{t("seasonSparks")}</div><div className="text-3xl font-extrabold tabular text-lime"><Counter value={lv.seasonSparks} format={num} /></div></div>
+            <div className="rounded-2xl bg-white/10 p-4"><div className="text-[12px] text-white/70">{t("leaderboardTitle")}</div><div className="text-3xl font-extrabold tabular">{myRank > 0 ? `#${myRank}` : "-"}</div></div>
+            <div className="rounded-2xl bg-marigold p-4 text-marigold-ink"><div className="text-[12px] opacity-70">{t("finalePrize")}</div><div className="text-[14px] font-bold leading-snug">{L(season.finalePrize)}</div></div>
           </div>
         </div>
       </div>
@@ -90,7 +92,8 @@ export function SeasonPage() {
                   <Avatar name={row.creator.name} hue={row.creator.hue} size={34} />
                   <div className="min-w-0 flex-1"><div className="truncate text-[14px] font-medium">{row.creator.name}</div><div className="text-[12px] text-ink-3">{row.creator.city} · {t(`market_${row.creator.market}` as const)}</div></div>
                   <LevelChip level={row.level} className="hidden sm:inline-flex" />
-                  <span className="font-semibold tabular">{num(row.sparks)}</span>
+                  <span className="hidden h-2 w-28 overflow-hidden rounded-full bg-surface-2 md:block"><motion.span className="block h-full rounded-full bg-leaf" initial={{ width: 0 }} animate={{ width: `${(row.sparks / Math.max(1, board[0].sparks)) * 100}%` }} transition={{ duration: 0.9, delay: 0.1 + i * 0.04, ease: [0.22, 1, 0.36, 1] }} /></span>
+                  <span className="w-14 text-end font-bold tabular">{num(row.sparks)}</span>
                 </div>
               </Item>
             ))}

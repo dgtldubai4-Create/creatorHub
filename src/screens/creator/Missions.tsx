@@ -10,7 +10,7 @@ import { ArtSlot } from "../../ui/ArtSlot";
 import { PhaseTrail } from "../../ui/JourneyTrail";
 import { isDoubleSparks, level, meetsLevel, missionSparks, missionsFor, squadTotals, trackProgress, MISSION_TYPES } from "../../domain/selectors";
 import type { MissionType } from "../../domain/types";
-import { BrandMark, EntryChip, LevelChip, MissionTypeChip, Points, StageChip, useCurrentCreator } from "../shared/bits";
+import { BrandMark, EntryChip, LevelEmblem, MissionTypeChip, Points, StageChip, useCurrentCreator } from "../shared/bits";
 import { cn } from "../../ui/cn";
 
 export function Missions() {
@@ -33,7 +33,7 @@ function MissionBoard() {
 
   return (
     <div className="flex flex-col gap-8">
-      <PageHeader title={t("missionBoard")} sub={t("missionsSub")} actions={<LevelChip level={lv.level} className="h-8 px-3 text-[13px]" />} />
+      <PageHeader title={<>{t("missionBoard")}<span className="text-marigold">.</span></>} sub={t("missionsSub")} actions={<span className="sticker bg-lime text-lime-ink" style={{ ["--tilt" as string]: "-3deg" }}><LevelEmblem level={lv.level} size={22} className="bg-forest text-lime" />{t(`lv_${lv.level}` as const)}</span>} />
       <div className="hide-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 md:mx-0 md:flex-wrap md:px-0">
         <ChipButton selected={type === "all"} onClick={() => setType("all")}>{t("all")}</ChipButton>
         <ChipButton selected={type === "mine"} onClick={() => setType("mine")}>{t("you")}</ChipButton>
@@ -73,7 +73,7 @@ function MissionBoard() {
             return (
               <Item key={m.id}>
                 <Tilt max={3} className="h-full rounded-[var(--radius-card)]">
-                  <Link to={`/creator/missions/${m.id}`} className={cn("card press flex h-full flex-col overflow-hidden hover:border-ink-3", locked && "opacity-75")}>
+                  <Link to={`/creator/missions/${m.id}`} className={cn("lift card flex h-full flex-col overflow-hidden", locked && "opacity-75")}>
                     <div className="relative h-36 w-full"><ArtSlot id={`mission-${m.type}`} />
                       <div className="absolute start-3 top-3 flex gap-1.5"><MissionTypeChip type={m.type} />{dbl && <Chip tone="marigold" icon={<Lightning size={13} weight="fill" />}>{t("doubleSparks")}</Chip>}</div>
                       {e && <div className="absolute end-3 top-3"><EntryChip state={e.state} /></div>}

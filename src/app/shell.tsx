@@ -15,10 +15,10 @@ export function Logo({ className, compact }: { className?: string; compact?: boo
   const t = useT();
   return (
     <span className={cn("inline-flex items-center gap-2 font-semibold tracking-tight", className)}>
-      <span className="leaf-shape flex h-8 w-8 items-center justify-center bg-leaf text-white">
-        <Leaf size={16} weight="fill" />
+      <span className="leaf-shape flex h-9 w-9 items-center justify-center bg-leaf text-white shadow-[0_6px_14px_-6px_rgb(23_153_79/0.8)]">
+        <Leaf size={18} weight="fill" />
       </span>
-      {!compact && <span className="text-[17px]">{t("appName")}</span>}
+      {!compact && <span className="text-[18px] font-extrabold tracking-tight">{t("appName")}</span>}
     </span>
   );
 }

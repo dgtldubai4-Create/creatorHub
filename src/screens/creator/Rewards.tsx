@@ -45,11 +45,13 @@ export function Rewards() {
     <div className="flex flex-col gap-10">
       <PageHeader title={t("rewards")} sub={t("rewardsSub")} />
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="card-soft flex items-center gap-5 bg-leaf p-6 text-white md:col-span-2">
-          <Gift size={40} weight="duotone" />
+        <div className="relative flex items-center gap-5 overflow-hidden rounded-[var(--radius-card)] bg-forest p-6 text-white md:col-span-2">
+          <div className="pattern-waves absolute inset-0 text-lime/12" />
+          <div className="blob absolute -end-10 -top-16 h-48 w-48 bg-marigold/80" />
+          <Gift size={44} weight="duotone" className="relative text-lime" />
           <div>
             <div className="text-[13px] opacity-80">{t("balance")}</div>
-            <div className="text-4xl font-semibold leading-none"><Counter value={bal} format={num} /> <span className="text-lg opacity-80">{t("pts")}</span></div>
+            <div className="relative text-5xl font-extrabold leading-none tracking-tight"><Counter value={bal} format={num} /> <span className="text-lg font-semibold opacity-80">{t("pts")}</span></div>
             <div className="mt-2 text-[13px] opacity-80">{t("lifetime")}: {num(life)}</div>
           </div>
         </div>
@@ -71,7 +73,7 @@ export function Rewards() {
             return (
               <Item key={r.id}>
                 <Tilt max={4} className="h-full rounded-[var(--radius-card)]">
-                  <article className={cn("card flex h-full flex-col gap-3 p-5", r.stock <= 0 && "opacity-60")}>
+                  <article className={cn("lift card flex h-full flex-col gap-3 p-5", r.stock <= 0 && "opacity-60")}>
                     <div className="flex items-center justify-between gap-3">
                       <span className={cn("flex h-9 w-9 items-center justify-center rounded-full", r.kind === "product" ? "bg-leaf-soft text-leaf" : r.kind === "experience" ? "bg-marigold-soft text-marigold-ink" : r.kind === "voucher" ? "bg-sky/12 text-sky" : "bg-rose-soft text-rose")}>{ICON[r.kind]}</span>
                       {b ? <BrandMark brand={b} size="sm" /> : <Chip>{t(`rk_${r.kind}` as const)}</Chip>}
