@@ -27,86 +27,109 @@
 }
 
 /*
-  The Kit. Every surface is an object from the welcome box: paper labels, stamps,
-  tickets, a membership card, a certificate. One deep Dabur green, one marigold
-  accent, warm paper neutrals. Nothing else.
+  Candy. Bright cream canvas, deep plum ink, and six candies: lime, tangerine,
+  bubblegum, sky, lemon, grape. Everything has a bold ink outline and a hard
+  offset shadow, big radii, and it moves.
 */
 :root {
   color-scheme: light;
-  --bg: #efede6;
-  --surface: #fbfaf6;
-  --surface-2: #f3f1ea;
-  --surface-3: #e5e2d7;
-  --ink: #132419;
-  --ink-2: #4b5a50;
-  --ink-3: #7b877e;
-  --line: #d8d4c7;
-  --line-2: #bfb9a8;
-  --leaf: #1c8a4c;
-  --leaf-deep: #0f5a33;
-  --leaf-soft: #dcebdf;
-  --leaf-ink: #0a3d22;
-  --forest: #0e3d28;
-  --forest-2: #134f34;
-  --marigold: #f1a51f;
-  --marigold-soft: #fbe4b5;
-  --marigold-ink: #3b2600;
-  --rose: #c6432f;
-  --rose-soft: #f6d9d2;
-  --sky: #2f6b9a;
-  --shadow: 19 36 25;
+  --bg: #fff7ea;
+  --surface: #ffffff;
+  --surface-2: #fff0d9;
+  --surface-3: #ffe3bd;
+  --ink: #1f1740;
+  --ink-2: #4e4670;
+  --ink-3: #7f789b;
+  --line: #e6dccb;
+  --line-2: #1f1740;
+  --outline: #1f1740;
+  --lime: #c9f24a;
+  --lime-soft: #ecfbbf;
+  --tangerine: #ff7a3d;
+  --tangerine-soft: #ffd9c6;
+  --bubblegum: #ff7bc8;
+  --bubblegum-soft: #ffd6ee;
+  --sky: #3fa9ff;
+  --sky-soft: #cfe9ff;
+  --lemon: #ffd43b;
+  --lemon-soft: #fff0b3;
+  --grape: #7b5bff;
+  --grape-soft: #e2dbff;
+  --mint: #5ee6b0;
+  --leaf: #1fb860;
+  --leaf-deep: #0f7a3f;
+  --leaf-soft: #d5f7de;
+  --leaf-ink: #0d4d29;
+  --forest: #1f1740;
+  --forest-2: #332a5e;
+  --marigold: #ffb020;
+  --marigold-soft: #ffe7a8;
+  --marigold-ink: #1f1740;
+  --rose: #ff4d6d;
+  --rose-soft: #ffd8e0;
+  --shadow: 31 23 64;
   --font-sans: "Outfit Variable", "Readex Pro Variable", ui-sans-serif, system-ui, sans-serif;
 }
 :root:not([data-theme="light"]) {
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
-    --bg: #0d1712;
-    --surface: #152119;
-    --surface-2: #1c2b22;
-    --surface-3: #27392d;
-    --ink: #eef0e8;
-    --ink-2: #aab5ab;
-    --ink-3: #7f8c82;
-    --line: #2b3d32;
-    --line-2: #3c5244;
-    --leaf: #3fbd73;
-    --leaf-deep: #8fe0ad;
-    --leaf-soft: #173b27;
-    --leaf-ink: #d7f1df;
-    --forest: #0e3d28;
-    --forest-2: #134f34;
-    --marigold: #f3b23a;
-    --marigold-soft: #46310a;
-    --marigold-ink: #fbe4b5;
-    --rose: #ef7a65;
-    --rose-soft: #4a2119;
-    --sky: #86b8de;
+    --bg: #17122b;
+    --surface: #221b44;
+    --surface-2: #2b2355;
+    --surface-3: #382e6b;
+    --ink: #fff4e4;
+    --ink-2: #cfc6e6;
+    --ink-3: #9a91ba;
+    --line: #3b3264;
+    --line-2: #fff4e4;
+    --outline: #fff4e4;
+    --lime-soft: #3a4a14;
+    --tangerine-soft: #5a2a14;
+    --bubblegum-soft: #56214a;
+    --sky-soft: #173a5e;
+    --lemon-soft: #5a4a0e;
+    --grape-soft: #2e2366;
+    --leaf: #3fd27a;
+    --leaf-deep: #8ff0b6;
+    --leaf-soft: #173f2a;
+    --leaf-ink: #d8f7e2;
+    --forest: #fff4e4;
+    --forest-2: #e8dcc8;
+    --marigold-soft: #4a3610;
+    --marigold-ink: #fff4e4;
+    --rose: #ff6f88;
+    --rose-soft: #4a1f2a;
     --shadow: 0 0 0;
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0d1712;
-  --surface: #152119;
-  --surface-2: #1c2b22;
-  --surface-3: #27392d;
-  --ink: #eef0e8;
-  --ink-2: #aab5ab;
-  --ink-3: #7f8c82;
-  --line: #2b3d32;
-  --line-2: #3c5244;
-  --leaf: #3fbd73;
-  --leaf-deep: #8fe0ad;
-  --leaf-soft: #173b27;
-  --leaf-ink: #d7f1df;
-  --forest: #0e3d28;
-  --forest-2: #134f34;
-  --marigold: #f3b23a;
-  --marigold-soft: #46310a;
-  --marigold-ink: #fbe4b5;
-  --rose: #ef7a65;
-  --rose-soft: #4a2119;
-  --sky: #86b8de;
+  --bg: #17122b;
+  --surface: #221b44;
+  --surface-2: #2b2355;
+  --surface-3: #382e6b;
+  --ink: #fff4e4;
+  --ink-2: #cfc6e6;
+  --ink-3: #9a91ba;
+  --line: #3b3264;
+  --line-2: #fff4e4;
+  --outline: #fff4e4;
+  --lime-soft: #3a4a14;
+  --tangerine-soft: #5a2a14;
+  --bubblegum-soft: #56214a;
+  --sky-soft: #173a5e;
+  --lemon-soft: #5a4a0e;
+  --grape-soft: #2e2366;
+  --leaf: #3fd27a;
+  --leaf-deep: #8ff0b6;
+  --leaf-soft: #173f2a;
+  --leaf-ink: #d8f7e2;
+  --forest: #fff4e4;
+  --forest-2: #e8dcc8;
+  --marigold-soft: #4a3610;
+  --marigold-ink: #fff4e4;
+  --rose: #ff6f88;
+  --rose-soft: #4a1f2a;
   --shadow: 0 0 0;
 }
 
@@ -120,6 +143,20 @@
   --color-ink-3: var(--ink-3);
   --color-line: var(--line);
   --color-line-2: var(--line-2);
+  --color-outline: var(--outline);
+  --color-lime: var(--lime);
+  --color-lime-soft: var(--lime-soft);
+  --color-tangerine: var(--tangerine);
+  --color-tangerine-soft: var(--tangerine-soft);
+  --color-bubblegum: var(--bubblegum);
+  --color-bubblegum-soft: var(--bubblegum-soft);
+  --color-sky: var(--sky);
+  --color-sky-soft: var(--sky-soft);
+  --color-lemon: var(--lemon);
+  --color-lemon-soft: var(--lemon-soft);
+  --color-grape: var(--grape);
+  --color-grape-soft: var(--grape-soft);
+  --color-mint: var(--mint);
   --color-leaf: var(--leaf);
   --color-leaf-deep: var(--leaf-deep);
   --color-leaf-soft: var(--leaf-soft);
@@ -131,13 +168,15 @@
   --color-marigold-ink: var(--marigold-ink);
   --color-rose: var(--rose);
   --color-rose-soft: var(--rose-soft);
-  --color-sky: var(--sky);
+  --color-plum: #1f1740;
   --font-sans: var(--font-sans);
-  --radius-card: 0.875rem;
-  --radius-field: 0.5rem;
-  --shadow-card: 0 1px 2px rgb(var(--shadow) / 0.06), 0 8px 24px -16px rgb(var(--shadow) / 0.25);
-  --shadow-float: 0 24px 50px -22px rgb(var(--shadow) / 0.4), 0 2px 6px -2px rgb(var(--shadow) / 0.12);
+  --radius-card: 1.25rem;
+  --radius-field: 0.75rem;
+  --shadow-card: 4px 4px 0 var(--outline);
+  --shadow-float: 8px 8px 0 var(--outline);
+  --shadow-pop: 0 20px 40px -18px rgb(var(--shadow) / 0.35);
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ---------- Base (layered so utilities always win) ---------- */
@@ -161,22 +200,23 @@
   .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
   .lenis.lenis-stopped { overflow: hidden; }
 
-  ::selection { background: var(--marigold-soft); color: var(--marigold-ink); }
-  :focus-visible { outline: 2px solid var(--leaf); outline-offset: 3px; border-radius: 6px; }
+  ::selection { background: var(--lime); color: #1f1740; }
+  :focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; border-radius: 10px; }
   button, input, select, textarea { font: inherit; color: inherit; }
   a { color: inherit; text-decoration: none; }
-  h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.025em; line-height: 1.05; text-wrap: balance; }
-  h3, h4 { font-weight: 600; letter-spacing: -0.015em; line-height: 1.15; }
-  html[dir="rtl"] h1, html[dir="rtl"] h2, html[dir="rtl"] h3 { letter-spacing: 0; line-height: 1.3; }
+  h1, h2, h3, h4 { margin: 0; font-weight: 800; letter-spacing: -0.03em; line-height: 1; text-wrap: balance; }
+  h3, h4 { font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
+  html[dir="rtl"] h1, html[dir="rtl"] h2, html[dir="rtl"] h3 { letter-spacing: 0; line-height: 1.3; font-weight: 700; }
   p { margin: 0; }
   img { max-width: 100%; display: block; }
-  * { scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
+  * { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
 }
 
 /* ---------- Components ---------- */
+/* Bubble: white, bold ink outline, hard offset shadow. The one card. */
 @utility card {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 2px solid var(--outline);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
 }
@@ -184,66 +224,69 @@
   background: var(--surface-2);
   border-radius: var(--radius-card);
 }
-/* A packaging label: paper, a thin rule inset from the edge. */
 @utility label-card {
   position: relative;
   background: var(--surface);
-  border: 1px solid var(--line-2);
-  border-radius: 10px;
+  border: 2px solid var(--outline);
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 5px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    pointer-events: none;
-  }
+}
+/* Candy block: a coloured section card with the same outline. Pair with bg-* */
+@utility block {
+  border: 2px solid var(--outline);
+  border-radius: 1.75rem;
+  box-shadow: var(--shadow-float);
+}
+@utility outline-ink {
+  border: 2px solid var(--outline);
 }
 @utility press {
   transition: transform 160ms var(--ease-out-quint), box-shadow 160ms var(--ease-out-quint), background-color 160ms;
-  &:active { transform: translateY(1px) scale(0.985); }
+  &:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--outline); }
 }
 @utility lift {
-  transition: transform 260ms var(--ease-out-quint), box-shadow 260ms var(--ease-out-quint), border-color 160ms;
-  &:hover { transform: translateY(-3px); box-shadow: var(--shadow-float); }
+  transition: transform 220ms var(--ease-bounce), box-shadow 220ms var(--ease-out-quint), border-color 160ms;
+  &:hover { transform: translate(-3px, -3px); box-shadow: 8px 8px 0 var(--outline); }
+}
+/* Squish on hover for playful chips and faces. */
+@utility squish {
+  transition: transform 220ms var(--ease-bounce);
+  &:hover { transform: scale(1.06) rotate(-2deg); }
 }
 @utility field {
   width: 100%;
   background: var(--surface);
-  border: 1px solid var(--line-2);
+  border: 2px solid var(--outline);
   border-radius: var(--radius-field);
-  padding: 0.6rem 0.85rem;
+  padding: 0.65rem 0.95rem;
   color: var(--ink);
-  transition: border-color 160ms, box-shadow 160ms;
+  transition: box-shadow 160ms, transform 160ms;
   &::placeholder { color: var(--ink-3); }
-  &:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3px color-mix(in oklab, var(--leaf) 16%, transparent); }
+  &:focus { outline: none; box-shadow: 4px 4px 0 var(--sky); }
 }
-/* Packaging meta: the small uppercase line on a label ("NET 200 ML"). */
 @utility meta {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 html[dir="rtl"] .meta { letter-spacing: 0; }
-/* Perforation: a dashed tear line with notches at both ends. */
 @utility perf-x {
   position: relative;
-  border-top: 2px dashed var(--line-2);
+  border-top: 2px dashed var(--outline);
   &::before, &::after {
     content: "";
     position: absolute;
-    top: -10px;
-    width: 18px;
-    height: 18px;
+    top: -11px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: var(--bg);
-    border: 1px solid var(--line);
+    border: 2px solid var(--outline);
   }
-  &::before { inset-inline-start: -10px; }
-  &::after { inset-inline-end: -10px; }
+  &::before { inset-inline-start: -12px; }
+  &::after { inset-inline-end: -12px; }
 }
 @utility text-balance { text-wrap: balance; }
 @utility tabular { font-variant-numeric: tabular-nums; }
@@ -251,22 +294,56 @@ html[dir="rtl"] .meta { letter-spacing: 0; }
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 }
-/* Paper grain lives on one fixed element only */
-.grain {
-  position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: 0.05; mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* Outlined display type with a candy fill */
+@utility text-outline {
+  -webkit-text-stroke: 2px var(--outline);
+  paint-order: stroke fill;
 }
-:root[data-theme="dark"] .grain, :root:not([data-theme="light"]) .grain { @media (prefers-color-scheme: dark) { mix-blend-mode: screen; opacity: 0.035; } }
+.grain { display: none; }
 
+/* ---------- Ambient motion ---------- */
 @keyframes stamp-press {
   0% { transform: rotate(-12deg) scale(1.6); opacity: 0; }
   60% { transform: rotate(-8deg) scale(0.96); opacity: 1; }
   100% { transform: rotate(-8deg) scale(1); opacity: 1; }
 }
-@keyframes lid-open {
-  0% { transform: rotateX(0deg); }
-  100% { transform: rotateX(-112deg); }
+@keyframes blob-drift {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(6%, -8%) scale(1.08); }
+  66% { transform: translate(-5%, 6%) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); }
 }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes wobble {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes pop-in {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes hue-roll {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+.blob { position: absolute; border-radius: 50%; filter: blur(40px); opacity: 0.55; animation: blob-drift 16s ease-in-out infinite; will-change: transform; pointer-events: none; }
+.marquee-track { display: flex; width: max-content; animation: marquee 40s linear infinite; }
+.marquee-track:hover { animation-play-state: paused; }
+.wobble { animation: wobble 2.4s ease-in-out infinite; transform-origin: 50% 80%; }
+.bob { animation: bob 3.6s ease-in-out infinite; }
+.spin-slow { animation: spin-slow 22s linear infinite; }
+.pop-in { animation: pop-in 480ms var(--ease-bounce) both; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }

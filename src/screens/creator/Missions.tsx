@@ -22,8 +22,8 @@ export function Missions() {
 function PriceTag({ value, double }: { value: number; double?: boolean }) {
   const t = useT();
   return (
-    <span className={cn("inline-flex flex-col items-center rounded-[8px] px-2.5 py-1.5 leading-none", double ? "bg-marigold text-marigold-ink" : "bg-forest text-white")}>
-      <span className="text-[15px] font-semibold tabular">+{value}</span>
+    <span className={cn("inline-flex flex-col items-center rounded-[12px] px-2.5 py-1.5 leading-none", double ? "bg-lemon text-plum border-2 border-outline" : "bg-ink text-canvas")}>
+      <span className="text-[15px] font-extrabold tabular">+{value}</span>
       <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] opacity-80">{t("sparks")}</span>
     </span>
   );

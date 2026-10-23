@@ -1,5 +1,5 @@
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform, animate, type Transition } from "motion/react";
-import { useEffect, useRef, type ReactNode, type MouseEvent } from "react";
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, animate, type Transition } from "motion/react";
+import { useEffect, useRef, useState, type ReactNode, type MouseEvent } from "react";
 import confetti from "canvas-confetti";
 import { cn } from "./cn";
 
@@ -111,7 +111,7 @@ export function useCelebrate() {
   const reduce = useReducedMotion();
   return (origin?: { x: number; y: number }) => {
     if (reduce) return;
-    confetti({ particleCount: 90, spread: 70, startVelocity: 38, gravity: 1.1, scalar: 0.9, ticks: 180, origin: origin ?? { y: 0.6 }, colors: ["#178a47", "#f2b33d", "#7fd6a2", "#fbe9bf", "#0f5a33"], disableForReducedMotion: true });
+    confetti({ particleCount: 90, spread: 70, startVelocity: 38, gravity: 1.1, scalar: 0.9, ticks: 180, origin: origin ?? { y: 0.6 }, colors: ["#c9f24a", "#ff7a3d", "#ff7bc8", "#3fa9ff", "#ffd43b", "#7b5bff"], disableForReducedMotion: true });
   };
 }
 
@@ -123,5 +123,81 @@ export function Float({ children, className, delay = 0, amplitude = 8, duration 
     <motion.div className={className} animate={{ y: [0, -amplitude, 0], rotate: [0, 1.5, 0] }} transition={{ duration, delay, repeat: Infinity, ease: "easeInOut" }}>
       {children}
     </motion.div>
+  );
+}
+
+/** Continuous horizontal marquee. Children are duplicated so the loop is seamless. */
+export function Marquee({ children, className, duration = 40, reverse }: { children: ReactNode; className?: string; duration?: number; reverse?: boolean }) {
+  return (
+    <div className={cn("overflow-hidden", className)} dir="ltr">
+      <div className="marquee-track" style={{ animationDuration: `${duration}s`, animationDirection: reverse ? "reverse" : "normal" }}>
+        <div className="flex shrink-0 items-center">{children}</div>
+        <div className="flex shrink-0 items-center" aria-hidden>{children}</div>
+      </div>
+    </div>
+  );
+}
+
+/** Soft candy blobs drifting behind a section. */
+export function Blobs({ colors = ["var(--lime)", "var(--bubblegum)", "var(--sky)"], className }: { colors?: string[]; className?: string }) {
+  return (
+    <div className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)} aria-hidden>
+      {colors.map((c, i) => (
+        <span key={i} className="blob" style={{ background: c, width: `${42 + i * 8}%`, paddingBottom: `${42 + i * 8}%`, left: `${[-8, 55, 25][i % 3]}%`, top: `${[-20, 10, 55][i % 3]}%`, animationDelay: `${i * -5}s`, animationDuration: `${16 + i * 4}s` }} />
+      ))}
+    </div>
+  );
+}
+
+/** Follows the cursor with a soft candy glow. Mount once inside a `relative` section. */
+export function CursorGlow({ color = "var(--lemon)", size = 420 }: { color?: string; size?: number }) {
+  const reduce = useReducedMotion();
+  const x = useSpring(useMotionValue(-1000), { stiffness: 120, damping: 20 });
+  const y = useSpring(useMotionValue(-1000), { stiffness: 120, damping: 20 });
+  useEffect(() => {
+    if (reduce) return;
+    const move = (e: PointerEvent) => { x.set(e.clientX - size / 2); y.set(e.clientY - size / 2); };
+    window.addEventListener("pointermove", move, { passive: true });
+    return () => window.removeEventListener("pointermove", move);
+  }, [x, y, size, reduce]);
+  if (reduce) return null;
+  return <motion.span aria-hidden className="pointer-events-none fixed left-0 top-0 z-0 rounded-full opacity-40 mix-blend-multiply dark:mix-blend-screen" style={{ x, y, width: size, height: size, background: `radial-gradient(circle, ${color} 0%, transparent 65%)` }} />;
+}
+
+/** Scroll-linked vertical drift for decorative layers. */
+export function Parallax({ children, className, speed = 0.2 }: { children: ReactNode; className?: string; speed?: number }) {
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [speed * 160, -speed * 160]);
+  return <motion.div ref={ref} className={className} style={reduce ? undefined : { y }}>{children}</motion.div>;
+}
+
+/** Hover squish and a little tilt, for faces and candy tiles. */
+export function Squish({ children, className, rotate = -3 }: { children: ReactNode; className?: string; rotate?: number }) {
+  return (
+    <motion.div className={cn("inline-block", className)} whileHover={{ scale: 1.08, rotate }} whileTap={{ scale: 0.94 }} transition={springSnappy}>
+      {children}
+    </motion.div>
+  );
+}
+
+/** Cycles through words with a spring flip. */
+export function RotatingWord({ words, className, interval = 2200 }: { words: string[]; className?: string; interval?: number }) {
+  const [i, setI] = useState(0);
+  const reduce = useReducedMotion();
+  useEffect(() => {
+    if (reduce) return;
+    const id = window.setInterval(() => setI((n) => (n + 1) % words.length), interval);
+    return () => window.clearInterval(id);
+  }, [words.length, interval, reduce]);
+  return (
+    <span className={cn("relative inline-grid overflow-visible align-baseline", className)}>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span key={words[i]} className="col-start-1 row-start-1 inline-block whitespace-nowrap" initial={{ y: "100%", opacity: 0, rotate: 6 }} animate={{ y: 0, opacity: 1, rotate: 0 }} exit={{ y: "-100%", opacity: 0, rotate: -6 }} transition={{ type: "spring", stiffness: 300, damping: 24 }}>
+          {words[i]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
   );
 }

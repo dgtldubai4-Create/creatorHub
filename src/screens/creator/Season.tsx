@@ -67,7 +67,7 @@ export function SeasonPage() {
                   <Avatar name={row.creator.name} hue={row.creator.hue} size={34} />
                   <div className="min-w-0 flex-1"><div className="truncate text-[14px] font-medium">{row.creator.name}</div><div className="text-[12px] text-ink-3">{row.creator.city} · {t(`market_${row.creator.market}` as const)}</div></div>
                   <LevelChip level={row.level} className="hidden sm:inline-flex" />
-                  <span className="hidden h-1.5 w-28 overflow-hidden rounded-full bg-surface-3 md:block"><motion.span className="block h-full rounded-full bg-forest" initial={{ width: 0 }} animate={{ width: `${(row.sparks / Math.max(1, board[0].sparks)) * 100}%` }} transition={{ duration: 0.9, delay: 0.1 + i * 0.04, ease: [0.22, 1, 0.36, 1] }} /></span>
+                  <span className="hidden h-1.5 w-28 overflow-hidden rounded-full bg-surface-3 md:block"><motion.span className="block h-full rounded-full bg-grape" initial={{ width: 0 }} animate={{ width: `${(row.sparks / Math.max(1, board[0].sparks)) * 100}%` }} transition={{ duration: 0.9, delay: 0.1 + i * 0.04, ease: [0.22, 1, 0.36, 1] }} /></span>
                   <span className="w-14 text-end font-semibold tabular">{num(row.sparks)}</span>
                 </div>
               </Item>

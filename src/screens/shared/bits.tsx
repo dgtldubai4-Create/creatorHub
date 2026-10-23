@@ -119,7 +119,7 @@ import type { EntryState, Level, MissionType } from "../../domain/types";
 import { LevelSeal } from "../../ui/kit";
 import { Leaf, Plant, Flower, Tree } from "@phosphor-icons/react";
 
-const LEVEL_TONE: Record<Level, Tone> = { member: "neutral", insider: "sky", pro: "leaf", ambassador: "marigold" };
+const LEVEL_TONE: Record<Level, Tone> = { member: "sky", insider: "lime", pro: "grape", ambassador: "tangerine" };
 export function LevelChip({ level, className }: { level: Level; className?: string }) {
   const t = useT();
   const Icon = { member: Leaf, insider: Plant, pro: Flower, ambassador: Tree }[level];
@@ -131,7 +131,7 @@ export function LevelEmblem({ level, size = 56, className }: { level: Level; siz
   return <LevelSeal level={level} size={size} className={className} />;
 }
 
-const MT_TONE: Record<MissionType, Tone> = { starter: "leaf", routine: "sky", monthly: "marigold", team: "leaf", review: "neutral", event: "ink", academy: "leaf", referral: "sky" };
+const MT_TONE: Record<MissionType, Tone> = { starter: "lime", routine: "sky", monthly: "lemon", team: "bubblegum", review: "neutral", event: "tangerine", academy: "leaf", referral: "sky" };
 export function MissionTypeChip({ type, className }: { type: MissionType; className?: string }) {
   const t = useT();
   return <Chip tone={MT_TONE[type]} className={className}>{t(`mt_${type}` as const)}</Chip>;

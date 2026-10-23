@@ -149,19 +149,26 @@ not committed yet.
 
 ## Design notes
 
-The interface is built around one idea, **the kit**: everything a creator touches in
-the Squad is an object that could come out of the welcome box.
+Bright, loud, personal. The interface is built on three things:
 
-- Objects (`src/ui/kit.tsx`): `Ticket` with a tear-off stub for missions, `MembershipCard`
-  for the level, `Certificate` sealed by the Academy, `Stamp` and `StampCard` for badges
-  and season progress, `Label` for packaging-style cards, `KitBox` that opens on the
-  entry and join screens. `ProductArt` draws a pack silhouette with a printed label and
-  a per-brand ingredient glyph; `Graphic` prints one duotone icon on paper for mission
-  types, tracks, levels and seasons.
-- Palette: paper canvas, deep forest green, one marigold accent. Rose and sky only for
-  states. Light and dark follow the system preference; dark keeps the paper grain.
+- **Candy palette** (`src/index.css`): cream canvas, deep plum ink, and six candies
+  (lime, tangerine, bubblegum, sky, lemon, grape). Every card has a 2px ink outline and
+  a hard offset shadow; buttons and chips are pills. Dark mode keeps the candies and
+  flips the outline to cream.
+- **Faces drawn in code** (`src/ui/Face.tsx`): every creator and team member gets a
+  deterministic illustrated avatar from their name: skin, hair or hijab, colours,
+  glasses, expression. The seed cast has hand-set looks; anyone new gets a hashed one.
+  `Avatar` renders a `Face`, so faces appear everywhere a name does.
+- **Motion everywhere** (`src/ui/motion.tsx`): ambient drift (blobs, marquees, bobbing
+  faces, ticking counters, a rotating headline word, a cursor glow) and interaction
+  (magnetic buttons, tilt, squish, springy page transitions, stamps and confetti).
+  Everything collapses under `prefers-reduced-motion`.
+
+The landing page leads with the people: a cloud of real Squad faces, a live ticker of
+Sparks earned, a rotating creator spotlight in their own words, then missions, levels,
+the season board, the Academy and the brands. The creator home greets you by name with
+your face, a note from a named team member, the creators nearest you on the board, and
+a feed of what the Squad is doing.
+
 - Type: Outfit for Latin, Readex Pro for Arabic, both self-hosted variable fonts.
-- Motion: physical and sparse. Lids open, stubs tear, stamps press, cards lift.
-  `motion/react` springs for state changes, Lenis for smooth scrolling, a confetti burst
-  on the moments that deserve one. Everything collapses under `prefers-reduced-motion`.
 - Icons: Phosphor, named imports only.

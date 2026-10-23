@@ -44,7 +44,7 @@ export function Login() {
                 <Item>
                   <Tilt className="rounded-[var(--radius-card)]">
                     <button onClick={() => setSeat("creator")} className="label-card lift flex h-full w-full flex-col items-start gap-10 p-7 text-start">
-                      <span className="flex h-14 w-14 items-center justify-center rounded-[12px] bg-forest text-marigold"><Camera size={28} weight="duotone" /></span>
+                      <span className="flex h-14 w-14 items-center justify-center rounded-[12px] bg-lime text-plum border-2 border-outline"><Camera size={28} weight="duotone" /></span>
                       <span>
                         <span className="block text-2xl font-semibold">{t("creatorSeat")}</span>
                         <span className="mt-2 block text-[15px] text-ink-2">{t("loginCreatorBody")}</span>

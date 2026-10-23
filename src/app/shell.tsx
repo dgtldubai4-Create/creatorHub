@@ -15,10 +15,10 @@ export function Logo({ className, compact }: { className?: string; compact?: boo
   const t = useT();
   return (
     <span className={cn("inline-flex items-center gap-2 font-semibold tracking-tight", className)}>
-      <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-forest text-marigold">
-        <Leaf size={18} weight="fill" />
+      <span className="squish flex h-10 w-10 -rotate-6 items-center justify-center rounded-[12px] border-2 border-outline bg-lime text-plum shadow-[3px_3px_0_var(--outline)]">
+        <Leaf size={20} weight="fill" />
       </span>
-      {!compact && <span className="text-[17px] font-semibold tracking-tight">{t("appName")}</span>}
+      {!compact && <span className="text-[18px] font-extrabold tracking-tight">{t("appName")}</span>}
     </span>
   );
 }
@@ -32,10 +32,10 @@ function SeatSwitch() {
     dispatch({ type: "switchSeat", seat });
   };
   return (
-    <div className="relative inline-flex rounded-[10px] bg-surface-2 p-1" role="tablist" aria-label={t("switchSeat")}>
+    <div className="relative inline-flex rounded-full border-2 border-outline bg-surface p-1" role="tablist" aria-label={t("switchSeat")}>
       {(["creator", "brand"] as Seat[]).map((s) => (
-        <button key={s} role="tab" aria-selected={session.seat === s} onClick={() => set(s)} className={cn("relative z-10 h-8 whitespace-nowrap rounded-[8px] px-3 text-[13px] font-medium transition-colors", session.seat === s ? "text-ink" : "text-ink-2 hover:text-ink")}>
-          {session.seat === s && <motion.span layoutId="seat-pill" className="absolute inset-0 -z-10 rounded-[8px] bg-surface shadow-card" transition={springSnappy} />}
+        <button key={s} role="tab" aria-selected={session.seat === s} onClick={() => set(s)} className={cn("relative z-10 h-8 whitespace-nowrap rounded-full px-3 text-[13px] font-bold transition-colors", session.seat === s ? "text-plum" : "text-ink-2 hover:text-ink")}>
+          {session.seat === s && <motion.span layoutId="seat-pill" className="absolute inset-0 -z-10 rounded-full bg-lime" transition={springSnappy} />}
           {s === "creator" ? t("creatorSeat") : t("brandSeat")}
         </button>
       ))}
@@ -50,7 +50,7 @@ function RoleSwitch() {
   return (
     <label className="relative inline-flex items-center">
       <span className="sr-only">{t("role")}</span>
-      <select value={session.role} onChange={(e) => dispatch({ type: "setRole", role: e.target.value as Role })} className="h-9 cursor-pointer appearance-none rounded-[8px] border border-line-2 bg-surface pe-8 ps-3.5 text-[13px] font-medium hover:border-ink-3">
+      <select value={session.role} onChange={(e) => dispatch({ type: "setRole", role: e.target.value as Role })} className="h-10 cursor-pointer appearance-none rounded-full border-2 border-outline bg-surface pe-8 ps-3.5 text-[13px] font-bold shadow-[3px_3px_0_var(--outline)]">
         {ROLES.map((r) => (
           <option key={r} value={r}>{t(`role_${r}` as const)}</option>
         ))}
@@ -64,7 +64,7 @@ function LangToggle() {
   const t = useT();
   const toggle = useToggleLang();
   return (
-    <button onClick={toggle} className="press inline-flex h-9 items-center gap-1.5 rounded-[8px] border border-line-2 bg-surface px-3 text-[13px] font-medium hover:border-ink-3" aria-label={t("language")}>
+    <button onClick={toggle} className="press inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-outline bg-surface px-3 text-[13px] font-bold shadow-[3px_3px_0_var(--outline)] hover:bg-lemon" aria-label={t("language")}>
       <Translate size={15} weight="bold" />
       {t("language")}
     </button>
@@ -78,7 +78,7 @@ function Bellicon({ audience, to }: { audience: string; to: string }) {
   return (
     <NavLink to={to} className={({ isActive }) => cn("relative inline-flex h-10 w-10 items-center justify-center rounded-full text-ink-2 hover:bg-surface-2 hover:text-ink", isActive && "bg-surface-2 text-ink")} aria-label={t("notifications")}>
       <Bell size={20} weight={n ? "fill" : "regular"} />
-      {n > 0 && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={spring} className="absolute -top-0.5 -end-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-marigold px-1 text-[11px] font-bold text-marigold-ink">{n}</motion.span>}
+      {n > 0 && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={spring} className="absolute -top-0.5 -end-0.5 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-outline bg-tangerine px-1 text-[11px] font-extrabold text-plum">{n}</motion.span>}
     </NavLink>
   );
 }
@@ -102,8 +102,8 @@ function UserMenu({ name, hue, profileTo }: { name: string; hue: number; profile
   }, [open]);
   return (
     <div ref={ref} className="relative">
-      <button onClick={() => setOpen((o) => !o)} className="press flex items-center gap-2 rounded-full p-0.5 pe-2 hover:bg-surface-2" aria-haspopup="menu" aria-expanded={open}>
-        <Avatar name={name} hue={hue} size={32} />
+      <button onClick={() => setOpen((o) => !o)} className="squish flex items-center gap-2 rounded-full p-0.5 pe-2 hover:bg-surface-2" aria-haspopup="menu" aria-expanded={open}>
+        <Avatar name={name} hue={hue} size={36} />
         <CaretDown size={12} weight="bold" className="text-ink-3" />
       </button>
       <AnimatePresence>
@@ -135,10 +135,10 @@ function TopNav({ items, compact }: { items: NavItem[]; compact?: boolean }) {
   return (
     <nav className="hide-scrollbar flex items-center gap-0.5 overflow-x-auto" aria-label="Primary">
       {items.map((it) => (
-        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative flex h-9 items-center gap-1.5 whitespace-nowrap rounded-[8px] px-3 text-[13.5px] font-medium transition-colors", isActive ? "text-ink" : "text-ink-2 hover:text-ink")}>
+        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13.5px] font-bold transition-colors", isActive ? "text-canvas" : "text-ink-2 hover:text-ink hover:bg-surface-2")}>
           {({ isActive }) => (
             <>
-              {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-[8px] bg-surface-2" transition={springSnappy} />}
+              {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-ink" transition={springSnappy} />}
               {it.icon}
               <span className={cn(compact && "hidden 2xl:inline")}>{it.label}</span>
             </>
@@ -151,10 +151,10 @@ function TopNav({ items, compact }: { items: NavItem[]; compact?: boolean }) {
 
 function BottomTabs({ items }: { items: NavItem[] }) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/90 backdrop-blur-md pb-[env(safe-area-inset-bottom)] md:hidden" aria-label="Primary">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-outline bg-surface/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] md:hidden" aria-label="Primary">
       <div className="flex justify-around">
         {items.map((it) => (
-          <NavLink key={it.to} to={it.to} end={it.end} className={({ isActive }) => cn("flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-medium", isActive ? "text-leaf" : "text-ink-3")}>
+          <NavLink key={it.to} to={it.to} end={it.end} className={({ isActive }) => cn("flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-bold", isActive ? "text-grape" : "text-ink-3")}>
             {it.icon}
             {it.label}
           </NavLink>
@@ -168,13 +168,13 @@ function Frame({ children, nav, bottom }: { children: ReactNode; nav: ReactNode;
   const location = useLocation();
   return (
     <div className="min-h-[100dvh] bg-canvas">
-      <header className="sticky top-0 z-40 border-b border-line/70 bg-canvas/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b-2 border-outline bg-canvas/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 md:px-6">{nav}</div>
       </header>
       <main className="mx-auto max-w-[1400px] px-4 pb-28 pt-6 md:px-6 md:pb-16 md:pt-8">
         {/* Enter-only transition keyed by section. An exit animation around an Outlet would
             keep rendering the new route inside the exiting element, so there is none. */}
-        <motion.div key={location.pathname.split("/").slice(0, 3).join("/")} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}>
+        <motion.div key={location.pathname.split("/").slice(0, 3).join("/")} initial={{ opacity: 0, y: 24, scale: 0.985 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", stiffness: 220, damping: 24 }}>
           {children}
         </motion.div>
       </main>
