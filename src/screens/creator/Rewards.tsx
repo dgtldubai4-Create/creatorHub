@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { Gift, Ticket, Star, Rocket, Package } from "@phosphor-icons/react";
+import { Ticket, Star, Rocket, Package } from "@phosphor-icons/react";
 import { useDispatch, useStore } from "../../app/store";
 import { useFormat, useL, useT } from "../../i18n";
 import { Button, Chip, PageHeader, Section, Segmented, Sheet } from "../../ui/primitives";
 import { Counter, Item, Stagger, Tilt, useCelebrate } from "../../ui/motion";
 import { useToast } from "../../ui/toast";
 import { balance, lifetimeSparks, level } from "../../domain/selectors";
-import { BrandMark, LevelEmblem, useCurrentCreator } from "../shared/bits";
+import { BrandMark, useCurrentCreator } from "../shared/bits";
+import { Label, MembershipCard } from "../../ui/kit";
 import type { Reward } from "../../domain/types";
 import { cn } from "../../ui/cn";
 
@@ -16,7 +17,7 @@ const ICON: Record<Reward["kind"], React.ReactNode> = { product: <Package size={
 export function Rewards() {
   const t = useT();
   const L = useL();
-  const { num, relative } = useFormat();
+  const { num, relative, date } = useFormat();
   const s = useStore();
   const me = useCurrentCreator();
   const dispatch = useDispatch();
@@ -44,25 +45,13 @@ export function Rewards() {
   return (
     <div className="flex flex-col gap-10">
       <PageHeader title={t("rewards")} sub={t("rewardsSub")} />
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="relative flex items-center gap-5 overflow-hidden rounded-[var(--radius-card)] bg-forest p-6 text-white md:col-span-2">
-          <div className="pattern-waves absolute inset-0 text-lime/12" />
-          <div className="blob absolute -end-10 -top-16 h-48 w-48 bg-marigold/80" />
-          <Gift size={44} weight="duotone" className="relative text-lime" />
-          <div>
-            <div className="text-[13px] opacity-80">{t("balance")}</div>
-            <div className="relative text-5xl font-extrabold leading-none tracking-tight"><Counter value={bal} format={num} /> <span className="text-lg font-semibold opacity-80">{t("pts")}</span></div>
-            <div className="mt-2 text-[13px] opacity-80">{t("lifetime")}: {num(life)}</div>
-          </div>
-        </div>
-        <div className="card flex items-center gap-4 p-5">
-          <LevelEmblem level={lv.level} size={64} />
-          <div>
-            <div className="text-[13px] text-ink-3">{t("level")}</div>
-            <div className="text-lg font-semibold">{t(`lv_${lv.level}` as const)}</div>
-            <div className="text-[12.5px] text-ink-3">{lv.next && lv.next !== "ambassador" ? t("toNextLevel", { n: num(lv.toNext), level: t(`lv_${lv.next}` as const) }) : lv.next === "ambassador" ? t("ambassadorsSelected") : t("topLevel")}</div>
-          </div>
-        </div>
+      <div className="grid gap-4 lg:grid-cols-12 lg:items-stretch">
+        <div className="lg:col-span-5"><MembershipCard id={me.id} name={me.name} handle={me.handle} level={lv.level} since={date(me.joinedAt, { month: "short", year: "numeric" })} sparks={bal} /></div>
+        <Label className="flex flex-col justify-center gap-2 p-6 lg:col-span-7" watermark={false}>
+          <div className="meta">{t("balance")}</div>
+          <div className="text-5xl font-semibold tabular leading-none"><Counter value={bal} format={num} /> <span className="text-lg font-medium text-ink-3">{t("sparks")}</span></div>
+          <div className="mt-2 text-[13.5px] text-ink-2">{t("lifetime")}: {num(life)} · {t(`lv_${lv.level}` as const)}{lv.next && lv.next !== "ambassador" ? ` · ${t("toNextLevel", { n: num(lv.toNext), level: t(`lv_${lv.next}` as const) })}` : ""}</div>
+        </Label>
       </div>
 
       <Section action={<Segmented value={k} onChange={setK} options={[{ value: "all", label: t("all") }, { value: "product", label: t("rk_product") }, { value: "experience", label: t("rk_experience") }, { value: "voucher", label: t("rk_voucher") }, { value: "boost", label: t("rk_boost") }]} />}>
@@ -72,22 +61,22 @@ export function Rewards() {
             const can = bal >= r.cost && r.stock > 0;
             return (
               <Item key={r.id}>
-                <Tilt max={4} className="h-full rounded-[var(--radius-card)]">
-                  <article className={cn("lift card flex h-full flex-col gap-3 p-5", r.stock <= 0 && "opacity-60")}>
+                <Tilt max={3} className="h-full rounded-[10px]">
+                  <Label as="article" brandId={r.brandId} watermark={!!r.brandId} className={cn("lift flex h-full flex-col gap-3 p-5", r.stock <= 0 && "opacity-60")}>
                     <div className="flex items-center justify-between gap-3">
-                      <span className={cn("flex h-9 w-9 items-center justify-center rounded-full", r.kind === "product" ? "bg-leaf-soft text-leaf" : r.kind === "experience" ? "bg-marigold-soft text-marigold-ink" : r.kind === "voucher" ? "bg-sky/12 text-sky" : "bg-rose-soft text-rose")}>{ICON[r.kind]}</span>
+                      <span className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-surface-2 text-ink-2">{ICON[r.kind]}</span>
                       {b ? <BrandMark brand={b} size="sm" /> : <Chip>{t(`rk_${r.kind}` as const)}</Chip>}
                     </div>
                     <h3 className="text-lg">{L(r.title)}</h3>
                     <p className="text-[14px] text-ink-2">{L(r.description)}</p>
                     <div className="mt-auto flex items-center justify-between gap-3 pt-2">
-                      <div>
-                        <div className="text-lg font-semibold tabular">{num(r.cost)} <span className="text-[12px] font-normal text-ink-3">{t("pts")}</span></div>
+                      <div className="flex items-center gap-3">
+                        <span className="inline-flex flex-col items-center rounded-[8px] bg-marigold px-2.5 py-1.5 leading-none text-marigold-ink"><span className="text-[15px] font-semibold tabular">{num(r.cost)}</span><span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] opacity-80">{t("sparks")}</span></span>
                         <div className="text-[12px] text-ink-3">{r.stock > 0 ? `${r.stock} ${t("left")}` : t("outOfStock")}</div>
                       </div>
                       <Button size="sm" variant={can ? "primary" : "secondary"} disabled={r.stock <= 0} onClick={() => setConfirm(r)}>{can ? t("redeem") : r.stock <= 0 ? t("outOfStock") : t("needMore", { n: num(r.cost - bal) })}</Button>
                     </div>
-                  </article>
+                  </Label>
                 </Tilt>
               </Item>
             );
@@ -98,7 +87,7 @@ export function Rewards() {
       <div className="grid gap-8 lg:grid-cols-2">
         <Section title={t("myRedemptions")}>
           {mine.length === 0 ? <p className="text-[14px] text-ink-3">{t("nothingHere")}</p> : (
-            <ul className="card divide-y divide-line">
+            <ul className="label-card divide-y divide-line">
               {mine.map((rd) => {
                 const r = s.rewards.find((x) => x.id === rd.rewardId);
                 return (
@@ -112,7 +101,7 @@ export function Rewards() {
           )}
         </Section>
         <Section title={t("ledger")}>
-          <ul className="card max-h-80 divide-y divide-line overflow-y-auto" data-lenis-prevent>
+          <ul className="label-card max-h-80 divide-y divide-line overflow-y-auto" data-lenis-prevent>
             {ledger.map((l) => (
               <li key={l.id} className="flex items-center justify-between gap-3 px-4 py-3">
                 <div className="min-w-0"><div className="truncate text-[14px] font-medium">{L(l.reason)}</div><div className="text-[12px] text-ink-3">{relative(l.at)}</div></div>

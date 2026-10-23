@@ -32,7 +32,7 @@ export function AdminLogistics() {
             const next = nextShipmentStatus(sh.status)!;
             return (
               <Item key={p.id}>
-                <div className="card grid gap-4 p-4 md:grid-cols-12 md:items-center">
+                <div className="label-card grid gap-4 p-4 md:grid-cols-12 md:items-center">
                   <div className="flex items-center gap-3 md:col-span-4">
                     <Avatar name={cr.name} hue={cr.hue} size={40} />
                     <div className="min-w-0">

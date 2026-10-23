@@ -61,7 +61,7 @@ export function AdminReview() {
                 const active = q.id === p?.id;
                 return (
                   <Item key={q.id}>
-                    <Link to={`/admin/review/${q.id}/${qs.id}`} className={cn("card press flex items-center gap-3 p-3 hover:border-ink-3", active && "border-leaf bg-leaf-soft/30")}>
+                    <Link to={`/admin/review/${q.id}/${qs.id}`} className={cn("label-card lift flex items-center gap-3 p-3 ", active && "border-leaf bg-leaf-soft/30")}>
                       <Avatar name={qcr.name} hue={qcr.hue} size={36} />
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-[14px] font-medium">{qcr.name}</div>
@@ -78,7 +78,7 @@ export function AdminReview() {
 
         {p && sub && c && cr ? (
           <div className="grid gap-4 lg:col-span-8 xl:col-span-9">
-            <div className="card p-5">
+            <div className="label-card p-5">
               <div className="flex flex-wrap items-center gap-3">
                 <Avatar name={cr.name} hue={cr.hue} size={40} />
                 <div className="min-w-0 flex-1">
@@ -88,7 +88,7 @@ export function AdminReview() {
                 <Link to="/admin/campaigns" className="hidden" aria-hidden><ArrowLeft /></Link>
               </div>
               {/* Simulated player: a scrubbable timeline. No media is stored. */}
-              <div className="mt-4 rounded-2xl bg-ink p-4 text-canvas">
+              <div className="mt-4 rounded-[8px] bg-ink p-4 text-canvas">
                 <div className="mb-2 flex items-center justify-between text-[12px] opacity-70"><span>{t("player")}</span><SimulatedTag className="border-canvas/30 text-canvas/70" /></div>
                 <Scrubber bars={bars} duration={duration} pos={pos} onChange={setPos} notes={[...notes, ...p.reviews.flatMap((r) => r.notes)]} />
                 <div className="mt-2 flex items-center justify-between text-[13px] tabular"><span>{clock(pos)}</span><span className="opacity-70">{clock(duration)}</span></div>
@@ -101,7 +101,7 @@ export function AdminReview() {
               {notes.length > 0 && (
                 <ul className="mt-3 grid gap-1.5">
                   {notes.map((n, i) => (
-                    <li key={i} className="flex items-center gap-2 rounded-xl bg-surface-2 px-3 py-2 text-[13.5px]">
+                    <li key={i} className="flex items-center gap-2 rounded-[8px] bg-surface-2 px-3 py-2 text-[13.5px]">
                       <button className="rounded-md bg-surface px-1.5 py-0.5 text-[12px] font-semibold tabular hover:text-leaf" onClick={() => setPos(n.t)}>{clock(n.t)}</button>
                       <span className="flex-1">{n.text}</span>
                       <button aria-label={t("close")} onClick={() => setNotes((xs) => xs.filter((_, j) => j !== i))} className="text-ink-3 hover:text-rose"><Trash size={15} /></button>
@@ -112,7 +112,7 @@ export function AdminReview() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <div className="card p-5">
+              <div className="label-card p-5">
                 <div className="flex items-center justify-between"><h3 className="text-[14px] font-semibold">{t("autoCheck")}</h3><SimulatedTag /></div>
                 <div className="mt-3 flex items-center gap-4">
                   <ProgressRing value={sub.check.score / 100} size={60} stroke={7}><span className="text-[13px] font-bold tabular">{sub.check.score}</span></ProgressRing>
@@ -124,7 +124,7 @@ export function AdminReview() {
                   ))}
                 </ul>
               </div>
-              <div className="card flex flex-col gap-3 p-5">
+              <div className="label-card flex flex-col gap-3 p-5">
                 <Field label={t("generalNote")}><Textarea value={general} onChange={(e) => setGeneral(e.target.value)} placeholder="Close. Two fixes and it is there." /></Field>
                 <div className="mt-auto flex gap-2">
                   <Button variant="danger" className="flex-1" onClick={() => decide("changes")} icon={<X size={16} weight="bold" />}>{t("requestChanges")}</Button>

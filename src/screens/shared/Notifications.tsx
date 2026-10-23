@@ -26,7 +26,7 @@ export function Notifications({ audience }: { audience: "creator" | "brand" }) {
         <Stagger className="grid gap-2" gap={0.03}>
           {list.map((n) => {
             const body = (
-              <div className={cn("card flex items-start gap-4 p-4", !n.read && "border-leaf/40 bg-leaf-soft/30", n.link && "press hover:border-ink-3")}>
+              <div className={cn("label-card flex items-start gap-4 p-4", !n.read && "border-leaf/40 bg-leaf-soft/30", n.link && "press hover:border-ink-3")}>
                 <span className={cn("mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full", n.read ? "bg-surface-2 text-ink-3" : "bg-leaf-soft text-leaf")}>{icon[n.channel]}</span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">

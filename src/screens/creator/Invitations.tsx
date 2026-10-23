@@ -51,7 +51,7 @@ export function Invitations() {
               return (
                 <motion.div key={p.id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96 }} transition={{ ...spring, delay: i * 0.05 }}>
                   <Tilt max={4} className="rounded-[var(--radius-card)]">
-                    <article className="card flex h-full flex-col gap-5 p-6">
+                    <article className="label-card flex h-full flex-col gap-5 p-6">
                       <div className="flex items-start justify-between gap-3">
                         <BrandMark brand={b} />
                         <Points value={c.points} />

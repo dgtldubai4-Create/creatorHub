@@ -47,7 +47,7 @@ export function AdminCreators() {
           const lv = level(s, cr.id);
           return (
             <Item key={cr.id}>
-              <button onClick={() => nav(`/admin/creators/${cr.id}`)} className="card press flex w-full items-center gap-3 p-4 text-start hover:border-ink-3">
+              <button onClick={() => nav(`/admin/creators/${cr.id}`)} className="label-card lift flex w-full items-center gap-3 p-4 text-start ">
                 <Avatar name={cr.name} hue={cr.hue} size={44} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2"><span className="truncate text-[15px] font-medium">{cr.name}</span>{Object.values(cr.verification).every((v) => v === "verified") && <Chip tone="leaf" className="h-5 px-1.5 text-[10.5px]">{t("vs_verified")}</Chip>}</div>
@@ -76,7 +76,7 @@ export function AdminCreators() {
               <div className="mb-2 flex items-center justify-between"><h3 className="text-[14px] font-semibold">{t("verification")}</h3><span className="text-[12px] text-ink-3">{t("setVerification")}</span></div>
               <div className="grid gap-2 sm:grid-cols-3">
                 {(["identity", "instagram", "tiktok"] as const).map((k) => (
-                  <div key={k} className="flex flex-col gap-2 rounded-2xl bg-surface-2 p-3">
+                  <div key={k} className="flex flex-col gap-2 rounded-[8px] bg-surface-2 p-3">
                     <VerificationChip state={open.verification[k]} label={t(`ver_${k}` as const)} />
                     <Select value={open.verification[k]} onChange={(e) => dispatch({ type: "verifyCreator", creatorId: open.id, field: k, state: e.target.value as VerificationState })} className="py-1.5 text-[13px]">
                       {(["pending", "verified", "action"] as const).map((v) => <option key={v} value={v}>{t(`vs_${v}` as const)}</option>)}
@@ -95,7 +95,7 @@ export function AdminCreators() {
                 {participationsFor(s, open.id).map((p) => {
                   const c = s.campaigns.find((x) => x.id === p.campaignId)!;
                   return (
-                    <li key={p.id} className="flex flex-wrap items-center gap-3 rounded-xl bg-surface-2 px-3 py-2 text-[13.5px]">
+                    <li key={p.id} className="flex flex-wrap items-center gap-3 rounded-[8px] bg-surface-2 px-3 py-2 text-[13.5px]">
                       <Link to={`/admin/campaigns/${c.id}`} className="font-medium hover:underline">{L(c.title)}</Link>
                       <PhaseTrail stage={p.stage} size="sm" />
                       <StageChip stage={p.stage} />

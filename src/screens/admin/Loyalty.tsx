@@ -31,7 +31,7 @@ export function AdminLoyalty() {
                 const c = s.campaigns.find((x) => x.id === p.campaignId)!;
                 return (
                   <Item key={p.id}>
-                    <div className="card flex flex-wrap items-center gap-3 p-3 pe-4">
+                    <div className="label-card flex flex-wrap items-center gap-3 p-3 pe-4">
                       <Avatar name={cr.name} hue={cr.hue} size={38} />
                       <div className="min-w-0 flex-1"><div className="truncate text-[14px] font-medium">{cr.name}</div><div className="flex items-center gap-2 text-[12.5px] text-ink-3"><BrandMark brand={s.brands.find((b) => b.id === c.brandId)!} size="sm" />{L(c.title)}</div></div>
                       <Button size="sm" variant="accent" onClick={() => { dispatch({ type: "releasePoints", participationId: p.id }); celebrate(); toast(t("released", { n: num(c.points) }), "success"); }} icon={<Coins size={15} weight="bold" />}>{t("releasePoints")} · {num(c.points)}</Button>
@@ -50,7 +50,7 @@ export function AdminLoyalty() {
                 const r = s.rewards.find((x) => x.id === rd.rewardId);
                 return (
                   <Item key={rd.id}>
-                    <div className="card flex flex-wrap items-center gap-3 p-3 pe-4">
+                    <div className="label-card flex flex-wrap items-center gap-3 p-3 pe-4">
                       <Avatar name={cr.name} hue={cr.hue} size={38} />
                       <div className="min-w-0 flex-1"><div className="truncate text-[14px] font-medium">{r ? L(r.title) : rd.rewardId}</div><div className="text-[12.5px] text-ink-3">{cr.name} · {num(rd.cost)} {t("pts")} · {relative(rd.at)}</div></div>
                       <Button size="sm" variant="secondary" onClick={() => { dispatch({ type: "fulfilRedemption", redemptionId: rd.id }); toast(t("fulfilled"), "success"); }}>{t("fulfil")}</Button>
@@ -63,7 +63,7 @@ export function AdminLoyalty() {
         </Section>
       </div>
       <Section title={t("fullLedger")}>
-        <div className="card overflow-hidden">
+        <div className="label-card overflow-hidden">
           <div className="max-h-[32rem] overflow-y-auto" data-lenis-prevent>
             <table className="w-full text-[13.5px]">
               <thead className="sticky top-0 bg-surface-2 text-start text-[12px] text-ink-2">

@@ -33,7 +33,7 @@ export function CreatorCampaigns() {
             const last = p.stageLog[p.stageLog.length - 1];
             return (
               <Item key={p.id}>
-                <Link to={`/creator/campaigns/${p.id}`} className="card press flex h-full flex-col gap-4 p-5 hover:border-ink-3">
+                <Link to={`/creator/campaigns/${p.id}`} className="label-card lift flex h-full flex-col gap-4 p-5 ">
                   <div className="flex items-center justify-between gap-3">
                     <BrandMark brand={b} size="sm" />
                     <Points value={c.points} />

@@ -149,10 +149,19 @@ not committed yet.
 
 ## Design notes
 
-- Palette: one green, one marigold accent, green-tinted neutrals. Light and dark follow
-  the system preference.
+The interface is built around one idea, **the kit**: everything a creator touches in
+the Squad is an object that could come out of the welcome box.
+
+- Objects (`src/ui/kit.tsx`): `Ticket` with a tear-off stub for missions, `MembershipCard`
+  for the level, `Certificate` sealed by the Academy, `Stamp` and `StampCard` for badges
+  and season progress, `Label` for packaging-style cards, `KitBox` that opens on the
+  entry and join screens. `ProductArt` draws a pack silhouette with a printed label and
+  a per-brand ingredient glyph; `Graphic` prints one duotone icon on paper for mission
+  types, tracks, levels and seasons.
+- Palette: paper canvas, deep forest green, one marigold accent. Rose and sky only for
+  states. Light and dark follow the system preference; dark keeps the paper grain.
 - Type: Outfit for Latin, Readex Pro for Arabic, both self-hosted variable fonts.
-- Motion: `motion/react` springs for state changes, Lenis for smooth scrolling, a
-  confetti burst on the moments that deserve one. Everything collapses under
-  `prefers-reduced-motion`.
-- Icons: Phosphor.
+- Motion: physical and sparse. Lids open, stubs tear, stamps press, cards lift.
+  `motion/react` springs for state changes, Lenis for smooth scrolling, a confetti burst
+  on the moments that deserve one. Everything collapses under `prefers-reduced-motion`.
+- Icons: Phosphor, named imports only.

@@ -8,6 +8,7 @@ import { useL, useT } from "../../i18n";
 import { Chip, type Tone } from "../../ui/primitives";
 import { ProductArt } from "../../ui/ProductArt";
 import { cn } from "../../ui/cn";
+import { BrandGlyph } from "../../ui/kit";
 
 export function useCurrentCreator(): Creator {
   const s = useStore();
@@ -50,12 +51,12 @@ export function VerificationChip({ state, label }: { state: VerificationState; l
   return <Chip tone={tone} icon={icon}>{label}: {t(`vs_${state}` as const)}</Chip>;
 }
 
-/** Typographic brand mark in the brand's colour. Real logos come with the catalogue sync. */
+/** Brand mark: the brand's ingredient glyph and name in its colour. Real logos come with the catalogue sync. */
 export function BrandMark({ brand, className, size = "md" }: { brand: Brand; className?: string; size?: "sm" | "md" | "lg" }) {
   const L = useL();
   return (
     <span className={cn("inline-flex items-center gap-1.5 whitespace-nowrap font-semibold tracking-tight", size === "sm" ? "text-[12.5px]" : size === "lg" ? "text-xl" : "text-[14px]", className)} style={{ color: brand.hue }}>
-      <span className="leaf-shape inline-block h-[0.9em] w-[0.9em]" style={{ background: brand.hue }} />
+      <BrandGlyph brandId={brand.id} size={size === "lg" ? 20 : size === "sm" ? 13 : 15} weight="fill" />
       {L(brand.localisedName)}
     </span>
   );
@@ -115,29 +116,22 @@ export function CardLink({ to, children, className }: { to: string; children: Re
 // ---------- Program chips ----------
 
 import type { EntryState, Level, MissionType } from "../../domain/types";
-import { ArtSlot } from "../../ui/ArtSlot";
+import { LevelSeal } from "../../ui/kit";
 import { Leaf, Plant, Flower, Tree } from "@phosphor-icons/react";
 
-const LEVEL_TONE: Record<Level, Tone> = { member: "neutral", insider: "sky", pro: "marigold", ambassador: "leaf" };
+const LEVEL_TONE: Record<Level, Tone> = { member: "neutral", insider: "sky", pro: "leaf", ambassador: "marigold" };
 export function LevelChip({ level, className }: { level: Level; className?: string }) {
   const t = useT();
   const Icon = { member: Leaf, insider: Plant, pro: Flower, ambassador: Tree }[level];
   return <Chip tone={LEVEL_TONE[level]} className={className} icon={<Icon size={14} weight="fill" />}>{t(`lv_${level}` as const)}</Chip>;
 }
 
-/** Level emblem: generated art when present, an icon tile otherwise. */
+/** Level emblem: a pressed seal. */
 export function LevelEmblem({ level, size = 56, className }: { level: Level; size?: number; className?: string }) {
-  const Icon = { member: Leaf, insider: Plant, pro: Flower, ambassador: Tree }[level];
-  const bg = { member: "bg-surface-2 text-ink-2", insider: "bg-sky/12 text-sky", pro: "bg-marigold-soft text-marigold-ink", ambassador: "bg-leaf-soft text-leaf" }[level];
-  return (
-    <span className={cn("relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full", bg, className)} style={{ width: size, height: size }}>
-      <span className="absolute inset-0 opacity-0 [&:has(img)]:opacity-100"><ArtSlot id={`level-${level}`} showLabel={false} /></span>
-      <Icon size={size * 0.46} weight="duotone" className="relative" />
-    </span>
-  );
+  return <LevelSeal level={level} size={size} className={className} />;
 }
 
-const MT_TONE: Record<MissionType, Tone> = { starter: "leaf", routine: "sky", monthly: "marigold", team: "rose", review: "neutral", event: "ink", academy: "leaf", referral: "sky" };
+const MT_TONE: Record<MissionType, Tone> = { starter: "leaf", routine: "sky", monthly: "marigold", team: "leaf", review: "neutral", event: "ink", academy: "leaf", referral: "sky" };
 export function MissionTypeChip({ type, className }: { type: MissionType; className?: string }) {
   const t = useT();
   return <Chip tone={MT_TONE[type]} className={className}>{t(`mt_${type}` as const)}</Chip>;

@@ -53,7 +53,7 @@ export function AdminOverview() {
 
       <div className="grid gap-10 lg:grid-cols-5">
         <Section title={t("journeyMap")} className="lg:col-span-3">
-          <Reveal className="card overflow-hidden">
+          <Reveal className="label-card overflow-hidden">
             <div className="grid grid-cols-6 divide-x divide-line rtl:divide-x-reverse">
               {byPhase.map(({ ph, items }) => (
                 <div key={ph} className="flex min-h-56 flex-col gap-2 p-2.5">
@@ -66,7 +66,7 @@ export function AdminOverview() {
                       const cr = s.creators.find((x) => x.id === p.creatorId)!;
                       const c = s.campaigns.find((x) => x.id === p.campaignId)!;
                       return (
-                        <Link key={p.id} to={can(role, "campaigns") ? `/admin/campaigns/${c.id}` : "/admin"} title={`${cr.name} · ${L(c.title)} · ${t(`stage_${p.stage}` as const)}`} className="press flex items-center gap-1.5 rounded-xl bg-surface-2 p-1.5 hover:bg-surface-3">
+                        <Link key={p.id} to={can(role, "campaigns") ? `/admin/campaigns/${c.id}` : "/admin"} title={`${cr.name} · ${L(c.title)} · ${t(`stage_${p.stage}` as const)}`} className="press flex items-center gap-1.5 rounded-[8px] bg-surface-2 p-1.5 hover:bg-surface-3">
                           <Avatar name={cr.name} hue={cr.hue} size={22} />
                           <span className="hidden min-w-0 flex-1 truncate text-[11.5px] xl:block">{cr.name.split(" ")[0]}</span>
                         </Link>
@@ -80,7 +80,7 @@ export function AdminOverview() {
           </Reveal>
         </Section>
         <Section title={t("whatsHappening")} className="lg:col-span-2" action={<Link to="/admin/notifications" className="text-[13px] font-medium text-leaf hover:underline">{t("viewAll")}</Link>}>
-          <ul className="card divide-y divide-line">
+          <ul className="label-card divide-y divide-line">
             {feed.map((n) => (
               <li key={n.id}>
                 <Link to={n.link ?? "/admin"} className={cn("block px-4 py-3 hover:bg-surface-2", !n.read && "bg-leaf-soft/30")}>
@@ -101,7 +101,7 @@ export function AdminOverview() {
               const b = s.brands.find((x) => x.id === c.brandId)!;
               const ps = s.participations.filter((p) => p.campaignId === c.id);
               return (
-                <Link key={c.id} to={`/admin/campaigns/${c.id}`} className="card press flex flex-col gap-3 p-4 hover:border-ink-3">
+                <Link key={c.id} to={`/admin/campaigns/${c.id}`} className="label-card lift flex flex-col gap-3 p-4 ">
                   <div className="flex items-center justify-between"><BrandMark brand={b} size="sm" /><CampaignStatusChip status={c.status} /></div>
                   <div className="text-[16px] font-semibold">{L(c.title)}</div>
                   <div className="flex flex-col gap-1.5">

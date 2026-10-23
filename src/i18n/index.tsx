@@ -56,6 +56,7 @@ export function useFormat() {
     const hours = Math.round(ms / 3_600_000);
     if (Math.abs(hours) < 1) return t("justNow");
     if (hours < 24 && hours > 0) return t("hoursAgo", { n: hours });
+    if (hours > -24 && hours < 0) return t("inHours", { n: -hours });
     const days = Math.round(hours / 24);
     if (days === 1) return t("yesterday");
     if (days < 0) return t("inDays", { n: -days });

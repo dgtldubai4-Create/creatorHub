@@ -41,7 +41,7 @@ export function AdminCampaigns() {
             const fn = campaignFunnel(s, c.id);
             return (
               <Item key={c.id}>
-                <Link to={`/admin/campaigns/${c.id}`} className="card press flex h-full flex-col gap-4 p-5 hover:border-ink-3">
+                <Link to={`/admin/campaigns/${c.id}`} className="label-card lift flex h-full flex-col gap-4 p-5 ">
                   <div className="flex items-center justify-between gap-3"><BrandMark brand={b} size="sm" /><CampaignStatusChip status={c.status} /></div>
                   <h2 className="text-xl">{L(c.title)}</h2>
                   <KitList campaign={c} compact />

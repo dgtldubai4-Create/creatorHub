@@ -1,11 +1,12 @@
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Check, Certificate, Lock, PlayCircle, Users, ChalkboardTeacher, HeartHalf, Lightbulb, Scales, Sparkle } from "@phosphor-icons/react";
+import { ArrowLeft, Check, Certificate as CertificateIcon, Lock, PlayCircle, Users, ChalkboardTeacher } from "@phosphor-icons/react";
 import { useDispatch, useStore } from "../../app/store";
 import { useFormat, useL, useT } from "../../i18n";
-import { Button, Chip, ProgressRing, Section } from "../../ui/primitives";
+import { Button, Chip, PageHeader, Section } from "../../ui/primitives";
 import { Item, Stagger, useCelebrate } from "../../ui/motion";
 import { useToast } from "../../ui/toast";
 import { ArtSlot } from "../../ui/ArtSlot";
+import { Certificate, Label, Stamp } from "../../ui/kit";
 import { certificatesFor, level, meetsLevel, trackProgress } from "../../domain/selectors";
 import { LevelChip, useCurrentCreator } from "../shared/bits";
 import { cn } from "../../ui/cn";
@@ -25,23 +26,10 @@ function AcademyHub() {
   const toast = useToast();
   const lv = level(s, me.id);
   const certs = certificatesFor(s, me.id);
-  const perks = [
-    { k: "licence", icon: <Scales size={22} weight="duotone" /> },
-    { k: "kit", icon: <Lightbulb size={22} weight="duotone" /> },
-    { k: "spotlight", icon: <Sparkle size={22} weight="duotone" /> },
-    { k: "women", icon: <HeartHalf size={22} weight="duotone" /> },
-  ] as const;
+  const perks = ["licence", "kit", "spotlight", "women"] as const;
   return (
     <div className="flex flex-col gap-10">
-      <div className="relative -mx-4 grid overflow-hidden bg-forest text-white md:mx-0 md:rounded-[var(--radius-card)] lg:grid-cols-5">
-        <div className="relative flex flex-col justify-center gap-3 p-6 lg:col-span-3 lg:p-10">
-          <div className="pattern-grid absolute inset-0 text-lime/10" />
-          <h1 className="relative text-4xl font-extrabold tracking-[-0.04em] text-white md:text-5xl">{t("academy")}<span className="text-lime">.</span></h1>
-          <p className="relative max-w-[55ch] text-white/80">{t("academySub")}</p>
-          <div className="relative mt-2 flex flex-wrap items-center gap-2"><LevelChip level={lv.level} />{certs.length > 0 && <span className="sticker bg-lime text-lime-ink" style={{ ["--tilt" as string]: "-3deg" }}><Certificate size={14} weight="fill" />{certs.length} {t("certificates").toLowerCase()}</span>}</div>
-        </div>
-        <div className="h-48 lg:col-span-2 lg:h-full"><ArtSlot id="academy-hero" /></div>
-      </div>
+      <PageHeader title={t("academy")} sub={t("academySub")} actions={<div className="flex items-center gap-2"><LevelChip level={lv.level} />{certs.length > 0 && <Chip tone="leaf" icon={<CertificateIcon size={14} weight="fill" />}>{certs.length} {t("certificates").toLowerCase()}</Chip>}</div>} />
 
       <Section title={t("tracks")}>
         <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -50,24 +38,36 @@ function AcademyHub() {
             const ok = meetsLevel(s, me.id, tr.levelRequired);
             return (
               <Item key={tr.id}>
-                <Link to={`/creator/academy/${tr.id}`} className={cn("lift card flex h-full flex-col overflow-hidden", !ok && "opacity-75")}>
-                  <div className="relative h-36"><ArtSlot id={`track-${tr.id.replace("tr_", "")}`} />
-                    <div className="absolute end-3 top-3">{p.complete ? <Chip tone="leaf" icon={<Certificate size={13} weight="fill" />}>{t("trackComplete")}</Chip> : !ok ? <Chip icon={<Lock size={12} weight="bold" />}>{t("levelLocked", { level: t(`lv_${tr.levelRequired}` as const) })}</Chip> : null}</div>
-                  </div>
-                  <div className="flex flex-1 flex-col gap-2 p-5">
-                    <h2 className="text-xl">{L(tr.title)}</h2>
-                    <p className="text-[14px] text-ink-2">{L(tr.blurb)}</p>
-                    <div className="mt-auto flex items-center justify-between pt-3 text-[12.5px] text-ink-3">
-                      <span>{tr.modules.length} {t("modules")} · {L(tr.format)}</span>
-                      <ProgressRing value={p.total ? p.done / p.total : 0} size={34} stroke={4}><span className="text-[10px] font-bold tabular">{p.done}/{p.total}</span></ProgressRing>
+                <Link to={`/creator/academy/${tr.id}`} className="block h-full">
+                  <Label className={cn("lift flex h-full gap-4 p-4", !ok && "opacity-70")} watermark={false}>
+                    <div className="h-32 w-24 shrink-0 overflow-hidden rounded-[6px]"><ArtSlot id={`track-${tr.id.replace("tr_", "")}`} compact /></div>
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <h2 className="text-lg leading-tight">{L(tr.title)}</h2>
+                      <p className="mt-1 text-[13.5px] text-ink-2">{L(tr.blurb)}</p>
+                      <div className="mt-auto flex items-end justify-between gap-3 pt-3">
+                        <div className="meta !normal-case !tracking-normal">{tr.modules.length} {t("modules")} · {L(tr.format)}</div>
+                        {p.complete ? <Stamp pressed size={44} animate={false}><span className="text-[7px]">PASSED</span></Stamp> : !ok ? <Chip icon={<Lock size={12} weight="bold" />}>{t(`lv_${tr.levelRequired}` as const)}</Chip> : <span className="text-[13px] font-semibold tabular text-ink-2">{p.done}/{p.total}</span>}
+                      </div>
                     </div>
-                  </div>
+                  </Label>
                 </Link>
               </Item>
             );
           })}
         </Stagger>
       </Section>
+
+      {certs.length > 0 && (
+        <Section title={t("certificates")} sub={t("certificateHint")}>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {certs.map((id) => {
+              const tr = s.academy.tracks.find((x) => x.id === id)!;
+              const at = s.academy.progress[me.id]?.[tr.modules[tr.modules.length - 1].id] ?? s.now;
+              return <Certificate key={id} title={L(tr.title)} name={me.name} date={date(at)} meta={`${tr.modules.length} ${t("modules")}`} sealed />;
+            })}
+          </div>
+        </Section>
+      )}
 
       <Section title={t("mentoring")} sub={t("mentoringSub")}>
         <div className="grid gap-3 md:grid-cols-2">
@@ -76,26 +76,25 @@ function AcademyHub() {
             const ok = meetsLevel(s, me.id, ms.levelRequired);
             const left = ms.seats - ms.bookedBy.length;
             return (
-              <div key={ms.id} className="card flex flex-wrap items-center gap-4 p-4">
-                <span className={cn("flex h-11 w-11 items-center justify-center rounded-full", ms.kind === "group" ? "bg-leaf-soft text-leaf" : "bg-marigold-soft text-marigold-ink")}>{ms.kind === "group" ? <Users size={20} weight="duotone" /> : <ChalkboardTeacher size={20} weight="duotone" />}</span>
+              <Label key={ms.id} className="flex flex-wrap items-center gap-4 p-4" watermark={false}>
+                <span className={cn("flex h-11 w-11 items-center justify-center rounded-[10px]", ms.kind === "group" ? "bg-leaf-soft text-leaf" : "bg-marigold-soft text-marigold-ink")}>{ms.kind === "group" ? <Users size={20} weight="duotone" /> : <ChalkboardTeacher size={20} weight="duotone" />}</span>
                 <div className="min-w-0 flex-1">
                   <div className="text-[15px] font-semibold">{L(ms.title)}</div>
                   <div className="text-[12.5px] text-ink-3">{ms.mentor} · {date(ms.at, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} · {left > 0 ? t("seatsLeft", { n: left }) : t("full")}</div>
                 </div>
                 {booked ? <Chip tone="leaf" icon={<Check size={13} weight="bold" />}>{t("booked")}</Chip> : !ok ? <Chip icon={<Lock size={12} weight="bold" />}>{t("levelLocked", { level: t(`lv_${ms.levelRequired}` as const) })}</Chip> : <Button size="sm" variant="secondary" disabled={left <= 0} onClick={() => { dispatch({ type: "bookMentor", creatorId: me.id, sessionId: ms.id }); toast(t("booked"), "success"); }}>{t("book")}</Button>}
-              </div>
+              </Label>
             );
           })}
         </div>
       </Section>
 
       <Section title={t("empowerment")}>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="label-card grid divide-y divide-line sm:grid-cols-2 sm:divide-x sm:divide-y-0 xl:grid-cols-4 rtl:sm:divide-x-reverse">
           {perks.map((p) => (
-            <div key={p.k} className="card-soft flex flex-col gap-3 p-5">
-              <span className="text-leaf">{p.icon}</span>
-              <h3 className="text-[16px] font-semibold">{t(`emp_${p.k}` as const)}</h3>
-              <p className="text-[13.5px] text-ink-2">{t(`emp_${p.k}_body` as const)}</p>
+            <div key={p} className="p-5">
+              <h3 className="text-[15px] font-semibold">{t(`emp_${p}` as const)}</h3>
+              <p className="mt-1 text-[13.5px] text-ink-2">{t(`emp_${p}_body` as const)}</p>
             </div>
           ))}
         </div>
@@ -127,36 +126,42 @@ function TrackDetail({ id }: { id: string }) {
     }
   };
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <Link to="/creator/academy" className="inline-flex items-center gap-1.5 text-[13.5px] font-medium text-ink-2 hover:text-ink"><ArrowLeft size={16} weight="bold" className="rtl:rotate-180" />{t("academy")}</Link>
-      <div className="card grid overflow-hidden lg:grid-cols-5">
-        <div className="h-48 lg:col-span-2 lg:h-full"><ArtSlot id={`track-${tr.id.replace("tr_", "")}`} /></div>
-        <div className="flex flex-col gap-3 p-6 lg:col-span-3 lg:p-8">
-          <div className="flex flex-wrap gap-2"><Chip>{L(tr.format)}</Chip><Chip>{t("levelRequired")}: {t(`lv_${tr.levelRequired}` as const)}</Chip><Chip tone="marigold">+{tr.sparks} {t("sparks")}</Chip></div>
-          <h1 className="text-3xl md:text-4xl">{L(tr.title)}</h1>
-          <p className="max-w-[60ch] text-ink-2">{L(tr.blurb)}</p>
-          <div className="mt-auto flex items-center gap-3 pt-2">
-            <ProgressRing value={p.total ? p.done / p.total : 0} size={48} stroke={5}><span className="text-[11px] font-bold tabular">{p.done}/{p.total}</span></ProgressRing>
-            {p.complete && <Chip tone="leaf" icon={<Certificate size={14} weight="fill" />}>{t("certificate")} · {t("certificateHint")}</Chip>}
-          </div>
+      <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+        <div className="lg:col-span-8">
+          <Label className="flex gap-5 p-6" watermark={false}>
+            <div className="hidden h-40 w-32 shrink-0 overflow-hidden rounded-[6px] sm:block"><ArtSlot id={`track-${tr.id.replace("tr_", "")}`} compact /></div>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap gap-2"><Chip>{L(tr.format)}</Chip><Chip>{t("levelRequired")}: {t(`lv_${tr.levelRequired}` as const)}</Chip><Chip tone="marigold">+{tr.sparks} {t("sparks")}</Chip></div>
+              <h1 className="mt-3 text-3xl md:text-4xl">{L(tr.title)}</h1>
+              <p className="mt-3 max-w-[60ch] text-ink-2">{L(tr.blurb)}</p>
+            </div>
+          </Label>
+          <ol className="mt-4 grid gap-3">
+            {tr.modules.map((m, i) => {
+              const done = progress[m.id];
+              return (
+                <li key={m.id}>
+                  <Label className={cn("flex flex-wrap items-center gap-4 p-4", done && "bg-leaf-soft/30")} watermark={false}>
+                    <Stamp pressed={!!done} size={52} animate={i === tr.modules.findIndex((x) => progress[x.id]) + (tr.modules.filter((x) => progress[x.id]).length - 1)} icon={done ? <Check weight="bold" size={20} /> : undefined} />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[15px] font-semibold">{i + 1}. {L(m.title)}</div>
+                      <div className="text-[13px] text-ink-2">{L(m.summary)}</div>
+                      <div className="mt-1 text-[12px] text-ink-3">{t(`mk_${m.kind}` as const)} · {m.minutes} {t("minutes")}{done && ` · ${date(done)}`}</div>
+                    </div>
+                    {done ? <Chip tone="leaf">{t("completed2")}</Chip> : ok ? <Button size="sm" variant="secondary" onClick={() => complete(m.id)} icon={<PlayCircle size={16} weight="fill" />}>{t("markComplete2")}</Button> : <Chip icon={<Lock size={12} weight="bold" />}>{t("levelLocked", { level: t(`lv_${tr.levelRequired}` as const) })}</Chip>}
+                  </Label>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+        <div className="lg:col-span-4">
+          <Certificate title={L(tr.title)} name={me.name} date={p.complete ? date(progress[tr.modules[tr.modules.length - 1].id]) : `${p.done}/${p.total} ${t("modules")}`} meta={`${tr.modules.length} ${t("modules")}`} sealed={p.complete} />
+          {p.complete && <p className="mt-2 text-center text-[12.5px] text-ink-3">{t("certificateHint")}</p>}
         </div>
       </div>
-      <ol className="grid gap-3">
-        {tr.modules.map((m, i) => {
-          const done = progress[m.id];
-          return (
-            <li key={m.id} className={cn("card flex flex-wrap items-center gap-4 p-4", done && "border-leaf/40 bg-leaf-soft/20")}>
-              <span className={cn("flex h-11 w-11 items-center justify-center rounded-full", done ? "bg-leaf text-white" : "bg-surface-2 text-ink-2")}>{done ? <Check size={20} weight="bold" /> : <PlayCircle size={22} weight="duotone" />}</span>
-              <div className="min-w-0 flex-1">
-                <div className="text-[15px] font-semibold">{i + 1}. {L(m.title)}</div>
-                <div className="text-[13px] text-ink-2">{L(m.summary)}</div>
-                <div className="mt-1 text-[12px] text-ink-3">{t(`mk_${m.kind}` as const)} · {m.minutes} {t("minutes")}{done && ` · ${date(done)}`}</div>
-              </div>
-              {done ? <Chip tone="leaf">{t("completed2")}</Chip> : ok ? <Button size="sm" variant="secondary" onClick={() => complete(m.id)}>{t("markComplete2")}</Button> : <Chip icon={<Lock size={12} weight="bold" />}>{t("levelLocked", { level: t(`lv_${tr.levelRequired}` as const) })}</Chip>}
-            </li>
-          );
-        })}
-      </ol>
     </div>
   );
 }

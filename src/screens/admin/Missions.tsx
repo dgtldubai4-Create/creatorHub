@@ -64,7 +64,7 @@ export function AdminMissions() {
             const toReview = entries.filter((e) => e.state === "submitted").length;
             return (
               <Item key={m.id}>
-                <Link to={`/admin/missions/${m.id}`} className="card press flex h-full flex-col overflow-hidden hover:border-ink-3">
+                <Link to={`/admin/missions/${m.id}`} className="label-card lift flex h-full flex-col overflow-hidden ">
                   <div className="relative h-28"><ArtSlot id={`mission-${m.type}`} /><div className="absolute start-3 top-3 flex gap-1.5"><MissionTypeChip type={m.type} /><Chip tone={m.status === "live" ? "leaf" : m.status === "draft" ? "neutral" : "ink"}>{t(`mStatus_${m.status}` as const)}</Chip></div></div>
                   <div className="flex flex-1 flex-col gap-2 p-4">
                     <div className="flex items-center justify-between gap-2">{b ? <BrandMark brand={b} size="sm" /> : <span className="text-[12.5px] font-semibold text-leaf">{t("appName")}</span>}{toReview > 0 && <Chip tone="marigold">{toReview} {t("review").toLowerCase()}</Chip>}</div>
@@ -80,7 +80,7 @@ export function AdminMissions() {
 
       {can(role, "invite") && referrals.length > 0 && (
         <Section title={`${t("referrals")} · ${referrals.length}`}>
-          <ul className="card divide-y divide-line">
+          <ul className="label-card divide-y divide-line">
             {referrals.map((r) => {
               const cr = s.creators.find((c) => c.id === r.referrerId)!;
               return (
@@ -108,7 +108,7 @@ export function AdminMissions() {
             </div>
             <p className="text-[14.5px] text-ink-2">{L(open.prompt)}</p>
             {open.type === "team" && (
-              <div className="grid gap-2 sm:grid-cols-3">{squadTotals(open).map(({ squad, sparks, submitted }) => <div key={squad.id} className="rounded-2xl bg-surface-2 p-3 text-[13px]"><div className="font-semibold">{L(squad.name)}</div><div className="text-ink-3">{squad.memberIds.length} {t("members")} · {submitted} {t("es_submitted").toLowerCase()} · {sparks} {t("sparks")}</div></div>)}</div>
+              <div className="grid gap-2 sm:grid-cols-3">{squadTotals(open).map(({ squad, sparks, submitted }) => <div key={squad.id} className="rounded-[8px] bg-surface-2 p-3 text-[13px]"><div className="font-semibold">{L(squad.name)}</div><div className="text-ink-3">{squad.memberIds.length} {t("members")} · {submitted} {t("es_submitted").toLowerCase()} · {sparks} {t("sparks")}</div></div>)}</div>
             )}
             <div className="flex items-center justify-between"><h3 className="text-[15px] font-semibold">{t("entries")} · {Object.keys(open.entries).length}</h3><SimulatedTag /></div>
             <ul className="grid gap-2">
@@ -117,7 +117,7 @@ export function AdminMissions() {
                 const sub = e.submissions[e.submissions.length - 1];
                 const key = `${open.id}:${creatorId}`;
                 return (
-                  <li key={creatorId} className={cn("rounded-2xl border border-line p-3", e.state === "submitted" && "border-marigold/50 bg-marigold-soft/20")}>
+                  <li key={creatorId} className={cn("rounded-[8px] border border-line p-3", e.state === "submitted" && "border-marigold/50 bg-marigold-soft/20")}>
                     <div className="flex flex-wrap items-center gap-3">
                       <Avatar name={cr.name} hue={cr.hue} size={34} />
                       <div className="min-w-0 flex-1"><div className="text-[14px] font-medium">{cr.name}</div><div className="text-[12px] text-ink-3">{cr.city} · {t(`market_${cr.market}` as const)}{e.squadId && ` · ${L(open.squads?.find((q) => q.id === e.squadId)?.name ?? { en: "", ar: "" })}`}</div></div>
@@ -139,7 +139,7 @@ export function AdminMissions() {
                             <Button size="sm" onClick={() => decide(open, creatorId, "approved")} icon={<Check size={14} weight="bold" />}>{t("approve")}</Button>
                           </div>
                         )}
-                        {sub.note && <p className="rounded-xl bg-surface-2 p-2.5 text-[13px]"><span className="font-medium">{sub.reviewerName}: </span>{sub.note}</p>}
+                        {sub.note && <p className="rounded-[8px] bg-surface-2 p-2.5 text-[13px]"><span className="font-medium">{sub.reviewerName}: </span>{sub.note}</p>}
                       </div>
                     )}
                   </li>

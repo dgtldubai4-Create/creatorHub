@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ArrowRight, Check, Leaf, InstagramLogo, TiktokLogo, ShieldWarning, Translate } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, Check, InstagramLogo, TiktokLogo, ShieldWarning, Translate } from "@phosphor-icons/react";
 import { useDispatch } from "../../app/store";
 import { useFormat, useT, useToggleLang } from "../../i18n";
 import { Button, Field, Input, Select, Textarea, ChipButton, Chip, SimulatedTag } from "../../ui/primitives";
 import { spring, useCelebrate } from "../../ui/motion";
-import { ArtSlot } from "../../ui/ArtSlot";
+import { KitBox, Stamp } from "../../ui/kit";
+import { ProductArt } from "../../ui/ProductArt";
+import { useStore } from "../../app/store";
 import { Logo } from "../../app/shell";
 import { connectAccount, otpFor } from "../../domain/simulate";
 import type { ConnectedAccount, FollowerTier, Language, Market, Niche } from "../../domain/types";
@@ -20,6 +22,7 @@ export function Join() {
   const t = useT();
   const { num } = useFormat();
   const dispatch = useDispatch();
+  const s = useStore();
   const nav = useNavigate();
   const toggle = useToggleLang();
   const celebrate = useCelebrate();
@@ -78,15 +81,15 @@ export function Join() {
     <div className="min-h-[100dvh] bg-canvas">
       <header className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-4 md:px-6">
         <Link to="/"><Logo /></Link>
-        <button onClick={toggle} className="press inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"><Translate size={15} weight="bold" />{t("language")}</button>
+        <button onClick={toggle} className="press inline-flex h-9 items-center gap-1.5 rounded-[8px] px-3 text-[13px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"><Translate size={15} weight="bold" />{t("language")}</button>
       </header>
       <main className="mx-auto max-w-5xl px-4 pb-24 pt-8 md:px-6 md:pt-12">
         <AnimatePresence mode="wait">
           {done ? (
-            <motion.div key="done" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={spring} className="card grid overflow-hidden md:grid-cols-2">
-              <div className="h-56 md:h-full"><ArtSlot id="join-welcome" /></div>
+            <motion.div key="done" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={spring} className="label-card grid overflow-hidden md:grid-cols-2">
+              <div className="flex items-center justify-center p-6"><KitBox className="max-w-[360px]">{s.products.slice(0, 3).map((p) => <ProductArt key={p.id} product={p} brand={s.brands.find((b) => b.id === p.brandId)} size="lg" className="shadow-float" />)}</KitBox></div>
               <div className="flex flex-col items-start gap-4 p-8">
-                <span className="leaf-shape flex h-14 w-14 items-center justify-center bg-leaf text-white"><Leaf size={26} weight="fill" /></span>
+                <Stamp pressed size={72} tone="leaf"><span className="text-[10px]">RECEIVED</span></Stamp>
                 <h1 className="text-3xl">{t("joinDone")}</h1>
                 <p className="text-ink-2">{t("joinDoneBody")}</p>
                 <Button size="lg" className="mt-2" onClick={() => nav("/creator")}>{t("goToHome")}</Button>
@@ -99,7 +102,7 @@ export function Join() {
                 <p className="mt-3 text-ink-2">{t("joinSub")}</p>
                 <div className="mt-5 flex flex-wrap gap-2"><Chip tone="leaf">{t("noMinimum")}</Chip><Chip>{t("sixMarkets")}</Chip><Chip>{t("twoLanguages")}</Chip></div>
                 <p className="mt-4 text-[13px] text-ink-3">{t("eligibility")}</p>
-                <div className="mt-6 flex items-start gap-2 rounded-2xl bg-marigold-soft p-4 text-[13px] text-marigold-ink"><ShieldWarning size={18} weight="fill" className="mt-0.5 shrink-0" />{t("scamWarning")}</div>
+                <div className="mt-6 flex items-start gap-2 rounded-[8px] bg-marigold-soft p-4 text-[13px] text-marigold-ink"><ShieldWarning size={18} weight="fill" className="mt-0.5 shrink-0" />{t("scamWarning")}</div>
                 <ol className="mt-8 grid gap-2">
                   {steps.map((label, i) => (
                     <li key={label} className="flex items-center gap-3">
@@ -109,7 +112,7 @@ export function Join() {
                   ))}
                 </ol>
               </div>
-              <div className="card p-6 md:p-8 lg:col-span-3">
+              <div className="label-card p-6 md:p-8 lg:col-span-3">
                 <AnimatePresence mode="wait">
                   <motion.div key={step} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={spring} className="grid gap-5">
                     {step === 0 && (
@@ -149,7 +152,7 @@ export function Join() {
                           const Icon = pl === "instagram" ? InstagramLogo : TiktokLogo;
                           const acc = connected[pl];
                           return (
-                            <div key={pl} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface-2 p-3">
+                            <div key={pl} className="flex flex-wrap items-center gap-3 rounded-[8px] bg-surface-2 p-3">
                               <Icon size={24} weight="duotone" />
                               {acc ? (
                                 <div className="min-w-0 flex-1 text-[13.5px]"><div className="font-medium">{t("connectedAs", { handle: acc.handle })}</div><div className="text-[12px] text-ink-3">{num(acc.followers)} {t("followers")} · {acc.engagementRate}% {t("engagement")}</div></div>

@@ -41,7 +41,7 @@ export function AdminProducts() {
       <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" gap={0.02}>
         {list.map((p) => (
           <Item key={p.id}>
-            <button onClick={() => nav(`/admin/products/${p.id}`)} className="card press flex w-full flex-col gap-3 p-3 text-start hover:border-ink-3">
+            <button onClick={() => nav(`/admin/products/${p.id}`)} className="label-card lift flex w-full flex-col gap-3 p-3 text-start ">
               <ProductArt product={p} brand={s.brands.find((b) => b.id === p.brandId)} className="aspect-square w-full" />
               <div className="min-w-0">
                 <div className="line-clamp-2 text-[13.5px] font-medium leading-snug">{L(p.names)}</div>
@@ -67,7 +67,7 @@ export function AdminProducts() {
                 {open.pendingSync && <Chip tone="marigold" className="cursor-help" >{t("pendingSync")}</Chip>}
               </div>
               <p className="text-[14.5px] text-ink-2">{L(open.description)}</p>
-              {open.pendingSync && <p className="rounded-xl bg-marigold-soft p-3 text-[12.5px] text-marigold-ink">{t("pendingSyncHint")}</p>}
+              {open.pendingSync && <p className="rounded-[8px] bg-marigold-soft p-3 text-[12.5px] text-marigold-ink">{t("pendingSyncHint")}</p>}
               <div>
                 <h3 className="text-[13px] font-semibold text-ink-2">{t("ingredients")}</h3>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">{open.ingredients.map((i) => <Chip key={i}>{i}</Chip>)}</div>

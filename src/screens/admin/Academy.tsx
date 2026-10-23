@@ -25,7 +25,7 @@ export function AdminAcademy() {
           {s.academy.tracks.map((tr) => {
             const rows = s.creators.map((c) => ({ c, p: trackProgress(s, c.id, tr.id) })).filter((x) => x.p.done > 0).sort((a, b) => b.p.done - a.p.done);
             return (
-              <div key={tr.id} className="card flex flex-col gap-3 p-5">
+              <div key={tr.id} className="label-card flex flex-col gap-3 p-5">
                 <div className="flex items-center justify-between gap-2"><h3 className="text-lg">{L(tr.title)}</h3><Chip>{t(`lv_${tr.levelRequired}` as const)}</Chip></div>
                 <div className="text-[12.5px] text-ink-3">{tr.modules.length} {t("modules")} · {rows.filter((r) => r.p.complete).length} {t("certificates").toLowerCase()}</div>
                 <ul className="grid gap-1.5">
@@ -38,7 +38,7 @@ export function AdminAcademy() {
         </div>
       </Section>
       <Section title={t("mentoring")}>
-        <ul className="card divide-y divide-line">
+        <ul className="label-card divide-y divide-line">
           {s.mentorSessions.map((ms) => <li key={ms.id} className="flex flex-wrap items-center gap-3 px-4 py-3 text-[14px]"><span className="font-medium">{L(ms.title)}</span><span className="text-ink-3">{ms.mentor} · {date(ms.at)}</span><span className="ms-auto tabular text-ink-2">{ms.bookedBy.length}/{ms.seats}</span></li>)}
         </ul>
       </Section>

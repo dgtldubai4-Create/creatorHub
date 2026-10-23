@@ -32,7 +32,7 @@ export function Login() {
     <div className="min-h-[100dvh] bg-canvas">
       <header className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-4 md:px-6">
         <Link to="/"><Logo /></Link>
-        <button onClick={toggle} className="press inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"><Translate size={15} weight="bold" />{t("language")}</button>
+        <button onClick={toggle} className="press inline-flex h-9 items-center gap-1.5 rounded-[8px] px-3 text-[13px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"><Translate size={15} weight="bold" />{t("language")}</button>
       </header>
       <main className="mx-auto max-w-4xl px-4 pb-24 pt-8 md:px-6 md:pt-14">
         <AnimatePresence mode="wait">
@@ -43,8 +43,8 @@ export function Login() {
               <Stagger className="mt-10 grid gap-5 md:grid-cols-2">
                 <Item>
                   <Tilt className="rounded-[var(--radius-card)]">
-                    <button onClick={() => setSeat("creator")} className="card press flex h-full w-full flex-col items-start gap-10 p-7 text-start hover:border-leaf">
-                      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-leaf-soft text-leaf"><Camera size={28} weight="duotone" /></span>
+                    <button onClick={() => setSeat("creator")} className="label-card lift flex h-full w-full flex-col items-start gap-10 p-7 text-start">
+                      <span className="flex h-14 w-14 items-center justify-center rounded-[12px] bg-forest text-marigold"><Camera size={28} weight="duotone" /></span>
                       <span>
                         <span className="block text-2xl font-semibold">{t("creatorSeat")}</span>
                         <span className="mt-2 block text-[15px] text-ink-2">{t("loginCreatorBody")}</span>
@@ -54,8 +54,8 @@ export function Login() {
                 </Item>
                 <Item>
                   <Tilt className="rounded-[var(--radius-card)]">
-                    <button onClick={() => setSeat("brand")} className="card press flex h-full w-full flex-col items-start gap-10 p-7 text-start hover:border-leaf">
-                      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-marigold-soft text-marigold-ink"><Buildings size={28} weight="duotone" /></span>
+                    <button onClick={() => setSeat("brand")} className="label-card lift flex h-full w-full flex-col items-start gap-10 p-7 text-start">
+                      <span className="flex h-14 w-14 items-center justify-center rounded-[12px] bg-marigold text-marigold-ink"><Buildings size={28} weight="duotone" /></span>
                       <span>
                         <span className="block text-2xl font-semibold">{t("brandSeat")}</span>
                         <span className="mt-2 block text-[15px] text-ink-2">{t("loginBrandBody")}</span>
@@ -77,7 +77,7 @@ export function Login() {
               <Stagger className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3" gap={0.03}>
                 {creators.map((c) => (
                   <Item key={c.id}>
-                    <button onClick={() => go("creator", { creatorId: c.id })} className="card press flex w-full items-center gap-3 p-3 text-start hover:border-leaf">
+                    <button onClick={() => go("creator", { creatorId: c.id })} className="label-card lift flex w-full items-center gap-3 p-3 text-start">
                       <Avatar name={c.name} hue={c.hue} size={40} />
                       <span className="min-w-0">
                         <span className="block truncate text-[14.5px] font-medium">{c.name}</span>
@@ -97,7 +97,7 @@ export function Login() {
                   const user = s.brandUsers.find((u) => u.role === r);
                   return (
                     <Item key={r}>
-                      <button onClick={() => go("brand", { role: r })} className="card press flex w-full flex-col gap-3 p-5 text-start hover:border-leaf">
+                      <button onClick={() => go("brand", { role: r })} className="label-card lift flex w-full flex-col gap-3 p-5 text-start">
                         <span className="flex items-center gap-3">
                           {user && <Avatar name={user.name} hue={210 + ROLES.indexOf(r) * 25} size={36} />}
                           <span>

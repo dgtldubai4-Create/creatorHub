@@ -27,7 +27,7 @@ export function Profile() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader title={t("profile")} sub={t("profileSub")} />
-      <div className="card flex flex-wrap items-center gap-4 p-5">
+      <div className="label-card flex flex-wrap items-center gap-4 p-5">
         <Avatar name={me.name} hue={me.hue} size={64} />
         <div className="min-w-0 flex-1">
           <div className="text-xl font-semibold">{me.name}</div>
@@ -41,14 +41,14 @@ export function Profile() {
       </div>
       <div className="grid gap-8 lg:grid-cols-2">
         <Section title={t("verification")} sub={t("verificationHint")} action={<SimulatedTag />}>
-          <div className="card flex flex-col gap-4 p-5">
+          <div className="label-card flex flex-col gap-4 p-5">
             <div className="flex flex-wrap gap-2">
               <VerificationChip state={me.verification.identity} label={t("ver_identity")} />
               <VerificationChip state={me.verification.instagram} label={t("ver_instagram")} />
               <VerificationChip state={me.verification.tiktok} label={t("ver_tiktok")} />
               <Chip tone={me.mobileVerified ? "leaf" : "rose"} icon={<SealCheck size={14} weight="fill" />}>{t("mobileVerified")}</Chip>
             </div>
-            <div className="rounded-2xl bg-surface-2 p-4">
+            <div className="rounded-[8px] bg-surface-2 p-4">
               <div className="flex items-center gap-2 text-[14px] font-semibold"><IdentificationCard size={18} className="text-leaf" />{t("licence")}</div>
               <p className="mt-1 text-[12.5px] text-ink-3">{t("licenceHint")}</p>
               <div className="mt-3 flex flex-wrap items-end gap-2">
@@ -60,12 +60,12 @@ export function Profile() {
           </div>
         </Section>
         <Section title={t("connectedAccounts")} sub={t("connectHint")} action={<SimulatedTag />}>
-          <div className="card grid gap-3 p-5">
+          <div className="label-card grid gap-3 p-5">
             {(["instagram", "tiktok"] as const).map((pl) => {
               const acc = me.connected[pl];
               const Icon = pl === "instagram" ? InstagramLogo : TiktokLogo;
               return (
-                <div key={pl} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface-2 p-3">
+                <div key={pl} className="flex flex-wrap items-center gap-3 rounded-[8px] bg-surface-2 p-3">
                   <Icon size={22} weight="duotone" className="text-ink-2" />
                   {acc ? (
                     <div className="min-w-0 flex-1 text-[13.5px]"><div className="font-medium">{t("connectedAs", { handle: acc.handle })}</div><div className="text-[12px] text-ink-3">{num(acc.followers)} {t("followers")} · {acc.engagementRate}% {t("engagement")} · {date(acc.connectedAt)}</div></div>
@@ -81,7 +81,7 @@ export function Profile() {
           </div>
         </Section>
         <Section title={t("address")}>
-          <div className="card grid gap-4 p-5">
+          <div className="label-card grid gap-4 p-5">
             <Field label={t("addressLine")} required><Input value={f.line1} onChange={(e) => set("line1")(e.target.value)} autoComplete="street-address" /></Field>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label={t("city")} required><Input value={f.city} onChange={(e) => set("city")(e.target.value)} /></Field>
@@ -90,7 +90,7 @@ export function Profile() {
           </div>
         </Section>
         <Section title={t("vibe")}>
-          <div className="card grid gap-4 p-5">
+          <div className="label-card grid gap-4 p-5">
             <Field label={t("vibe")}><Input value={f.vibe} onChange={(e) => set("vibe")(e.target.value)} maxLength={80} /></Field>
             <Field label={t("bio")}><Textarea value={f.bio} onChange={(e) => set("bio")(e.target.value)} maxLength={140} className="min-h-16" /></Field>
             <Field label={t("languages")}><div className="flex gap-2">{(["ar", "en"] as Language[]).map((l) => <ChipButton key={l} type="button" selected={f.languages.includes(l)} onClick={() => toggleLang(l)}>{t(`lang_${l}` as const)}</ChipButton>)}</div></Field>

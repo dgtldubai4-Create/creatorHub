@@ -12,10 +12,10 @@ type Variant = "primary" | "secondary" | "ghost" | "accent" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const VARIANT: Record<Variant, string> = {
-  primary: "bg-leaf text-white hover:bg-leaf-deep shadow-[0_10px_24px_-10px_rgb(23_153_79/0.8)] font-bold",
+  primary: "bg-forest text-white hover:bg-forest-2",
   secondary: "bg-surface text-ink border border-line-2 hover:border-ink-3 hover:bg-surface-2",
   ghost: "bg-transparent text-ink-2 hover:bg-surface-2 hover:text-ink",
-  accent: "bg-marigold text-marigold-ink hover:brightness-95 shadow-[0_10px_24px_-10px_rgb(255_178_36/0.9)] font-bold",
+  accent: "bg-marigold text-marigold-ink hover:brightness-95",
   danger: "bg-rose-soft text-rose hover:brightness-95",
 };
 const SIZE: Record<Size, string> = { sm: "h-9 px-3.5 text-[13px] gap-1.5", md: "h-11 px-5 text-[15px] gap-2", lg: "h-13 px-7 text-base gap-2.5" };
@@ -30,7 +30,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({ variant = "primary", size = "md", icon, iconEnd, className, children, to, full, disabled, ...rest }, ref) {
-  const cls = cn("press inline-flex items-center justify-center whitespace-nowrap rounded-full font-medium select-none disabled:opacity-45 disabled:pointer-events-none", VARIANT[variant], SIZE[size], full && "w-full", className);
+  const cls = cn("press inline-flex items-center justify-center whitespace-nowrap rounded-[10px] font-semibold select-none disabled:opacity-45 disabled:pointer-events-none", VARIANT[variant], SIZE[size], full && "w-full", className);
   if (to) {
     return (
       <Link to={to} className={cls} aria-disabled={disabled}>
@@ -80,7 +80,7 @@ export function Chip({ tone = "neutral", className, children, icon }: { tone?: T
 
 export function ChipButton({ selected, className, children, ...rest }: ButtonHTMLAttributes<HTMLButtonElement> & { selected?: boolean }) {
   return (
-    <button className={cn("press h-9 whitespace-nowrap rounded-full border px-3.5 text-[13.5px] font-medium", selected ? "border-ink bg-ink text-canvas" : "border-line-2 bg-surface text-ink-2 hover:border-ink-3 hover:text-ink", className)} {...rest}>
+    <button className={cn("press h-9 whitespace-nowrap rounded-[8px] border px-3.5 text-[13.5px] font-medium", selected ? "border-forest bg-forest text-white" : "border-line-2 bg-surface text-ink-2 hover:border-ink-3 hover:text-ink", className)} {...rest}>
       {children}
     </button>
   );
@@ -150,7 +150,7 @@ export function PageHeader({ title, sub, actions, eyebrow, className }: { title:
     <div className={cn("flex flex-col gap-4 md:flex-row md:items-end md:justify-between", className)}>
       <div className="max-w-[60ch]">
         {eyebrow && <div className="mb-2">{eyebrow}</div>}
-        <h1 className="text-4xl font-extrabold tracking-[-0.04em] md:text-5xl">{title}</h1>
+        <h1 className="text-3xl md:text-4xl">{title}</h1>
         {sub && <p className="mt-2 text-[15px] text-ink-2">{sub}</p>}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
@@ -177,7 +177,7 @@ export function Section({ title, sub, action, children, className }: { title?: R
 
 export function EmptyState({ icon, title, body, action, className }: { icon?: ReactNode; title: string; body?: string; action?: ReactNode; className?: string }) {
   return (
-    <div className={cn("card-soft flex flex-col items-center gap-3 px-6 py-12 text-center", className)}>
+    <div className={cn("label-card flex flex-col items-center gap-3 px-6 py-12 text-center", className)}>
       {icon && <div className="flex h-14 w-14 items-center justify-center rounded-full bg-surface text-leaf shadow-card">{icon}</div>}
       <h3 className="text-lg">{title}</h3>
       {body && <p className="max-w-[40ch] text-[14px] text-ink-2">{body}</p>}
@@ -192,8 +192,8 @@ export function Skeleton({ className }: { className?: string }) {
 
 export function Stat({ label, value, hint, tone = "neutral", to }: { label: string; value: ReactNode; hint?: string; tone?: "neutral" | "leaf" | "marigold"; to?: string }) {
   const body = (
-    <div className={cn("card flex h-full flex-col justify-between gap-3 p-5", to && "press hover:border-ink-3", tone === "leaf" && "bg-leaf-soft border-transparent", tone === "marigold" && "bg-marigold-soft border-transparent")}>
-      <span className="text-[13px] font-medium text-ink-2">{label}</span>
+    <div className={cn("label-card flex h-full flex-col justify-between gap-3 p-5", to && "lift", tone === "marigold" && "bg-marigold-soft")}>
+      <span className="meta">{label}</span>
       <span className="text-3xl font-semibold tabular leading-none">{value}</span>
       {hint && <span className="text-[12.5px] text-ink-3">{hint}</span>}
     </div>
@@ -204,10 +204,10 @@ export function Stat({ label, value, hint, tone = "neutral", to }: { label: stri
 export function Segmented<T extends string>({ value, onChange, options, className }: { value: T; onChange: (v: T) => void; options: { value: T; label: ReactNode }[]; className?: string }) {
   const id = useId();
   return (
-    <div className={cn("relative inline-flex rounded-full bg-surface-2 p-1", className)} role="tablist">
+    <div className={cn("relative inline-flex rounded-[10px] bg-surface-2 p-1", className)} role="tablist">
       {options.map((o) => (
-        <button key={o.value} role="tab" aria-selected={value === o.value} onClick={() => onChange(o.value)} className={cn("relative z-10 h-9 whitespace-nowrap rounded-full px-4 text-[13.5px] font-medium transition-colors", value === o.value ? "text-ink" : "text-ink-2 hover:text-ink")}>
-          {value === o.value && <motion.span layoutId={`seg-${id}`} className="absolute inset-0 -z-10 rounded-full bg-surface shadow-card" transition={springSnappy} />}
+        <button key={o.value} role="tab" aria-selected={value === o.value} onClick={() => onChange(o.value)} className={cn("relative z-10 h-9 whitespace-nowrap rounded-[8px] px-4 text-[13.5px] font-medium transition-colors", value === o.value ? "text-ink" : "text-ink-2 hover:text-ink")}>
+          {value === o.value && <motion.span layoutId={`seg-${id}`} className="absolute inset-0 -z-10 rounded-[8px] bg-surface shadow-card" transition={springSnappy} />}
           {o.label}
         </button>
       ))}

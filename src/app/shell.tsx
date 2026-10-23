@@ -15,10 +15,10 @@ export function Logo({ className, compact }: { className?: string; compact?: boo
   const t = useT();
   return (
     <span className={cn("inline-flex items-center gap-2 font-semibold tracking-tight", className)}>
-      <span className="leaf-shape flex h-9 w-9 items-center justify-center bg-leaf text-white shadow-[0_6px_14px_-6px_rgb(23_153_79/0.8)]">
+      <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-forest text-marigold">
         <Leaf size={18} weight="fill" />
       </span>
-      {!compact && <span className="text-[18px] font-extrabold tracking-tight">{t("appName")}</span>}
+      {!compact && <span className="text-[17px] font-semibold tracking-tight">{t("appName")}</span>}
     </span>
   );
 }
@@ -32,10 +32,10 @@ function SeatSwitch() {
     dispatch({ type: "switchSeat", seat });
   };
   return (
-    <div className="relative inline-flex rounded-full bg-surface-2 p-1" role="tablist" aria-label={t("switchSeat")}>
+    <div className="relative inline-flex rounded-[10px] bg-surface-2 p-1" role="tablist" aria-label={t("switchSeat")}>
       {(["creator", "brand"] as Seat[]).map((s) => (
-        <button key={s} role="tab" aria-selected={session.seat === s} onClick={() => set(s)} className={cn("relative z-10 h-8 whitespace-nowrap rounded-full px-3 text-[13px] font-medium transition-colors", session.seat === s ? "text-ink" : "text-ink-2 hover:text-ink")}>
-          {session.seat === s && <motion.span layoutId="seat-pill" className="absolute inset-0 -z-10 rounded-full bg-surface shadow-card" transition={springSnappy} />}
+        <button key={s} role="tab" aria-selected={session.seat === s} onClick={() => set(s)} className={cn("relative z-10 h-8 whitespace-nowrap rounded-[8px] px-3 text-[13px] font-medium transition-colors", session.seat === s ? "text-ink" : "text-ink-2 hover:text-ink")}>
+          {session.seat === s && <motion.span layoutId="seat-pill" className="absolute inset-0 -z-10 rounded-[8px] bg-surface shadow-card" transition={springSnappy} />}
           {s === "creator" ? t("creatorSeat") : t("brandSeat")}
         </button>
       ))}
@@ -50,7 +50,7 @@ function RoleSwitch() {
   return (
     <label className="relative inline-flex items-center">
       <span className="sr-only">{t("role")}</span>
-      <select value={session.role} onChange={(e) => dispatch({ type: "setRole", role: e.target.value as Role })} className="h-9 cursor-pointer appearance-none rounded-full border border-line-2 bg-surface pe-8 ps-3.5 text-[13px] font-medium hover:border-ink-3">
+      <select value={session.role} onChange={(e) => dispatch({ type: "setRole", role: e.target.value as Role })} className="h-9 cursor-pointer appearance-none rounded-[8px] border border-line-2 bg-surface pe-8 ps-3.5 text-[13px] font-medium hover:border-ink-3">
         {ROLES.map((r) => (
           <option key={r} value={r}>{t(`role_${r}` as const)}</option>
         ))}
@@ -64,7 +64,7 @@ function LangToggle() {
   const t = useT();
   const toggle = useToggleLang();
   return (
-    <button onClick={toggle} className="press inline-flex h-9 items-center gap-1.5 rounded-full border border-line-2 bg-surface px-3 text-[13px] font-medium hover:border-ink-3" aria-label={t("language")}>
+    <button onClick={toggle} className="press inline-flex h-9 items-center gap-1.5 rounded-[8px] border border-line-2 bg-surface px-3 text-[13px] font-medium hover:border-ink-3" aria-label={t("language")}>
       <Translate size={15} weight="bold" />
       {t("language")}
     </button>
@@ -135,12 +135,12 @@ function TopNav({ items, compact }: { items: NavItem[]; compact?: boolean }) {
   return (
     <nav className="hide-scrollbar flex items-center gap-0.5 overflow-x-auto" aria-label="Primary">
       {items.map((it) => (
-        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[13.5px] font-medium transition-colors", isActive ? "text-ink" : "text-ink-2 hover:text-ink")}>
+        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative flex h-9 items-center gap-1.5 whitespace-nowrap rounded-[8px] px-3 text-[13.5px] font-medium transition-colors", isActive ? "text-ink" : "text-ink-2 hover:text-ink")}>
           {({ isActive }) => (
             <>
-              {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-surface-2" transition={springSnappy} />}
+              {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-[8px] bg-surface-2" transition={springSnappy} />}
               {it.icon}
-              <span className={cn(compact && "hidden xl:inline")}>{it.label}</span>
+              <span className={cn(compact && "hidden 2xl:inline")}>{it.label}</span>
             </>
           )}
         </NavLink>

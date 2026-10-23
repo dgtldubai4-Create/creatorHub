@@ -63,7 +63,7 @@ export function AdminCampaignDetail() {
       />
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="card p-5 lg:col-span-2">
+        <div className="label-card p-5 lg:col-span-2">
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <h3 className="text-[14px] font-semibold">{t("deliverable")}</h3>
@@ -81,7 +81,7 @@ export function AdminCampaignDetail() {
             </div>
           </div>
         </div>
-        <div className="card p-5">
+        <div className="label-card p-5">
           <h3 className="text-[14px] font-semibold">{t("funnel")}</h3>
           <ul className="mt-3 grid gap-1.5">
             {(["invite", "kit", "create", "review", "publish", "done"] as const).map((ph) => (
@@ -116,7 +116,7 @@ export function AdminCampaignDetail() {
                 const last = p.stageLog[p.stageLog.length - 1];
                 return (
                   <Item key={p.id}>
-                    <div className="card flex flex-wrap items-center gap-4 p-3 pe-4">
+                    <div className="label-card flex flex-wrap items-center gap-4 p-3 pe-4">
                       <Link to={`/admin/creators/${cr.id}`} className="flex items-center gap-3 hover:underline"><Avatar name={cr.name} hue={cr.hue} size={38} /><div><div className="text-[14px] font-medium">{cr.name}</div><div className="text-[12px] text-ink-3">@{cr.handle} · {cr.city}</div></div></Link>
                       <div className="flex items-center gap-3"><PhaseTrail stage={p.stage} /><StageChip stage={p.stage} /></div>
                       <span className="text-[12px] text-ink-3">{date(last.at, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
@@ -140,7 +140,7 @@ export function AdminCampaignDetail() {
               const sel = picked.has(cr.id);
               return (
                 <Item key={cr.id}>
-                  <label className={cn("card flex cursor-pointer flex-wrap items-center gap-4 p-3 pe-4", sel && "border-leaf bg-leaf-soft/30", on && "opacity-60")}>
+                  <label className={cn("label-card flex cursor-pointer flex-wrap items-center gap-4 p-3 pe-4", sel && "border-leaf bg-leaf-soft/30", on && "opacity-60")}>
                     <input type="checkbox" className="h-5 w-5 accent-[var(--leaf)]" disabled={on} checked={sel} onChange={() => setPicked((set) => { const n = new Set(set); if (n.has(cr.id)) n.delete(cr.id); else n.add(cr.id); return n; })} />
                     <Avatar name={cr.name} hue={cr.hue} size={38} />
                     <div className="min-w-40"><div className="text-[14px] font-medium">{cr.name}</div><div className="text-[12px] text-ink-3">{t(`niche_${cr.niche}` as const)} · {t(`tier_${cr.tier}` as const)} · {cr.city}</div></div>

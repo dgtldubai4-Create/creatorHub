@@ -51,7 +51,7 @@ export function Journey({ participationId, tab }: { participationId: string; tab
         </div>
       </Reveal>
 
-      <Reveal inView={false} delay={0.06} className="card p-4 md:p-5">
+      <Reveal inView={false} delay={0.06} className="label-card p-4 md:p-5">
         <div className="mb-1 flex items-center justify-between gap-3 px-1">
           <span className="text-[13px] font-medium text-ink-2">{t("trail")}</span>
           <span className="text-[13px] text-ink-2">
@@ -83,7 +83,7 @@ function BriefTab({ c }: { c: Campaign }) {
   const L = useL();
   return (
     <div className="grid gap-4 lg:grid-cols-3">
-      <div className="card p-6 lg:col-span-2">
+      <div className="label-card p-6 lg:col-span-2">
         <h2 className="text-xl">{t("deliverable")}</h2>
         <p className="mt-2 text-[15px] text-ink-2">{L(c.brief.deliverable)}</p>
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
@@ -103,12 +103,12 @@ function BriefTab({ c }: { c: Campaign }) {
           </div>
         </div>
       </div>
-      <div className="card p-6">
+      <div className="label-card p-6">
         <h2 className="text-xl">{t("acceptance")}</h2>
         <p className="mt-1 text-[13px] text-ink-3">{t("duration")}: {c.brief.durationSec.min}-{c.brief.durationSec.max} {t("seconds")}</p>
         <ul className="mt-4 grid gap-2">
           {c.brief.acceptance.map((a) => (
-            <li key={a.key} className="flex items-center justify-between gap-3 rounded-xl bg-surface-2 px-3 py-2 text-[13.5px]">
+            <li key={a.key} className="flex items-center justify-between gap-3 rounded-[8px] bg-surface-2 px-3 py-2 text-[13.5px]">
               <span>{L(a.label)}</span>
               <span className="shrink-0 font-semibold tabular text-ink-3">{a.weight}</span>
             </li>
@@ -131,11 +131,11 @@ function KitTab({ p, c }: { p: Participation; c: Campaign }) {
   const shipmentIdx = p.shipment ? SHIPMENT_ORDER.indexOf(p.shipment.status) : -1;
   return (
     <div className="grid gap-4 lg:grid-cols-5">
-      <div className="card p-6 lg:col-span-3">
+      <div className="label-card p-6 lg:col-span-3">
         <h2 className="text-xl">{t("kitIncludes")}</h2>
         <div className="mt-4"><KitList campaign={c} /></div>
       </div>
-      <div className="card flex flex-col gap-5 p-6 lg:col-span-2">
+      <div className="label-card flex flex-col gap-5 p-6 lg:col-span-2">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-xl">{t("tracking")}</h2>
           <SimulatedTag />
@@ -143,7 +143,7 @@ function KitTab({ p, c }: { p: Participation; c: Campaign }) {
         {p.stage === "invited" && <p className="text-[14px] text-ink-2">{t("kitWaiting")}</p>}
         {p.stage === "accepted" && (
           <div className="grid gap-3">
-            <div className="rounded-2xl bg-surface-2 p-4 text-[14px]">
+            <div className="rounded-[8px] bg-surface-2 p-4 text-[14px]">
               <div className="mb-1 flex items-center gap-1.5 font-medium"><MapPin size={16} className="text-leaf" />{t("deliverTo")}</div>
               {addressReady ? <div className="text-ink-2">{me.address.line1}, {me.address.city}<br /><span dir="ltr">{me.address.phone}</span></div> : <div className="text-rose">{t("addressMissing")}</div>}
             </div>
@@ -234,11 +234,11 @@ function UploadTab({ p, c }: { p: Participation; c: Campaign }) {
 
   return (
     <div className="grid gap-4 lg:grid-cols-5">
-      <div className="card p-6 lg:col-span-2">
+      <div className="label-card p-6 lg:col-span-2">
         <h2 className="text-xl">{t("uploadTitle")}</h2>
         <p className="mt-1 text-[13.5px] text-ink-3">{t("uploadHint")}</p>
         {!canUpload ? (
-          <p className="mt-5 rounded-2xl bg-surface-2 p-4 text-[14px] text-ink-2">{stageOrder(p.stage) < stageOrder("shoot") ? t("notYetShoot") : p.stage === "manual_review" || p.stage === "auto_check" ? t("inReviewNow", { n: latest?.version ?? 1 }) : t("uploadClosed")}</p>
+          <p className="mt-5 rounded-[8px] bg-surface-2 p-4 text-[14px] text-ink-2">{stageOrder(p.stage) < stageOrder("shoot") ? t("notYetShoot") : p.stage === "manual_review" || p.stage === "auto_check" ? t("inReviewNow", { n: latest?.version ?? 1 }) : t("uploadClosed")}</p>
         ) : (
           <div className="mt-5 grid gap-4">
             <button
@@ -247,7 +247,7 @@ function UploadTab({ p, c }: { p: Participation; c: Campaign }) {
               onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
               onDragLeave={() => setDrag(false)}
               onDrop={(e) => { e.preventDefault(); setDrag(false); pick(e.dataTransfer.files?.[0]); }}
-              className={cn("flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed p-8 text-center transition-colors", drag ? "border-leaf bg-leaf-soft" : "border-line-2 hover:border-ink-3")}
+              className={cn("flex flex-col items-center gap-2 rounded-[8px] border-2 border-dashed p-8 text-center transition-colors", drag ? "border-leaf bg-leaf-soft" : "border-line-2 hover:border-ink-3")}
             >
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-leaf-soft text-leaf"><Upload size={22} weight="bold" /></span>
               <span className="text-[14px] font-medium">{file ? file.name : t("chooseFile")}</span>
@@ -270,7 +270,7 @@ function UploadTab({ p, c }: { p: Participation; c: Campaign }) {
           <EmptyState icon={<Sparkle size={22} weight="duotone" />} title={t("nothingHere")} />
         ) : (
           p.submissions.slice().reverse().map((sub) => (
-            <div key={sub.id} className="card p-5">
+            <div key={sub.id} className="label-card p-5">
               <div className="flex flex-wrap items-center gap-4">
                 <ProgressRing value={sub.check.score / 100} size={64} stroke={7}><span className="text-[14px] font-bold tabular">{sub.check.score}</span></ProgressRing>
                 <div className="min-w-0 flex-1">
@@ -306,7 +306,7 @@ function FeedbackTab({ p }: { p: Participation }) {
       {p.reviews.slice().reverse().map((r) => {
         const sub = p.submissions.find((x) => x.id === r.submissionId);
         return (
-          <article key={r.id} className={cn("card p-6", r.decision === "approved" && "border-leaf/40")}>
+          <article key={r.id} className={cn("label-card p-6", r.decision === "approved" && "border-leaf/40")}>
             <div className="flex flex-wrap items-center gap-2">
               <Chip tone={r.decision === "approved" ? "leaf" : "rose"}>{t(`decision_${r.decision}` as const)}</Chip>
               {sub && <Chip>v{sub.version}</Chip>}
@@ -348,7 +348,7 @@ function PublishTab({ p, c }: { p: Participation; c: Campaign }) {
   };
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <div className="card p-6">
+      <div className="label-card p-6">
         <h2 className="text-xl">{t("publishTitle")}</h2>
         <p className="mt-1 text-[13.5px] text-ink-3">{t("publishHint")}</p>
         {ready ? (
@@ -363,11 +363,11 @@ function PublishTab({ p, c }: { p: Participation; c: Campaign }) {
             <Button disabled={!valid} onClick={submit} icon={<LinkIcon size={16} weight="bold" />}>{t("submitLink")}</Button>
           </div>
         ) : p.publish ? null : (
-          <p className="mt-5 rounded-2xl bg-surface-2 p-4 text-[14px] text-ink-2">{t("notApproved")}</p>
+          <p className="mt-5 rounded-[8px] bg-surface-2 p-4 text-[14px] text-ink-2">{t("notApproved")}</p>
         )}
         {p.publish && (
           <div className="mt-5 grid gap-3">
-            <a href={p.publish.url} target="_blank" rel="noreferrer" className="truncate rounded-2xl bg-surface-2 p-4 text-[14px] font-medium text-leaf hover:underline">{p.publish.url}</a>
+            <a href={p.publish.url} target="_blank" rel="noreferrer" className="truncate rounded-[8px] bg-surface-2 p-4 text-[14px] font-medium text-leaf hover:underline">{p.publish.url}</a>
             <div className="flex flex-wrap items-center gap-2">
               <Chip>{p.publish.platform}</Chip>
               <Chip>{date(p.publish.postedAt)}</Chip>
