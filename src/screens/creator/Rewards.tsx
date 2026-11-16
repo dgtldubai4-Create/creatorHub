@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Ticket, Star, Rocket, Package } from "@phosphor-icons/react";
 import { useDispatch, useStore } from "../../app/store";
 import { useFormat, useL, useT } from "../../i18n";
@@ -6,6 +7,7 @@ import { Button, Chip, PageHeader, Section, Segmented, Sheet } from "../../ui/pr
 import { Counter, Item, Stagger, Tilt, useCelebrate } from "../../ui/motion";
 import { useToast } from "../../ui/toast";
 import { balance, lifetimeSparks, level } from "../../domain/selectors";
+import { ExpiryNote } from "../shared/program";
 import { BrandMark, useCurrentCreator } from "../shared/bits";
 import { Label, MembershipCard } from "../../ui/kit";
 import type { Reward } from "../../domain/types";
@@ -51,6 +53,8 @@ export function Rewards() {
           <div className="meta">{t("balance")}</div>
           <div className="text-5xl font-semibold tabular leading-none"><Counter value={bal} format={num} /> <span className="text-lg font-medium text-ink-3">{t("sparks")}</span></div>
           <div className="mt-2 text-[13.5px] text-ink-2">{t("lifetime")}: {num(life)} · {t(`lv_${lv.level}` as const)}{lv.next && lv.next !== "ambassador" ? ` · ${t("toNextLevel", { n: num(lv.toNext), level: t(`lv_${lv.next}` as const) })}` : ""}</div>
+          <ExpiryNote creatorId={me.id} className="mt-1" />
+          <Link to="/creator/sparks" className="mt-1 inline-flex items-center gap-1.5 self-start text-[13px] font-extrabold text-grape hover:underline">{t("viewSparksTable")}</Link>
         </Label>
       </div>
 

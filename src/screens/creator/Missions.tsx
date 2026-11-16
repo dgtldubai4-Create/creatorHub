@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Check, X, Lightning, MapPin, UsersThree, PaperPlaneTilt, Lock, CalendarBlank, LinkSimple } from "@phosphor-icons/react";
+import { ArrowLeft, Check, X, Lightning, MapPin, UsersThree, PaperPlaneTilt, Lock, CalendarBlank, LinkSimple, Warning, ShieldCheck } from "@phosphor-icons/react";
 import { useDispatch, useStore } from "../../app/store";
 import { useFormat, useL, useT } from "../../i18n";
 import { Avatar, Button, Chip, ChipButton, EmptyState, Field, Input, PageHeader, Section, Sheet, SimulatedTag, Textarea } from "../../ui/primitives";
@@ -9,8 +9,11 @@ import { useToast } from "../../ui/toast";
 import { ArtSlot } from "../../ui/ArtSlot";
 import { PhaseTrail } from "../../ui/JourneyTrail";
 import { Label, Stamp, Ticket } from "../../ui/kit";
-import { isDoubleSparks, level, meetsLevel, missionSparks, missionsFor, squadTotals, trackProgress, MISSION_TYPES } from "../../domain/selectors";
-import type { Mission, MissionType } from "../../domain/types";
+import { campaignQuote, formatsFor, isDoubleSparks, level, meetsLevel, missionQuote, missionsFor, squadTotals, trackProgress, MISSION_TYPES } from "../../domain/selectors";
+import { FLAT_TYPES, LIVE_DAYS } from "../../domain/policy";
+import { addDays } from "../../domain/simulate";
+import type { Mission, MissionType, PostFormat } from "../../domain/types";
+import { QuoteBreakdown } from "../shared/program";
 import { BrandMark, EntryChip, LevelChip, MissionTypeChip, Points, StageChip, useCurrentCreator } from "../shared/bits";
 import { cn } from "../../ui/cn";
 
@@ -38,6 +41,8 @@ function MissionCard({ m, creatorId }: { m: Mission; creatorId: string }) {
   const b = s.brands.find((x) => x.id === m.brandId);
   const dbl = isDoubleSparks(s, m);
   const locked = !meetsLevel(s, creatorId, m.levelRequired) && !e;
+  const me = s.creators.find((c) => c.id === creatorId)!;
+  const mine = e?.awarded ?? missionQuote(s, m, me).total;
   return (
     <Link to={`/creator/missions/${m.id}`} className="block h-full">
       <Label brandId={m.brandId} className={cn("lift flex h-full gap-4 p-4", locked && "opacity-70")}>
@@ -53,7 +58,7 @@ function MissionCard({ m, creatorId }: { m: Mission; creatorId: string }) {
           <p className="mt-1 line-clamp-2 text-[13.5px] text-ink-2">{L(m.prompt)}</p>
           <div className="mt-auto flex items-end justify-between gap-3 pt-3">
             <div className="meta flex items-center gap-1 !tracking-normal !normal-case"><CalendarBlank size={13} />{date(m.window.start)} - {date(m.window.end)}{dbl && m.doubleSparksUntil && <span className="ms-2 inline-flex items-center gap-1 text-marigold-ink"><Lightning size={12} weight="fill" />{t("endsIn", { when: relative(m.doubleSparksUntil, new Date(s.now).getTime()) })}</span>}</div>
-            {locked ? <Chip icon={<Lock size={12} weight="bold" />}>{t(`lv_${m.levelRequired}` as const)}</Chip> : <PriceTag value={missionSparks(s, m)} double={dbl} />}
+            {locked ? <Chip icon={<Lock size={12} weight="bold" />}>{t(`lv_${m.levelRequired}` as const)}</Chip> : <PriceTag value={mine} double={dbl} />}
           </div>
         </div>
       </Label>
@@ -86,7 +91,7 @@ function MissionBoard() {
               const b = s.brands.find((x) => x.id === m.brandId);
               return (
                 <Item key={m.id}>
-                  <Ticket to={`/creator/missions/${m.id}`} stub={<div className="flex items-center justify-between text-[13px]"><EntryChip state={e.state} /><PriceTag value={missionSparks(s, m)} double={isDoubleSparks(s, m)} /></div>}>
+                  <Ticket to={`/creator/missions/${m.id}`} stub={<div className="flex items-center justify-between text-[13px]"><EntryChip state={e.state} /><PriceTag value={missionQuote(s, m, me).total} double={isDoubleSparks(s, m)} /></div>}>
                     <div className="flex items-center gap-2"><MissionTypeChip type={m.type} />{b && <BrandMark brand={b} size="sm" />}</div>
                     <div className="mt-2 text-xl font-semibold">{L(m.title)}</div>
                     <p className="mt-1 line-clamp-2 text-[13.5px] text-ink-2">{e.state === "changes" ? e.submissions.at(-1)?.note : L(m.prompt)}</p>
@@ -99,7 +104,7 @@ function MissionBoard() {
               const b = s.brands.find((x) => x.id === c.brandId)!;
               return (
                 <Item key={p.id}>
-                  <Ticket to={`/creator/campaigns/${p.id}`} stub={<div className="flex items-center justify-between text-[13px]"><div className="flex items-center gap-3"><PhaseTrail stage={p.stage} /><StageChip stage={p.stage} /></div><PriceTag value={c.points} /></div>}>
+                  <Ticket to={`/creator/campaigns/${p.id}`} stub={<div className="flex items-center justify-between text-[13px]"><div className="flex items-center gap-3"><PhaseTrail stage={p.stage} /><StageChip stage={p.stage} /></div><PriceTag value={p.award?.total ?? campaignQuote(c, me).total} /></div>}>
                     <div className="flex items-center gap-2"><MissionTypeChip type="routine" /><BrandMark brand={b} size="sm" /></div>
                     <div className="mt-2 text-xl font-semibold">{L(c.title)}</div>
                     <p className="mt-1 line-clamp-2 text-[13.5px] text-ink-2">{L(c.hook)}</p>
@@ -147,6 +152,8 @@ function MissionDetail({ id }: { id: string }) {
   const [caption, setCaption] = useState("");
   const [handle, setHandle] = useState("");
   const [squadPick, setSquadPick] = useState<string | null>(null);
+  const [format, setFormat] = useState<PostFormat | null>(null);
+  const [extra, setExtra] = useState<string[]>([]);
   if (!m) return <EmptyState title={t("notFound")} action={<Button variant="secondary" to="/creator/missions">{t("missions")}</Button>} />;
   const e = m.entries[me.id];
   const b = s.brands.find((x) => x.id === m.brandId);
@@ -156,15 +163,23 @@ function MissionDetail({ id }: { id: string }) {
   const trackOk = !m.trackId || trackProgress(s, me.id, m.trackId).complete;
   const totals = m.type === "team" ? squadTotals(m) : [];
   const myReferrals = s.referrals.filter((r) => r.referrerId === me.id);
+  const formats = formatsFor(m);
+  const flat = FLAT_TYPES.includes(m.type);
+  const fmt = format ?? formats[0];
+  const last = e?.submissions.at(-1);
+  // Before approval: an estimate from the form (or the last submission). After: the stored award.
+  const quote = e?.award ?? missionQuote(s, m, me, open ? { format: fmt, url, brandIds: extra } : last ? { format: last.format, url: last.url, brandIds: last.brandIds } : {});
+  const otherBrands = s.brands.filter((x) => x.id !== m.brandId);
 
   const join = () => {
     dispatch({ type: "joinMission", missionId: m.id, creatorId: me.id, squadId: squadPick ?? undefined });
   };
   const submit = () => {
-    dispatch({ type: "submitMission", missionId: m.id, creatorId: me.id, url: url.trim(), caption: caption.trim() });
+    dispatch({ type: "submitMission", missionId: m.id, creatorId: me.id, url: url.trim(), caption: caption.trim(), format: fmt, brandIds: extra });
     setOpen(false);
     setUrl("");
     setCaption("");
+    setExtra([]);
   };
   const refer = () => {
     dispatch({ type: "refer", creatorId: me.id, handle });
@@ -188,7 +203,7 @@ function MissionDetail({ id }: { id: string }) {
                   {m.requiredHashtags.length > 0 && <Chip>{m.requiredHashtags.join(" ")}</Chip>}
                   <Chip>{t("levelRequired")}: {t(`lv_${m.levelRequired}` as const)}</Chip>
                 </div>
-                <PriceTag value={missionSparks(s, m)} double={dbl} />
+                <PriceTag value={quote.total} double={dbl} />
               </div>
             }
           >
@@ -209,13 +224,23 @@ function MissionDetail({ id }: { id: string }) {
                   {!e && !lvOk && <Chip icon={<Lock size={13} weight="bold" />}>{t("levelLocked", { level: t(`lv_${m.levelRequired}` as const) })}</Chip>}
                   {!e && lvOk && !trackOk && track && <Button variant="secondary" to={`/creator/academy/${track.id}`}>{t("trackLocked", { track: L(track.title) })}</Button>}
                   {e && (e.state === "joined" || e.state === "changes") && m.type !== "referral" && <Button onClick={() => setOpen(true)} icon={<PaperPlaneTilt size={16} weight="bold" />}>{e.state === "changes" ? t("resubmitPost") : t("submitPost")}</Button>}
-                  {e?.state === "completed" && <span className="inline-flex items-center gap-2 text-[14px] font-medium text-leaf"><Stamp pressed size={40} animate={false} />{t("missionDone")}</span>}
+                  {e?.state === "completed" && !e.clawedBack && <span className="inline-flex items-center gap-2 text-[14px] font-medium text-leaf"><Stamp pressed size={40} animate={false} />{t("missionDone")}</span>}
+                  {e?.clawedBack && <span className="inline-flex items-center gap-2 rounded-[14px] border-2 border-outline bg-rose-soft px-3 py-2 text-[13.5px] font-bold text-rose"><Warning size={18} weight="fill" />{t("postRemovedBody", { n: e.clawedBack.amount })}</span>}
                 </div>
               </div>
             </div>
           </Ticket>
         </div>
-        <div className="lg:col-span-4">
+        <div className="flex flex-col gap-4 lg:col-span-4">
+          {m.type !== "referral" && (
+            <Label className="p-5">
+              <div className="flex items-center justify-between gap-2"><h3 className="text-[15px] font-semibold">{e?.award ? t("yourAward") : t("yourEstimate")}</h3><Link to="/creator/sparks" className="text-[12.5px] font-extrabold text-grape hover:underline">{t("viewSparksTable")}</Link></div>
+              <QuoteBreakdown quote={quote} className="mt-3" />
+              {!flat && !e?.award && <p className="mt-3 text-[12.5px] font-bold text-ink-3">{t("estimateHint", { followers: quote.followers.toLocaleString(), rate: quote.engagementRate })}</p>}
+              {last?.live?.live && <p className="mt-3 inline-flex items-center gap-1.5 text-[12.5px] font-bold text-leaf"><ShieldCheck size={15} weight="fill" />{t("liveChecked")}</p>}
+              {e?.state === "completed" && !flat && last?.reviewedAt && !last.live && <p className="mt-3 text-[12.5px] font-bold text-ink-3">{t("liveCheckDue", { date: date(addDays(last.reviewedAt, LIVE_DAYS)) })}</p>}
+            </Label>
+          )}
           {e && e.submissions.length > 0 ? (
             <Label className="p-5">
               <div className="flex items-center justify-between"><h3 className="text-[15px] font-semibold">{t("preCheck")}</h3><SimulatedTag /></div>
@@ -296,6 +321,13 @@ function MissionDetail({ id }: { id: string }) {
         <div className="grid gap-4">
           <Field label={t("postUrl")} hint="https://"><Input value={url} onChange={(ev) => setUrl(ev.target.value)} placeholder="https://www.instagram.com/reel/..." inputMode="url" autoFocus /></Field>
           <Field label={t("caption")} hint={t("captionHint", { tags: m.requiredHashtags.join(" ") || "#DaburSquad" })}><Textarea value={caption} onChange={(ev) => setCaption(ev.target.value)} placeholder={`${m.requiredHashtags.join(" ")} #ad`} /></Field>
+          {!flat && (
+            <>
+              <Field label={t("postFormat")} hint={formats.includes("story") ? undefined : t("fmtStoryNote")}><div className="flex flex-wrap gap-2">{formats.map((k) => <ChipButton key={k} type="button" selected={fmt === k} onClick={() => setFormat(k)}>{t(`fmt_${k}` as const)}</ChipButton>)}</div></Field>
+              <Field label={t("alsoFeatures")} hint={t("alsoFeaturesHint")}><div className="flex max-h-28 flex-wrap gap-2 overflow-y-auto" data-lenis-prevent>{otherBrands.map((x) => <ChipButton key={x.id} type="button" selected={extra.includes(x.id)} onClick={() => setExtra(extra.includes(x.id) ? extra.filter((y) => y !== x.id) : [...extra, x.id])}>{L(x.localisedName)}</ChipButton>)}</div></Field>
+              <div className="rounded-[14px] border-2 border-outline bg-surface-2 p-3"><div className="meta mb-2">{t("yourEstimate")}</div><QuoteBreakdown quote={quote} /></div>
+            </>
+          )}
           <div className="flex justify-end gap-2"><Button variant="ghost" onClick={() => setOpen(false)}>{t("cancel")}</Button><Button onClick={submit} disabled={!url.trim() || !caption.trim()}>{t("submitPost")}</Button></div>
         </div>
       </Sheet>

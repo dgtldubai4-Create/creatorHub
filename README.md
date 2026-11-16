@@ -69,8 +69,8 @@ tests/            vitest suites for the domain layer
   the hashtag, disclosure and timing pre-check on every submission; `reviewMission`
   approves or asks for changes and writes Sparks to the ledger (doubled during a drop).
 - **Levels** are derived, never stored: `level()` combines season Sparks, a quality
-  score (approved share of reviewed cuts and posts blended with auto-check scores) and
-  the current season's Ambassador cohort. Thresholds live in `LEVEL_RULES`.
+  score (approved share of reviewed cuts and posts blended with auto-check scores), a
+  short list of named tasks per level, and the current season's Ambassador cohort.
 - **Seasons** hold the Ambassador round: `advanceSeason` opens wildcards then voting
   (pulling the top Pros onto the shortlist), creators `enterWildcard` and
   `voteAmbassador` once each, and `selectAmbassadors` confirms the cohort.
@@ -78,6 +78,51 @@ tests/            vitest suites for the domain layer
   in a month after an active month adds a streak bonus entry.
 - **Academy** tracks gate on level; completing every module in a track issues a
   certificate and Sparks. Mentoring sessions have seats and level gates.
+
+### Program rules
+
+Every rule a creator can read on the "How Sparks work" page lives in
+`src/domain/policy.ts`, and the reducer pays from the same constants, so the published
+table cannot drift from what the approve button does.
+
+- **Reach-weighted Sparks.** `quoteSparks` multiplies a mission's base Sparks by format
+  (video, post, story), reach band (followers on the platform the post went out on),
+  engagement band and brand mix (two or more Dabur brands), rounds to 5, and doubles
+  during a surprise drop. Every multiplier has a floor of 1, so a small account never
+  earns below base. Referrals and retailer reviews are paid flat. The working is stored
+  with each award (`entry.award`, `participation.award`) and shown to the creator and
+  the reviewer. Stories only count when a mission lists the format.
+- **Next-level checklist.** `LEVEL_TASKS` names what each level needs on top of Sparks
+  and quality: Insider wants a starter mission and one monthly or team challenge this
+  season; Pro wants a completed campaign journey, an Academy certificate and, in the
+  UAE and KSA, a verified creator licence. `levelTasks` returns the list with progress
+  and a link for each item; `level()` enforces it.
+- **Level kits.** The first time a creator reaches Insider, Pro or Ambassador a kit is
+  unlocked (`settleKits`, run after every level-changing action). The creator claims it
+  with `claimLevelKit`, logistics moves it with `advanceKitShipment`, and delivery opens
+  that level's unboxing mission. One kit per level, ever.
+- **Posts stay live.** `recheckPosts` is the 30-day job: it re-checks every approved
+  post past the mark (`postLiveCheck`, simulated) and, when one is gone, appends a
+  negative `clawback` ledger entry. The ledger stays append-only; season Sparks and the
+  level checklist both net clawbacks out.
+- **Sparks expiry.** Balances lapse after 365 days with no earning and no spending.
+  `expireSparks` warns once inside the last 30 days, then appends an `expiry` entry.
+  Any earn or spend resets the clock (`sparksExpiry`).
+- **Squad charter.** Six commitments, versioned. `registerCreator` refuses an
+  application that has not accepted them, and acceptance is stored on the creator.
+- **Mission drops.** Setting a mission live notifies every creator who can see it.
+
+The design reasoning behind these, and the comparison with L'Oréal's LOREALISTAR
+programme they came from, is in `docs/lorealistar-teardown.md`.
+
+### Installable app
+
+The hosted build is a progressive web app: `public/manifest.webmanifest`, icons and
+`public/sw.js` (an offline shell cache). `src/app/pwa.tsx` injects the manifest and
+registers the worker at boot, offers the install prompt on the profile page, and raises
+device notifications for mission drops and Sparks while the app is open. There is no
+push server, so that card is labelled Simulated. The single-file build skips all of it
+and still makes no network requests.
 
 ### The journey state machine
 
@@ -109,6 +154,8 @@ Everything external is simulated in-process and labelled "Simulated" in the inte
 - **Courier tracking**: status advances on command with generated tracking numbers per courier.
 - **Identity and social verification**: state transitions only.
 - **Email and push**: written to the notification log, never sent.
+- **Post link check**: `postLiveCheck` stands in for fetching a post 30 days on. A link
+  containing "deleted" or "removed" is gone, as is roughly one in ten others by hash.
 
 ## Product catalogue
 

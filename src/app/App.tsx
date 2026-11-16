@@ -20,6 +20,7 @@ import { Journey } from "../screens/creator/Journey";
 import { Missions } from "../screens/creator/Missions";
 import { Academy } from "../screens/creator/Academy";
 import { SeasonPage } from "../screens/creator/Season";
+import { SparksPage } from "../screens/creator/Sparks";
 import { AdminMissions } from "../screens/admin/Missions";
 import { AdminSeasons } from "../screens/admin/Seasons";
 import { AdminAcademy } from "../screens/admin/Academy";
@@ -123,6 +124,7 @@ export function App() {
                 <Route path="academy/:trackId" element={<Academy />} />
                 <Route path="season" element={<SeasonPage />} />
                 <Route path="rewards" element={<Rewards />} />
+                <Route path="sparks" element={<SparksPage />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="notifications" element={<Notifications audience="creator" />} />
               </Route>

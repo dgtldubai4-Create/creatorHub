@@ -10,6 +10,7 @@ import { spring, springSnappy } from "../ui/motion";
 import { ROLES, can } from "../domain/permissions";
 import { unreadCount } from "../domain/selectors";
 import type { Permission, Role, Seat } from "../domain/types";
+import { DeviceAlerts } from "./pwa";
 
 export function Logo({ className, compact }: { className?: string; compact?: boolean }) {
   const t = useT();
@@ -133,9 +134,9 @@ interface NavItem { to: string; label: string; icon: ReactNode; end?: boolean; p
 
 function TopNav({ items, compact }: { items: NavItem[]; compact?: boolean }) {
   return (
-    <nav className="hide-scrollbar flex items-center gap-0.5 overflow-x-auto" aria-label="Primary">
+    <nav className="hide-scrollbar flex items-center gap-0.5 overflow-x-auto rounded-full border-2 border-outline bg-surface p-1 shadow-[3px_3px_0_var(--outline)]" aria-label="Primary">
       {items.map((it) => (
-        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13.5px] font-bold transition-colors", isActive ? "text-canvas" : "text-ink-2 hover:text-ink hover:bg-surface-2")}>
+        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative isolate flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13.5px] font-bold transition-colors", isActive ? "text-canvas" : "text-ink-2 hover:text-ink hover:bg-surface-2")}>
           {({ isActive }) => (
             <>
               {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-ink" transition={springSnappy} />}
@@ -211,6 +212,7 @@ export function CreatorShell() {
       }
       bottom={<BottomTabs items={items} />}
     >
+      <DeviceAlerts creatorId={creator.id} />
       <Outlet />
     </Frame>
   );

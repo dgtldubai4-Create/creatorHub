@@ -83,6 +83,12 @@ export function AdminCreators() {
                     </Select>
                   </div>
                 ))}
+                <div className="flex flex-col gap-2 rounded-[8px] bg-surface-2 p-3 sm:col-span-3">
+                  <div className="flex flex-wrap items-center gap-2"><VerificationChip state={open.licence.state} label={t("licence")} />{open.licence.number && <span className="text-[12.5px] font-bold tabular text-ink-2" dir="ltr">{open.licence.number}</span>}</div>
+                  <Select value={open.licence.state} onChange={(e) => dispatch({ type: "verifyCreator", creatorId: open.id, field: "licence", state: e.target.value as VerificationState })} className="py-1.5 text-[13px] sm:max-w-xs" aria-label={t("verifyLicence")}>
+                    {(["pending", "verified", "action"] as const).map((v) => <option key={v} value={v}>{t(`vs_${v}` as const)}</option>)}
+                  </Select>
+                </div>
               </div>
             </div>
             <div>

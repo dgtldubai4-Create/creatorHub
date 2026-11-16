@@ -68,7 +68,7 @@ export function Stamp({ pressed, children, size = 64, tone = "leaf", className, 
       {pressed && (
         <span
           className={cn("absolute inset-[6%] flex items-center justify-center rounded-full border-[3px] bg-transparent text-center font-bold uppercase leading-none", color)}
-          style={{ transform: "rotate(-8deg)", animation: animate && !reduce ? "stamp-press 520ms cubic-bezier(0.22, 1, 0.36, 1) both" : undefined, fontSize: size * 0.16, letterSpacing: "0.04em", mixBlendMode: "multiply" }}
+          style={{ transform: "rotate(-8deg)", animation: animate && !reduce ? "stamp-press 520ms cubic-bezier(0.22, 1, 0.36, 1) both" : undefined, fontSize: size * 0.16, letterSpacing: "0.04em" }}
         >
           <span className={cn("absolute inset-[9%] rounded-full border", color.split(" ")[0])} />
           <span className="relative px-1">{icon ?? children ?? <Check weight="bold" size={size * 0.4} />}</span>

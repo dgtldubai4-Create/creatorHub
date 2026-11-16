@@ -3,7 +3,7 @@ import { createSeed } from "../src/domain/seed";
 import { reducer, safeReducer, type Action } from "../src/domain/reducer";
 import { STAGES } from "../src/domain/stages";
 import type { AppState } from "../src/domain/types";
-import { balance, level, monthlyStreak, currentSeason, missionsFor, leaderboard, trackProgress, qualityScore } from "../src/domain/selectors";
+import { balance, level, monthlyStreak, currentSeason, missionsFor, leaderboard, trackProgress, qualityScore, campaignQuote } from "../src/domain/selectors";
 import { missionCheck, otpFor } from "../src/domain/simulate";
 
 const AT = "2026-10-22T10:00:00.000Z";
@@ -83,7 +83,11 @@ describe("full journey", () => {
     expect(() => reducer(s, { type: "releasePoints", participationId: p.id, at: AT })).toThrow(/verified/);
     s = run(s, { type: "signIn", seat: "brand", role: "content_reviewer" }, { type: "verifyPost", participationId: p.id });
     s = run(s, { type: "signIn", seat: "brand", role: "finance" }, { type: "releasePoints", participationId: p.id });
-    expect(balance(s, "cr_hessamoves")).toBe(before + 550);
+    const fem = s.campaigns.find((c) => c.id === "cp_grwm")!;
+    const quote = campaignQuote(fem, s.creators.find((c) => c.id === "cr_hessamoves")!, "instagram");
+    expect(quote.total).toBeGreaterThanOrEqual(fem.points);
+    expect(balance(s, "cr_hessamoves")).toBe(before + quote.total);
+    expect(s.participations.find((x) => x.id === p.id)!.award?.total).toBe(quote.total);
     expect(() => reducer(s, { type: "releasePoints", participationId: p.id, at: AT })).toThrow();
     s = run(s, { type: "complete", participationId: p.id });
     expect(s.participations.find((x) => x.id === p.id)!.stage).toBe("completed");
@@ -120,7 +124,7 @@ describe("full journey", () => {
   });
 
   it("registers a creator and signs them in", () => {
-    const s = run(createSeed(), { type: "registerCreator", input: { name: "Test Person", handle: "@testperson", email: "t@example.com", mobile: "+971 50 123 4567", market: "UAE", city: "Dubai", niche: "food", tier: "nano", followers: 1200, languages: ["en"], vibe: "hi", favouritePosts: [], socials: { instagram: "testperson" }, bio: "hi" } });
+    const s = run(createSeed(), { type: "registerCreator", input: { name: "Test Person", handle: "@testperson", email: "t@example.com", mobile: "+971 50 123 4567", market: "UAE", city: "Dubai", niche: "food", tier: "nano", followers: 1200, languages: ["en"], vibe: "hi", favouritePosts: [], charterAccepted: true, socials: { instagram: "testperson" }, bio: "hi" } });
     expect(s.session.seat).toBe("creator");
     expect(s.creators.at(-1)?.handle).toBe("testperson");
     expect(s.notifications.some((n) => n.audience === "brand")).toBe(true);
@@ -141,7 +145,10 @@ describe("missions", () => {
     expect(e.submissions[0].check.passed).toBe(true);
     s = run(s, { type: "signIn", seat: "brand", role: "content_reviewer" }, { type: "reviewMission", missionId: "ms_goldenhour", creatorId: "cr_reemq", decision: "approved", note: "Lovely." });
     expect(s.missions.find((m) => m.id === "ms_goldenhour")!.entries.cr_reemq.state).toBe("completed");
-    expect(balance(s, "cr_reemq")).toBe(before + 180);
+    const award = s.missions.find((m) => m.id === "ms_goldenhour")!.entries.cr_reemq.award!;
+    expect(award.base).toBe(180);
+    expect(award.total).toBeGreaterThanOrEqual(180);
+    expect(balance(s, "cr_reemq")).toBe(before + award.total);
     expect(() => reducer(s, { type: "reviewMission", missionId: "ms_goldenhour", creatorId: "cr_reemq", decision: "approved", note: "", at: AT })).toThrow();
   });
 
@@ -158,7 +165,11 @@ describe("missions", () => {
     s = run(s, { type: "joinMission", missionId: "ms_honeyhack", creatorId: "cr_linabarakat" }, { type: "submitMission", missionId: "ms_honeyhack", creatorId: "cr_linabarakat", url: "https://t.co/x", caption: "#DaburSquad #HoneyHack #gifted" });
     const before = balance(s, "cr_linabarakat");
     s = run(s, { type: "signIn", seat: "brand", role: "super_admin" }, { type: "reviewMission", missionId: "ms_honeyhack", creatorId: "cr_linabarakat", decision: "approved", note: "" });
-    expect(balance(s, "cr_linabarakat")).toBe(before + 180);
+    const drop = s.missions.find((m) => m.id === "ms_honeyhack")!.entries.cr_linabarakat.award!;
+    expect(drop.double).toBe(true);
+    expect(drop.total).toBeGreaterThanOrEqual(180);
+    expect(drop.total % 10).toBe(0);
+    expect(balance(s, "cr_linabarakat")).toBe(before + drop.total);
     s = run(s, { type: "signIn", seat: "creator", creatorId: "cr_zahramuscat" });
     expect(() => reducer(s, { type: "joinMission", missionId: "ms_circlecamp", creatorId: "cr_zahramuscat", at: AT })).toThrow(/level/);
   });

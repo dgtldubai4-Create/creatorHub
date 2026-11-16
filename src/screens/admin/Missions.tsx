@@ -7,7 +7,8 @@ import { Avatar, Button, Chip, ChipButton, EmptyState, Field, Input, PageHeader,
 import { Item, Stagger } from "../../ui/motion";
 import { useToast } from "../../ui/toast";
 import { ArtSlot } from "../../ui/ArtSlot";
-import { missionEntriesToReview, MISSION_TYPES, squadTotals } from "../../domain/selectors";
+import { missionEntriesToReview, missionQuote, MISSION_TYPES, squadTotals } from "../../domain/selectors";
+import { QuoteBreakdown } from "../shared/program";
 import { can } from "../../domain/permissions";
 import { newId } from "../../domain/simulate";
 import type { Language, Level, Market, Mission, MissionType, Niche } from "../../domain/types";
@@ -132,6 +133,13 @@ export function AdminMissions() {
                           {(["hashtags", "disclosure", "timing"] as const).map((k) => <span key={k} className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium", sub.check[k] ? "bg-leaf-soft text-leaf-ink" : "bg-rose-soft text-rose")}>{sub.check[k] ? <Check size={11} weight="bold" /> : <X size={11} weight="bold" />}{t(`pc_${k}` as const)}</span>)}
                         </div>
                         <p className="text-[13.5px] text-ink-2">{sub.caption}</p>
+                        {(e.state === "submitted" || e.award) && (
+                          <div className="rounded-[12px] border-2 border-outline bg-surface p-2.5">
+                            <div className="meta mb-1.5">{e.award ? t("yourAward") : t("awardPreview")}</div>
+                            <QuoteBreakdown quote={e.award ?? missionQuote(s, open, cr, { format: sub.format, url: sub.url, brandIds: sub.brandIds })} />
+                          </div>
+                        )}
+                        {e.clawedBack && <p className="text-[13px] font-bold text-rose">{t("postRemovedBody", { n: e.clawedBack.amount })}</p>}
                         {e.state === "submitted" && can(role, "review") && (
                           <div className="flex flex-wrap items-end gap-2">
                             <div className="min-w-56 flex-1"><Field label={t("reviewerNote")}><Textarea value={notes[key] ?? ""} onChange={(ev) => setNotes((n) => ({ ...n, [key]: ev.target.value }))} className="min-h-12" /></Field></div>

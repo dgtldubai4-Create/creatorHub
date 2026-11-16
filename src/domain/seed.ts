@@ -1,15 +1,20 @@
 import catalogue from "../data/catalogue.json";
 import type {
-  AcademyTrack, AcceptanceCriterion, AppState, Badge, Brand, BrandUser, Campaign, Creator, Language, LedgerEntry, Localised, MentorSession, Mission, Notification, Participation,
-  Product, Referral, Review, Reward, Season, Shipment, Stage, StageLogEntry, Submission,
+  AcademyTrack, AcceptanceCriterion, AppState, Badge, Brand, BrandUser, Campaign, Creator, Language, LedgerEntry, LevelKit, Localised, MentorSession, Mission, Notification, Participation,
+  Product, Referral, Review, Reward, Season, Shipment, ShipmentStatus, Stage, StageLogEntry, Submission,
 } from "./types";
+import { CHARTER_VERSION, FLAT_TYPES, LEVEL_KITS, quoteSparks, type KitLevel } from "./policy";
+import { audienceFor, campaignQuote } from "./selectors";
 import { STAGES } from "./stages";
 import { autoCheck, connectAccount, COURIERS, fnv1a, missionCheck, newId, resetIdCounter, trackingNumber, addDays, addMinutes } from "./simulate";
 
-export const SEED_VERSION = "2026-10-21.1";
+export const SEED_VERSION = "2026-11-16.1";
 export const SEED_NOW = "2026-10-21T09:00:00.000Z";
 
 const L = (en: string, ar: string): Localised => ({ en, ar });
+
+/** Days since each creator joined. The last two joined long ago and went quiet, so expiry has something to show. */
+const joinedDaysAgo = (i: number): number => (i === 24 ? 350 : i === 23 ? 318 : 30 + i * 11);
 
 // ---------- creators ----------
 
@@ -49,7 +54,7 @@ function makeCreators(): Creator[] {
   return CREATORS.map(([name, handle, market, city, niche, tier, followers, bioEn, bioAr, langs, vibeEn, vibeAr], i) => {
     const verified = i % 4 !== 3;
     const mobile = `${DIAL[market]}${(i % 5) + 2} ${(100 + i * 7) % 900} ${(1000 + i * 131) % 9000}`;
-    const joinedAt = addDays(SEED_NOW, -(30 + i * 11));
+    const joinedAt = addDays(SEED_NOW, -joinedDaysAgo(i));
     const hasTiktok = i % 6 !== 5;
     return {
       id: `cr_${handle.replace(/\W/g, "")}`,
@@ -83,6 +88,7 @@ function makeCreators(): Creator[] {
       address: { line1: i % 2 === 0 ? `Villa ${12 + i}, Al Wasl Road` : `Apt ${300 + i}, Tower ${(i % 4) + 1}`, city, market, phone: mobile, confirmed: i < 14 },
       joinedAt,
       streakMonths: [4, 2, 3, 0, 2, 5, 4, 1, 2, 3, 3, 2, 0, 2, 4, 1, 3, 0, 2, 2, 1, 2, 0, 1][i],
+      charter: { version: CHARTER_VERSION, acceptedAt: joinedAt },
     };
   });
 }
@@ -287,6 +293,7 @@ const PARTICIPATIONS: PSeed[] = [
   { campaign: "cp_postlunch", creator: "cr_amaldarwish", stage: "completed", loops: 1, daysAgo: 58 },
   { campaign: "cp_postlunch", creator: "cr_yousefeats", stage: "completed", daysAgo: 55 },
   { campaign: "cp_postlunch", creator: "cr_yaranassar", stage: "declined", daysAgo: 62 },
+  { campaign: "cp_postlunch", creator: "cr_laylaoils", stage: "completed", daysAgo: 57 },
   { campaign: "cp_hotoil", creator: "cr_laylaoils", stage: "invited", daysAgo: 1 },
   { campaign: "cp_hotoil", creator: "cr_nadinefarah", stage: "invited", daysAgo: 1 },
   { campaign: "cp_hotoil", creator: "cr_salmafahad", stage: "invited", daysAgo: 1 },
@@ -343,6 +350,7 @@ function buildParticipation(seed: PSeed, campaigns: Campaign[], creators: Creato
   const reviews: Review[] = [];
   let shipment: Shipment | null = null;
   let publish: Participation["publish"] = null;
+  let award: Participation["award"];
   let version = 0;
 
   path.forEach((stage, i) => {
@@ -401,7 +409,8 @@ function buildParticipation(seed: PSeed, campaigns: Campaign[], creators: Creato
         entry.by = reviewerName;
         break;
       case "points_released":
-        ledger.push({ id: `led_${id.slice(3)}`, creatorId: creator.id, delta: campaign.points, reason: L(`${campaign.title.en} completed`, `اكتمال ${campaign.title.ar}`), ref: { kind: "participation", id }, at });
+        award = campaignQuote(campaign, creator, publish?.platform);
+        ledger.push({ id: `led_${id.slice(3)}`, creatorId: creator.id, delta: award.total, reason: L(`${campaign.title.en} completed`, `اكتمال ${campaign.title.ar}`), ref: { kind: "participation", id }, at });
         entry.by = "Finance";
         break;
       default:
@@ -410,7 +419,7 @@ function buildParticipation(seed: PSeed, campaigns: Campaign[], creators: Creato
     stageLog.push(entry);
   });
 
-  return { id, creatorId: creator.id, campaignId: campaign.id, stage: seed.stage, stageLog, submissions, reviews, shipment, publish, invitedAt: start };
+  return { id, creatorId: creator.id, campaignId: campaign.id, stage: seed.stage, stageLog, submissions, reviews, shipment, publish, invitedAt: start, ...(award ? { award } : {}) };
 }
 
 // ---------- missions, seasons, academy, rewards, badges, users ----------
@@ -427,7 +436,7 @@ function entry(state: Mission["entries"][string]["state"], daysAgo: number, capt
     squadId,
     awarded,
     submissions: submitted
-      ? [{ id: `ms_${fnv1a(caption + at).toString(16)}`, url: `https://www.instagram.com/reel/${fnv1a(caption).toString(36)}/`, caption, at, check: missionCheck(caption, mission.requiredHashtags, at, mission.window), ...(state === "completed" || state === "changes" || state === "approved" ? { decision: state === "changes" ? "changes" as const : "approved" as const, note, reviewedAt: addMinutes(at, 180), reviewerName: "Karim Nasser" } : {}) }]
+      ? [{ id: `ms_${fnv1a(caption + at).toString(16)}`, url: `https://www.instagram.com/reel/${fnv1a(caption).toString(36)}/`, caption, at, check: missionCheck(caption, mission.requiredHashtags, at, mission.window), format: "video" as const, brandIds: [], ...(state === "completed" || state === "changes" || state === "approved" ? { decision: state === "changes" ? "changes" as const : "approved" as const, note, reviewedAt: addMinutes(at, 180), reviewerName: "Karim Nasser" } : {}) }]
       : [],
   };
 }
@@ -440,7 +449,7 @@ function makeMissions(): Mission[] {
   });
   const tag = (...h: string[]) => ["#DaburSquad", ...h];
 
-  const starter = base("ms_unbox", "starter", L("Unbox your welcome kit your way", "افتح كيت الترحيب بطريقتك"), L("Fifteen seconds, your style. Show the kit, say hi, tell us what you want to make this season.", "خمس عشرة ثانية بأسلوبك. أظهر الكيت، وقل مرحباً، وأخبرنا ماذا تريد أن تصنع هذا الموسم."), 60, { requiredHashtags: tag("#WelcomeKit") });
+  const starter = base("ms_unbox", "starter", L("Unbox your welcome kit your way", "افتح كيت الترحيب بطريقتك"), L("Fifteen seconds, your style. Show the kit, say hi, tell us what you want to make this season.", "خمس عشرة ثانية بأسلوبك. أظهر الكيت، وقل مرحباً، وأخبرنا ماذا تريد أن تصنع هذا الموسم."), 60, { requiredHashtags: tag("#WelcomeKit"), window: { start: "2026-06-01", end: "2026-12-31" } });
   starter.entries = {
     cr_laylaoils: entry("completed", 40, "Kit day! #DaburSquad #WelcomeKit #gifted", starter, 60),
     cr_noorhaddad: entry("completed", 35, "Unboxing before coffee #DaburSquad #WelcomeKit #ad", starter, 60),
@@ -448,14 +457,22 @@ function makeMissions(): Mission[] {
     cr_alyadoha: entry("submitted", 2, "Doha cat approves #DaburSquad #WelcomeKit #gifted", starter),
     cr_zahramuscat: entry("joined", 1, "", starter),
     cr_hamadbh: entry("changes", 3, "Friday lunch unboxing #DaburSquad", starter, undefined, undefined, "Add the gifted disclosure and the #WelcomeKit tag."),
+    cr_omarlaughs: entry("completed", 50, "My mother opened it first #DaburSquad #WelcomeKit #gifted", starter, 60),
+    cr_yousefeats: entry("completed", 48, "Kit arrived, snacks did not survive #DaburSquad #WelcomeKit #gifted", starter, 60),
+    cr_salmafahad: entry("completed", 45, "Long hair, long unboxing #DaburSquad #WelcomeKit #ad", starter, 60),
+    cr_saraalsheikh: entry("completed", 44, "Riyadh unboxing, full glam #DaburSquad #WelcomeKit #gifted", starter, 60),
   };
 
   const monthly = base("ms_goldenhour", "monthly", L("Golden Hour Routine", "روتين الساعة الذهبية"), L("This season's theme. Film one self-care step in the last hour of daylight: oil, honey tea, a mask, your call.", "موضوع هذا الموسم. صوّر خطوة واحدة من العناية بالذات في آخر ساعة من ضوء النهار: زيت، شاي بالعسل، ماسك، الخيار لك."), 180, { requiredHashtags: tag("#GoldenHour"), window: { start: "2026-10-01", end: "2026-10-31" } });
   monthly.entries = {
-    cr_laylaoils: entry("completed", 12, "Oil, sunset, done. #DaburSquad #GoldenHour #ad", monthly, 180),
+    cr_laylaoils: entry("completed", 12, "Oil, sunset, done for the day. #DaburSquad #GoldenHour #ad", monthly, 180),
     cr_salmafahad: entry("completed", 10, "Golden hour mask night #DaburSquad #GoldenHour #gifted", monthly, 180),
     cr_yaranassar: entry("submitted", 1, "Sunset tea ritual #DaburSquad #GoldenHour #ad", monthly),
     cr_nadinefarah: entry("joined", 4, "", monthly),
+    cr_omarlaughs: entry("completed", 11, "Golden hour, golden excuses #DaburSquad #GoldenHour #ad", monthly, 180),
+    cr_yousefeats: entry("completed", 9, "Honey tea at sunset in Jeddah #DaburSquad #GoldenHour #gifted", monthly, 180),
+    cr_maryamks: entry("completed", 8, "Dry air, golden light #DaburSquad #GoldenHour #gifted", monthly, 180),
+    cr_saraalsheikh: entry("completed", 7, "Long-wear, even at sunset #DaburSquad #GoldenHour #ad", monthly, 180),
   };
 
   const team = base("ms_masknight", "team", L("Squad Mask Night", "ليلة الماسك الجماعية"), L("Squads of four. Everyone posts a hair-mask night on the same evening and tags their squad. The squad with the most approved posts wins a bonus 300 Sparks each.", "فرق من أربعة. ينشر الجميع ليلة ماسك الشعر في المساء نفسه ويذكر فريقه. الفريق صاحب أكبر عدد من المنشورات المعتمدة يفوز بمكافأة 300 سباركس لكل عضو."), 220, {
@@ -484,7 +501,7 @@ function makeMissions(): Mission[] {
   };
 
   const event = base("ms_hairbar", "event", L("Vatika Hair Bar pop-up, Dubai Mall", "بوب أب فاتيكا هير بار، دبي مول"), L("Come to the Hair Bar, get a hot oil treatment on camera, post a story set and one reel from the day.", "تعال إلى الهير بار، احصل على حمام زيت أمام الكاميرا، وانشر مجموعة ستوري وريل واحد من اليوم."), 350, {
-    brandId: "vatika", markets: ["UAE"], paid: true, levelRequired: "insider", requiredHashtags: tag("#HairBar"), window: { start: "2026-10-24", end: "2026-10-26" }, place: L("Dubai Mall, Fashion Avenue, 4pm to 9pm", "دبي مول، فاشن أفنيو، من 4 إلى 9 مساءً"),
+    brandId: "vatika", markets: ["UAE"], paid: true, levelRequired: "insider", formats: ["video", "post", "story"], requiredHashtags: tag("#HairBar"), window: { start: "2026-10-24", end: "2026-10-26" }, place: L("Dubai Mall, Fashion Avenue, 4pm to 9pm", "دبي مول، فاشن أفنيو، من 4 إلى 9 مساءً"),
   });
   event.entries = { cr_laylaoils: entry("joined", 5, "", event), cr_noorhaddad: entry("joined", 4, "", event) };
 
@@ -508,7 +525,23 @@ function makeMissions(): Mission[] {
 
   const circleCamp = base("ms_circlecamp", "event", L("Circle Camp 2026", "مخيم السيركل 2026"), L("Three days in the Hajar mountains for this year's Ambassadors: challenges, masterclasses and shoots. Invitation only.", "ثلاثة أيام في جبال الحجر لسفراء هذا العام: تحديات وماستر كلاس وجلسات تصوير. بالدعوة فقط."), 500, { paid: true, levelRequired: "ambassador", requiredHashtags: tag("#CircleCamp"), window: { start: "2026-12-10", end: "2026-12-13" }, place: L("Hatta, UAE", "حتا، الإمارات") });
 
-  return [starter, monthly, team, review, event, riyadh, academy, referral, drop, ramadanDraft, circleCamp];
+  // One unboxing mission per level kit. Each opens for a creator when their kit is delivered.
+  const kitMission = (lvl: KitLevel, title: Localised, prompt: Localised): Mission =>
+    base(LEVEL_KITS[lvl].missionId, "starter", title, prompt, LEVEL_KITS[lvl].unboxSparks, { kitLevel: lvl, requiredHashtags: tag("#SquadKit"), window: { start: "2026-06-01", end: "2027-05-31" } });
+  const kitInsider = kitMission("insider", L("Unbox your Insider kit", "افتح كيت إنسايدر"), L("You levelled up. Open the box on camera and tell your people what earned it.", "لقد ارتقيت. افتح الصندوق أمام الكاميرا وأخبر جمهورك كيف استحققته."));
+  const kitPro = kitMission("pro", L("Unbox your Pro kit", "افتح كيت برو"), L("Five products, one reel. Show the box, then show which one you reach for first.", "خمسة منتجات وريل واحد. أظهر الصندوق ثم المنتج الذي ستبدأ به."));
+  const kitAmbassador = kitMission("ambassador", L("Unbox your Ambassador kit", "افتح كيت السفراء"), L("The big one. Unbox it your way and tag the creators who voted for you.", "الصندوق الكبير. افتحه بطريقتك واذكر من صوّتوا لك."));
+  kitInsider.entries = {
+    cr_laylaoils: entry("completed", 60, "Insider box, opened in one take #DaburSquad #SquadKit #gifted", kitInsider, 100),
+    cr_omarlaughs: entry("submitted", 1, "My family unboxed it before me, again #DaburSquad #SquadKit #gifted", kitInsider),
+  };
+  kitAmbassador.entries = {
+    cr_omarlaughs: entry("completed", 40, "Ambassador box. My family reacted first #DaburSquad #SquadKit #ad", kitAmbassador, 200),
+    cr_saraalsheikh: entry("completed", 38, "The Ambassador box, in full glam #DaburSquad #SquadKit #ad", kitAmbassador, 200),
+    cr_yousefeats: entry("joined", 3, "", kitAmbassador),
+  };
+
+  return [starter, monthly, team, review, event, riyadh, academy, referral, drop, ramadanDraft, circleCamp, kitInsider, kitPro, kitAmbassador];
 }
 
 function makeSeasons(): Season[] {
@@ -663,11 +696,18 @@ export function createSeed(): AppState {
   const academy = makeAcademy();
 
   // Mission completions land in the ledger with the award recorded on the entry.
+  // One seeded post has since been taken down, so the 30-day link check has something to find.
+  const gone = missions.find((m) => m.id === "ms_unbox")!.entries.cr_noorhaddad.submissions[0];
+  gone.url = "https://www.instagram.com/reel/removed-by-creator/";
   for (const m of missions) {
     for (const [creatorId, e] of Object.entries(m.entries)) {
       if (e.state === "completed" && e.awarded) {
-        const at = e.submissions[e.submissions.length - 1]?.reviewedAt ?? SEED_NOW;
-        ledger.push({ id: `led_${m.id}_${creatorId}`, creatorId, delta: e.awarded, reason: L(`Mission: ${m.title.en}`, `مهمة: ${m.title.ar}`), ref: { kind: "mission", id: `${m.id}:${creatorId}` }, at });
+        const creator = creators.find((c) => c.id === creatorId)!;
+        const sub = e.submissions[e.submissions.length - 1];
+        // The same table the reducer pays from: base Sparks weighted by format, reach and engagement.
+        e.award = quoteSparks({ base: m.sparks, format: sub.format, ...audienceFor(creator, "instagram"), brandCount: 1, flat: FLAT_TYPES.includes(m.type) });
+        e.awarded = e.award.total;
+        ledger.push({ id: `led_${m.id}_${creatorId}`, creatorId, delta: e.awarded, reason: L(`Mission: ${m.title.en}`, `مهمة: ${m.title.ar}`), ref: { kind: "mission", id: `${m.id}:${creatorId}` }, at: sub.reviewedAt ?? SEED_NOW });
       }
     }
   }
@@ -694,7 +734,7 @@ export function createSeed(): AppState {
 
   // Welcome bonuses, season history and streak bonuses so levels and leaderboards have texture.
   const welcome = (creatorId: string, daysAgo: number, delta = 100): LedgerEntry => ({ id: `led_welcome_${creatorId}`, creatorId, delta, reason: L("Welcome bonus", "مكافأة ترحيبية"), ref: { kind: "bonus", id: "welcome" }, at: addDays(SEED_NOW, -daysAgo) });
-  creators.forEach((c, i) => ledger.push(welcome(c.id, 30 + i * 11)));
+  creators.forEach((c, i) => ledger.push(welcome(c.id, joinedDaysAgo(i))));
   const bonus = (id: string, creatorId: string, delta: number, en: string, ar: string, daysAgo: number, kind: LedgerEntry["ref"]["kind"] = "bonus"): LedgerEntry => ({ id, creatorId, delta, reason: L(en, ar), ref: { kind, id }, at: addDays(SEED_NOW, -daysAgo) });
   ledger.push(
     bonus("led_s1_layla", "cr_laylaoils", 900, "Season 1 finale: top three", "ختام الموسم 1: أفضل ثلاثة", 52),
@@ -726,6 +766,23 @@ export function createSeed(): AppState {
   }
   ledger.sort((a, b) => a.at.localeCompare(b.at));
 
+  // Level kits in every state: unlocked and unclaimed, each shipping stage, delivered.
+  const kit = (creatorId: string, level: KitLevel, daysAgo: number, status: ShipmentStatus | null): LevelKit => {
+    const id = `kit_${creatorId.slice(3)}_${level}`;
+    const courier = COURIERS[fnv1a(id) % COURIERS.length];
+    return { id, creatorId, level, items: LEVEL_KITS[level].items, unlockedAt: addDays(SEED_NOW, -daysAgo), shipment: status ? { courier, trackingNumber: trackingNumber(courier, id), status, updatedAt: addDays(SEED_NOW, -Math.max(0, daysAgo - 4)), simulated: true } : null };
+  };
+  const levelKits: LevelKit[] = [
+    ...["cr_omarlaughs", "cr_yousefeats", "cr_laylaoils", "cr_amaldarwish", "cr_saraalsheikh"].map((id) => kit(id, "ambassador", 50, "delivered")),
+    kit("cr_laylaoils", "insider", 75, "delivered"),
+    kit("cr_omarlaughs", "insider", 30, "delivered"),
+    kit("cr_maryamks", "insider", 6, "dispatched"),
+    kit("cr_salmafahad", "insider", 5, "preparing"),
+    kit("cr_yousefeats", "insider", 4, "address_confirmed"),
+    kit("cr_saraalsheikh", "insider", 3, null),
+    kit("cr_laylaoils", "pro", 2, null),
+  ];
+
   return {
     seedVersion: SEED_VERSION,
     lang: "en",
@@ -739,6 +796,7 @@ export function createSeed(): AppState {
     seasons: makeSeasons(),
     academy: { tracks: academy, progress, certificates },
     mentorSessions: makeMentorSessions(),
+    levelKits,
     referrals,
     ledger,
     rewards,

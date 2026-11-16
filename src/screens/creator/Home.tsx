@@ -8,8 +8,10 @@ import { Blobs, Counter, Float, Item, Reveal, Squish, Stagger, Tilt } from "../.
 import { Face } from "../../ui/Face";
 import { PhaseTrail } from "../../ui/JourneyTrail";
 import { Label, MembershipCard, Stamp, StampCard, Ticket } from "../../ui/kit";
-import { activeFor, balance, earnedBadges, nextBestAction, level, campaignById, currentSeason, daysLeftInSeason, monthlyStreak, missionById, leaderboard } from "../../domain/selectors";
+import { activeFor, balance, campaignQuote, earnedBadges, kitsFor, missionQuote, nextBestAction, level, campaignById, currentSeason, daysLeftInSeason, monthlyStreak, missionById, leaderboard } from "../../domain/selectors";
 import { BrandMark, LevelChip, Points, StageChip, useBrand, useCurrentCreator } from "../shared/bits";
+import { ExpiryNote, LevelChecklist, LevelKitCard } from "../shared/program";
+import { KIT_LEVELS } from "../../domain/policy";
 import type { Badge } from "../../domain/types";
 import { cn } from "../../ui/cn";
 
@@ -55,7 +57,12 @@ export function CreatorHome() {
   const vars = { campaign: campaign ? L(campaign.title) : "", courier: nba.participation?.shipment?.courier ?? "", reviewer, stage: nba.participation ? t(`stage_${nba.participation.stage}` as const) : "", mission: mission ? L(mission.title) : "", track: track ? L(track.title) : "" };
   const nbaLink = nba.kind === "respond" ? "/creator/invitations" : nba.kind === "mission" ? `/creator/missions/${nba.missionId}` : nba.kind === "academy" ? `/creator/academy/${nba.trackId}` : nba.kind === "vote" ? "/creator/season" : nba.participation ? `/creator/campaigns/${nba.participation.id}/${{ confirm_address: "kit", track: "kit", shoot: "kit", upload: "upload", revise: "feedback", publish: "publish", wait: "brief" }[nba.kind as string] ?? "brief"}` : "/creator/missions";
   const brand = useBrand(campaign?.brandId ?? mission?.brandId);
-  const sparksForAction = campaign?.points ?? mission?.sparks ?? track?.sparks;
+  const sparksForAction = campaign ? campaignQuote(campaign, me).total : mission ? missionQuote(s, mission, me).total : track?.sparks;
+  // The kit that needs the creator: unclaimed first, then one on the road, then a delivered box not yet unboxed.
+  const kits = kitsFor(s, me.id);
+  const unboxed = (lvl: (typeof KIT_LEVELS)[number]) => s.missions.some((m) => m.kitLevel === lvl && m.entries[me.id]?.state === "completed");
+  const kit = kits.find((k) => !k.shipment) ?? kits.find((k) => k.shipment && k.shipment.status !== "delivered") ?? kits.find((k) => !unboxed(k.level));
+  const nextKit = !kit && lv.next ? KIT_LEVELS.find((l) => l === lv.next && !kits.some((k) => k.level === l)) : undefined;
   const noteFrom = s.brandUsers.find((u) => u.name === reviewer) ?? s.brandUsers.find((u) => u.role === "campaign_manager") ?? s.brandUsers[0];
 
   return (
@@ -68,7 +75,7 @@ export function CreatorHome() {
             <Float amplitude={6} duration={5}><Squish><Face name={me.name} hue={me.hue} size={132} className="shrink-0 border-2 border-outline shadow-[6px_6px_0_var(--outline)]" /></Squish></Float>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2"><LevelChip level={lv.level} /><Chip tone="ink">{me.city}</Chip></div>
-              <h1 className="mt-3 text-5xl md:text-7xl">{greeting}, {me.name.split(" ")[0]}!</h1>
+              <h1 className="mt-3 text-5xl md:text-7xl">{greeting}, <bdi>{me.name.split(" ")[0]}</bdi>!</h1>
               <p className="mt-3 max-w-[48ch] text-[16px] font-semibold text-ink-2">{t(`lvUnlock_${lv.level}` as const)}</p>
               <div className="mt-5 flex flex-wrap gap-3">
                 {[
@@ -116,7 +123,7 @@ export function CreatorHome() {
           </div>
           <div className="lg:col-span-4">
             <div className="mb-3 meta">{t("homeSpotlight")}</div>
-            <Link to="/creator/season" className={cn("block lift relative overflow-hidden p-5 text-plum", CANDIES[star.hue % CANDIES.length])}>
+            <Link to="/creator/season" className={cn("slab block lift relative overflow-hidden p-5 text-plum", CANDIES[star.hue % CANDIES.length])}>
               <span aria-hidden className="absolute -end-10 -top-10 h-32 w-32 rounded-full bg-white/30" />
               <div className="relative flex items-center gap-4">
                 <Face name={star.name} hue={star.hue} size={72} className="border-2 border-outline" />
@@ -125,6 +132,18 @@ export function CreatorHome() {
               <p className="relative mt-3 text-[15px] font-bold">"{L(star.vibe)}"</p>
               <div className="relative mt-3 flex items-center gap-2 text-[13px] font-extrabold"><Crown size={16} weight="fill" />#{starRank} · {num(starRow?.sparks ?? 0)} {t("sparks")}</div>
             </Link>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* Next level and the box that comes with it */}
+      <Reveal inView={false} delay={0.2}>
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+          <div className="lg:col-span-7"><LevelChecklist creatorId={me.id} /></div>
+          <div className="flex flex-col gap-3 lg:col-span-5">
+            {kit ? <LevelKitCard level={kit.level} kit={kit} creatorId={me.id} hero={!kit.shipment} /> : nextKit ? <><div className="meta">{t("kitNext")}</div><LevelKitCard level={nextKit} creatorId={me.id} /></> : null}
+            <ExpiryNote creatorId={me.id} />
+            <Link to="/creator/sparks" className="inline-flex items-center gap-1.5 text-[13px] font-extrabold text-grape hover:underline">{t("viewSparksTable")}<ArrowRight size={14} weight="bold" className="rtl:rotate-180" /></Link>
           </div>
         </div>
       </Reveal>
@@ -173,7 +192,7 @@ export function CreatorHome() {
                             <div className="mt-1 truncate text-[17px] font-extrabold">{L(c.title)}</div>
                             <div className="mt-2 flex items-center gap-3"><PhaseTrail stage={p.stage} /><StageChip stage={p.stage} /></div>
                           </div>
-                          <Points value={c.points} className="shrink-0" />
+                          <Points value={p.award?.total ?? campaignQuote(c, me).total} className="shrink-0" />
                         </Label>
                       </Link>
                     </Item>

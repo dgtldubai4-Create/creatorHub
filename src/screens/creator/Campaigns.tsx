@@ -6,7 +6,7 @@ import { useFormat, useL, useT } from "../../i18n";
 import { Button, EmptyState, PageHeader, Segmented } from "../../ui/primitives";
 import { Item, Stagger } from "../../ui/motion";
 import { PhaseTrail } from "../../ui/JourneyTrail";
-import { campaignById, participationsFor } from "../../domain/selectors";
+import { campaignById, campaignQuote, participationsFor } from "../../domain/selectors";
 import { BrandMark, KitList, Points, StageChip, useCurrentCreator } from "../shared/bits";
 
 type F = "active" | "done" | "declined";
@@ -36,7 +36,7 @@ export function CreatorCampaigns() {
                 <Link to={`/creator/campaigns/${p.id}`} className="label-card lift flex h-full flex-col gap-4 p-5 ">
                   <div className="flex items-center justify-between gap-3">
                     <BrandMark brand={b} size="sm" />
-                    <Points value={c.points} />
+                    <Points value={p.award?.total ?? campaignQuote(c, me).total} />
                   </div>
                   <h2 className="text-xl">{L(c.title)}</h2>
                   <KitList campaign={c} compact />

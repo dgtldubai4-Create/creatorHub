@@ -9,6 +9,8 @@ export type Language = "ar" | "en";
 /** Program levels. Recalculated each season from Sparks and quality; Ambassador is selected. */
 export type Level = "member" | "insider" | "pro" | "ambassador";
 export type Platform = "instagram" | "tiktok";
+/** What kind of post a submission is. Feeds the Sparks table. */
+export type PostFormat = "video" | "post" | "story";
 export type Seat = "creator" | "brand";
 export type VerificationState = "pending" | "verified" | "action";
 export type FollowerTier = "nano" | "micro" | "macro" | "mega";
@@ -98,6 +100,12 @@ export interface Creator {
   /** Consecutive months with at least one Sparks-earning action. */
   streakMonths: number;
   referredBy?: string;
+  /** Squad charter accepted at sign-up. */
+  charter?: { version: string; acceptedAt: string };
+  /** Device alerts the creator switched on. Delivery is simulated while the app is open. */
+  alerts?: { drops: boolean };
+  /** The expiry date this creator was last warned about, so the warning goes out once. */
+  expiryWarnedFor?: string;
 }
 
 export interface ConnectedAccount {
@@ -232,12 +240,42 @@ export interface Shipment {
   simulated: true;
 }
 
+/** Result of the 30-day "is the post still up" check. */
+export interface LiveCheck {
+  at: string;
+  live: boolean;
+  simulated: true;
+}
+
+/** How an award was worked out. Stored with the award so the creator can see the sum. */
+export interface SparksQuote {
+  base: number;
+  format: PostFormat;
+  formatMult: number;
+  followers: number;
+  reachMult: number;
+  engagementRate: number;
+  engagementMult: number;
+  brandCount: number;
+  brandMult: number;
+  double: boolean;
+  /** Paid flat: the table does not apply (referrals, retailer reviews). */
+  flat: boolean;
+  total: number;
+}
+
+export interface Clawback {
+  at: string;
+  amount: number;
+}
+
 export interface Publish {
   platform: Platform;
   url: string;
   postedAt: string;
   verified: boolean;
   verifiedAt?: string;
+  live?: LiveCheck;
 }
 
 export interface Participation {
@@ -251,6 +289,9 @@ export interface Participation {
   shipment: Shipment | null;
   publish: Publish | null;
   invitedAt: string;
+  /** Set when Sparks are released. */
+  award?: SparksQuote;
+  clawedBack?: Clawback;
 }
 
 // ---------- Missions ----------
@@ -274,6 +315,10 @@ export interface MissionSubmission {
   caption: string;
   at: string;
   check: MissionCheck;
+  format: PostFormat;
+  /** Other Dabur brands in the post, besides the mission's own. */
+  brandIds: string[];
+  live?: LiveCheck;
   decision?: "approved" | "changes";
   note?: string;
   reviewedAt?: string;
@@ -285,8 +330,10 @@ export interface MissionEntry {
   joinedAt: string;
   squadId?: string;
   submissions: MissionSubmission[];
-  /** Sparks actually awarded (doubled during a surprise drop). */
+  /** Sparks actually awarded. */
   awarded?: number;
+  award?: SparksQuote;
+  clawedBack?: Clawback;
 }
 
 export interface Squad {
@@ -319,7 +366,23 @@ export interface Mission {
   trackId?: string;
   place?: Localised;
   squads?: Squad[];
+  /** Post formats this mission accepts. Video and post when omitted. */
+  formats?: PostFormat[];
+  /** Unboxing mission for a level kit: opens when that kit is delivered. */
+  kitLevel?: Exclude<Level, "member">;
   entries: Record<string, MissionEntry>;
+}
+
+// ---------- Level-up kits ----------
+
+export interface LevelKit {
+  id: string;
+  creatorId: string;
+  level: Exclude<Level, "member">;
+  items: { productId: string; qty: number }[];
+  unlockedAt: string;
+  /** null until the creator confirms the address and claims the box. */
+  shipment: Shipment | null;
 }
 
 // ---------- Seasons & Ambassadors ----------
@@ -393,7 +456,7 @@ export interface LedgerEntry {
   creatorId: string;
   delta: number;
   reason: Localised;
-  ref: { kind: "participation" | "mission" | "academy" | "referral" | "streak" | "redemption" | "bonus"; id: string };
+  ref: { kind: "participation" | "mission" | "academy" | "referral" | "streak" | "redemption" | "bonus" | "clawback" | "expiry"; id: string };
   at: string;
 }
 
@@ -495,6 +558,7 @@ export interface AppState {
     certificates: Record<string, string[]>;
   };
   mentorSessions: MentorSession[];
+  levelKits: LevelKit[];
   referrals: Referral[];
   ledger: LedgerEntry[];
   rewards: Reward[];

@@ -145,6 +145,17 @@ export function missionCheck(caption: string, requiredHashtags: string[], at: st
   return { hashtags, disclosure, timing, passed: hashtags && disclosure && timing, simulated: true };
 }
 
+// ---------- Post still live ----------
+
+/**
+ * Stands in for fetching the post 30 days on. Deterministic: a link that says it was
+ * deleted or removed is gone, and so is roughly one in ten others, by hash.
+ */
+export function postLiveCheck(url: string, at: string): import("./types").LiveCheck {
+  const gone = /deleted|removed/i.test(url) || fnv1a(url.toLowerCase()) % 10 === 0;
+  return { at, live: !gone, simulated: true };
+}
+
 // ---------- OTP and social connect ----------
 
 /** The one-time code is derived from the number so the demo can show it on screen. */

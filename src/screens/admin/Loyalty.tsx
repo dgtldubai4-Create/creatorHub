@@ -1,11 +1,13 @@
-import { Coins, Gift } from "@phosphor-icons/react";
+import { Coins, Gift, LinkSimple, HourglassMedium, ArrowCounterClockwise } from "@phosphor-icons/react";
 import { useDispatch, useStore } from "../../app/store";
 import { useFormat, useL, useT } from "../../i18n";
-import { Avatar, Button, Chip, EmptyState, PageHeader, Section } from "../../ui/primitives";
+import { Avatar, Button, Chip, EmptyState, PageHeader, Section, SimulatedTag } from "../../ui/primitives";
 import { Item, Stagger, useCelebrate } from "../../ui/motion";
 import { useToast } from "../../ui/toast";
-import { pointsQueue } from "../../domain/selectors";
+import { campaignQuote, clawbacks, expiryWatch, pointsQueue, postsDueForCheck } from "../../domain/selectors";
+import { postLiveCheck } from "../../domain/simulate";
 import { BrandMark } from "../shared/bits";
+import { can } from "../../domain/permissions";
 import { cn } from "../../ui/cn";
 
 export function AdminLoyalty() {
@@ -19,6 +21,21 @@ export function AdminLoyalty() {
   const release = pointsQueue(s);
   const fulfil = s.redemptions.filter((r) => r.status === "requested");
   const ledger = s.ledger.slice().reverse().slice(0, 60);
+  const due = postsDueForCheck(s);
+  const watch = expiryWatch(s);
+  const returned = clawbacks(s);
+  const canReview = can(s.session.role, "review");
+  const canLoyalty = can(s.session.role, "loyalty");
+  const runLinks = () => {
+    // Same deterministic check the reducer runs, so the toast can say what it found.
+    const gone = due.filter((d) => !postLiveCheck(d.url, s.now).live).length;
+    dispatch({ type: "recheckPosts" });
+    toast(t("linkCheckDone", { n: due.length, gone }), gone ? "info" : "success");
+  };
+  const runExpiry = () => {
+    dispatch({ type: "expireSparks" });
+    toast(t("expiryDone"), "success");
+  };
   return (
     <div className="flex flex-col gap-10">
       <PageHeader title={t("loyalty")} sub={t("loyaltySub")} />
@@ -34,7 +51,7 @@ export function AdminLoyalty() {
                     <div className="label-card flex flex-wrap items-center gap-3 p-3 pe-4">
                       <Avatar name={cr.name} hue={cr.hue} size={38} />
                       <div className="min-w-0 flex-1"><div className="truncate text-[14px] font-medium">{cr.name}</div><div className="flex items-center gap-2 text-[12.5px] text-ink-3"><BrandMark brand={s.brands.find((b) => b.id === c.brandId)!} size="sm" />{L(c.title)}</div></div>
-                      <Button size="sm" variant="accent" onClick={() => { dispatch({ type: "releasePoints", participationId: p.id }); celebrate(); toast(t("released", { n: num(c.points) }), "success"); }} icon={<Coins size={15} weight="bold" />}>{t("releasePoints")} · {num(c.points)}</Button>
+                      <Button size="sm" variant="accent" onClick={() => { dispatch({ type: "releasePoints", participationId: p.id }); celebrate(); toast(t("released", { n: num(campaignQuote(c, cr, p.publish?.platform).total) }), "success"); }} icon={<Coins size={15} weight="bold" />}>{t("releasePoints")} · {num(campaignQuote(c, cr, p.publish?.platform).total)}</Button>
                     </div>
                   </Item>
                 );
@@ -62,6 +79,35 @@ export function AdminLoyalty() {
           )}
         </Section>
       </div>
+      <Section title={t("housekeeping")} sub={t("housekeepingSub")} action={<SimulatedTag />}>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="label-card flex flex-col gap-3 p-5">
+            <div className="flex items-start gap-3"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border-2 border-outline bg-sky text-plum"><LinkSimple size={22} weight="bold" /></span><div className="min-w-0 flex-1"><div className="font-extrabold">{t("linkCheck")}</div><div className="text-[13px] text-ink-2">{t("linkCheckSub", { n: due.length })}</div></div></div>
+            {due.length > 0 && (
+              <ul className="max-h-48 divide-y divide-line overflow-y-auto rounded-[12px] border-2 border-outline" data-lenis-prevent>
+                {due.map((d) => { const cr = s.creators.find((x) => x.id === d.creatorId); return <li key={d.id} className="flex items-center gap-2 px-3 py-2 text-[13px]">{cr && <Avatar name={cr.name} hue={cr.hue} size={24} />}<span className="min-w-0 flex-1 truncate"><span className="font-bold">{cr?.name.split(" ")[0]}</span> · {L(d.title)}</span><span className="shrink-0 text-ink-3">{relative(d.approvedAt)}</span><span className="shrink-0 font-extrabold tabular">{num(d.amount)}</span></li>; })}
+              </ul>
+            )}
+            <Button size="sm" className="self-start" disabled={due.length === 0 || !canReview} onClick={runLinks} icon={<LinkSimple size={15} weight="bold" />}>{t("runLinkCheck")}</Button>
+            {returned.length > 0 && (
+              <div>
+                <div className="meta mb-2 flex items-center gap-1.5"><ArrowCounterClockwise size={13} weight="bold" />{t("clawbackLog")}</div>
+                <ul className="grid gap-1.5">{returned.slice(0, 5).map((l) => { const cr = s.creators.find((x) => x.id === l.creatorId); return <li key={l.id} className="flex items-center gap-2 text-[13px]">{cr && <Avatar name={cr.name} hue={cr.hue} size={22} />}<span className="min-w-0 flex-1 truncate">{cr?.name} · {L(l.reason)}</span><span className="shrink-0 font-extrabold tabular text-rose">{num(l.delta)}</span></li>; })}</ul>
+              </div>
+            )}
+          </div>
+          <div className="label-card flex flex-col gap-3 p-5">
+            <div className="flex items-start gap-3"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border-2 border-outline bg-lemon text-plum"><HourglassMedium size={22} weight="bold" /></span><div className="min-w-0 flex-1"><div className="font-extrabold">{t("expiryJob")}</div><div className="text-[13px] text-ink-2">{t("expiryJobSub", { n: watch.length })}</div></div></div>
+            {watch.length > 0 && (
+              <ul className="divide-y divide-line rounded-[12px] border-2 border-outline">
+                {watch.map(({ creator, expiry }) => <li key={creator.id} className="flex items-center gap-2 px-3 py-2 text-[13px]"><Avatar name={creator.name} hue={creator.hue} size={24} /><span className="min-w-0 flex-1 truncate font-bold">{creator.name}</span><Chip tone={expiry.expired ? "rose" : "lemon"} className="h-6 text-[11.5px]">{expiry.expired ? t("expiredLabel") : t("daysLeftN", { n: expiry.daysLeft ?? 0 })}</Chip><span className="shrink-0 font-extrabold tabular">{num(expiry.balance)}</span></li>)}
+              </ul>
+            )}
+            <Button size="sm" className="self-start" disabled={watch.length === 0 || !canLoyalty} onClick={runExpiry} icon={<HourglassMedium size={15} weight="bold" />}>{t("runExpiry")}</Button>
+          </div>
+        </div>
+      </Section>
+
       <Section title={t("fullLedger")}>
         <div className="label-card overflow-hidden">
           <div className="max-h-[32rem] overflow-y-auto" data-lenis-prevent>

@@ -7,7 +7,7 @@ import { Avatar, Button, Chip, EmptyState, PageHeader, Section, Segmented } from
 import { Item, Stagger, useCelebrate } from "../../ui/motion";
 import { useToast } from "../../ui/toast";
 import { PhaseTrail } from "../../ui/JourneyTrail";
-import { campaignFunnel, campaignParticipations, matchScore } from "../../domain/selectors";
+import { campaignFunnel, campaignParticipations, campaignQuote, matchScore } from "../../domain/selectors";
 import { can } from "../../domain/permissions";
 import { BrandMark, CampaignStatusChip, KitList, Points, StageChip } from "../shared/bits";
 import { CampaignEditor } from "./CampaignEditor";
@@ -123,7 +123,7 @@ export function AdminCampaignDetail() {
                       <div className="ms-auto flex items-center gap-2">
                         {p.stage === "manual_review" && can(role, "review") && <Button size="sm" variant="secondary" to={`/admin/review/${p.id}/${p.submissions.at(-1)?.id}`}>{t("review")}</Button>}
                         {p.stage === "link_submitted" && can(role, "review") && <Button size="sm" onClick={() => { dispatch({ type: "verifyPost", participationId: p.id }); toast(t("verified"), "success"); }} icon={<SealCheck size={15} weight="bold" />}>{t("verifyPost")}</Button>}
-                        {p.stage === "post_verified" && can(role, "loyalty") && <Button size="sm" variant="accent" onClick={() => { dispatch({ type: "releasePoints", participationId: p.id }); celebrate(); toast(t("released", { n: num(c.points) }), "success"); }} icon={<Coins size={15} weight="bold" />}>{t("releasePoints")}</Button>}
+                        {p.stage === "post_verified" && can(role, "loyalty") && <Button size="sm" variant="accent" onClick={() => { dispatch({ type: "releasePoints", participationId: p.id }); celebrate(); toast(t("released", { n: num(campaignQuote(c, cr, p.publish?.platform).total) }), "success"); }} icon={<Coins size={15} weight="bold" />}>{t("releasePoints")} · {num(campaignQuote(c, cr, p.publish?.platform).total)}</Button>}
                         {p.stage === "points_released" && <Button size="sm" variant="secondary" onClick={() => dispatch({ type: "complete", participationId: p.id })}>{t("markComplete")}</Button>}
                         {p.publish && <a href={p.publish.url} target="_blank" rel="noreferrer" className="text-[12.5px] font-medium text-leaf hover:underline">{p.publish.platform}</a>}
                       </div>

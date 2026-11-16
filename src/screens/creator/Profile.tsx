@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FloppyDisk, InstagramLogo, TiktokLogo, IdentificationCard, SealCheck } from "@phosphor-icons/react";
+import { FloppyDisk, InstagramLogo, TiktokLogo, IdentificationCard, SealCheck, Check } from "@phosphor-icons/react";
 import { useDispatch, useStore } from "../../app/store";
 import { useFormat, useT } from "../../i18n";
 import { Avatar, Button, Chip, ChipButton, Field, Input, PageHeader, Section, SimulatedTag, Textarea } from "../../ui/primitives";
@@ -7,6 +7,9 @@ import { useToast } from "../../ui/toast";
 import { LevelChip, VerificationChip, useCurrentCreator } from "../shared/bits";
 import { level } from "../../domain/selectors";
 import type { Language } from "../../domain/types";
+import { CHARTER_VERSION } from "../../domain/policy";
+import { CharterList, LevelChecklist } from "../shared/program";
+import { AppAlertsCard } from "../../app/pwa";
 
 export function Profile() {
   const t = useT();
@@ -99,6 +102,22 @@ export function Profile() {
         </Section>
       </div>
       <div className="flex justify-end"><Button onClick={save} icon={<FloppyDisk size={16} weight="bold" />}>{t("save")}</Button></div>
+
+      <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+        <Section title={t("level")} sub={t("levelsReset")}><LevelChecklist creatorId={me.id} /></Section>
+        <Section title={t("charterTitle")} sub={t("charterSub")}>
+          <div className="label-card flex flex-col gap-4 p-5">
+            {me.charter?.version === CHARTER_VERSION ? (
+              <Chip tone="lime" icon={<Check size={13} weight="bold" />} className="self-start">{t("charterAcceptedOn", { date: date(me.charter.acceptedAt, { day: "numeric", month: "short", year: "numeric" }) })}</Chip>
+            ) : (
+              <div className="flex flex-wrap items-center gap-3"><span className="text-[14px] font-bold text-rose">{t("charterPending")}</span><Button size="sm" onClick={() => dispatch({ type: "acceptCharter", creatorId: me.id })}>{t("charterAccept")}</Button></div>
+            )}
+            <CharterList />
+          </div>
+        </Section>
+      </div>
+
+      <Section title={t("appAlerts")}><AppAlertsCard creatorId={me.id} /></Section>
     </div>
   );
 }

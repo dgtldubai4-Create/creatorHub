@@ -1,11 +1,12 @@
 import type {
-  AppState, Campaign, CampaignStatus, Creator, Lang, Language, Localised, Market, Mission, MissionStatus, Niche, Notification, Participation, Platform, Role, Seat,
+  AppState, Campaign, CampaignStatus, Creator, Lang, Language, LevelKit, Localised, Market, Mission, MissionStatus, Niche, Notification, Participation, Platform, PostFormat, Role, Seat,
   Shipment, Stage, VerificationState, FollowerTier,
 } from "./types";
 import { appendStage, assertTransition } from "./stages";
 import { assertCan } from "./permissions";
-import { autoCheck, connectAccount, COURIERS, fnv1a, missionCheck, monthKey, newId, nextShipmentStatus, otpFor, prevMonthKey, SHIPMENT_STAGE, trackingNumber } from "./simulate";
-import { currentSeason, isDoubleSparks, leaderboard, meetsLevel, trackProgress } from "./selectors";
+import { autoCheck, connectAccount, COURIERS, fnv1a, missionCheck, monthKey, newId, nextShipmentStatus, otpFor, postLiveCheck, prevMonthKey, SHIPMENT_STAGE, trackingNumber } from "./simulate";
+import { balance, campaignQuote, currentSeason, formatsFor, kitDelivered, kitsOwed, leaderboard, levelIndex, level as levelOf, meetsLevel, missionQuote, postsDueForCheck, sparksExpiry, trackProgress } from "./selectors";
+import { CHARTER_VERSION, LEVEL_KITS, LIVE_DAYS, EXPIRY_DAYS } from "./policy";
 
 // ---------- Action union ----------
 
@@ -29,7 +30,7 @@ export type Action = (
   | { type: "releasePoints"; participationId: string }
   | { type: "complete"; participationId: string }
   | { type: "joinMission"; missionId: string; creatorId: string; squadId?: string }
-  | { type: "submitMission"; missionId: string; creatorId: string; url: string; caption: string }
+  | { type: "submitMission"; missionId: string; creatorId: string; url: string; caption: string; format?: PostFormat; brandIds?: string[] }
   | { type: "reviewMission"; missionId: string; creatorId: string; decision: "approved" | "changes"; note: string }
   | { type: "saveMission"; mission: Mission }
   | { type: "setMissionStatus"; missionId: string; status: MissionStatus }
@@ -49,7 +50,13 @@ export type Action = (
   | { type: "invite"; campaignId: string; creatorIds: string[] }
   | { type: "saveCampaign"; campaign: Campaign }
   | { type: "setCampaignStatus"; campaignId: string; status: CampaignStatus }
-  | { type: "verifyCreator"; creatorId: string; field: "identity" | "instagram" | "tiktok"; state: VerificationState }
+  | { type: "verifyCreator"; creatorId: string; field: "identity" | "instagram" | "tiktok" | "licence"; state: VerificationState }
+  | { type: "claimLevelKit"; kitId: string }
+  | { type: "advanceKitShipment"; kitId: string }
+  | { type: "recheckPosts" }
+  | { type: "expireSparks" }
+  | { type: "acceptCharter"; creatorId: string }
+  | { type: "setAlerts"; creatorId: string; drops: boolean }
   | { type: "updateProfile"; creatorId: string; patch: Partial<Pick<Creator, "socials" | "address" | "bio" | "city" | "name" | "languages" | "vibe" | "favouritePosts">> }
   | { type: "markRead"; audience: string }
   | { type: "clearError" }
@@ -71,6 +78,8 @@ export interface RegisterInput {
   socials: Partial<Record<Platform, string>>;
   bio: string;
   referralCode?: string;
+  /** The creator ticked the Squad charter. Registration is refused without it. */
+  charterAccepted: boolean;
 }
 
 export type ActionType = Action["type"];
@@ -178,10 +187,43 @@ function brandUserName(state: AppState): string {
   return state.brandUsers.find((u) => u.id === state.session.brandUserId)?.name ?? "Brand team";
 }
 
+const LEVEL_NAME: Record<LevelKit["level"], Localised> = { insider: { en: "Insider", ar: "إنسايدر" }, pro: { en: "Pro", ar: "برو" }, ambassador: { en: "Ambassador", ar: "سفير" } };
+
+/** Actions after which a creator's level can have moved. Kits are settled once they finish. */
+const LEVEL_EVENTS = new Set<ActionType>(["reviewMission", "releasePoints", "complete", "completeModule", "decideReferral", "selectAmbassadors", "verifyCreator"]);
+
+/** Unlock a kit for every level a creator has reached and has no kit for. One per level, ever. */
+function settleKits(state: AppState, at: string): AppState {
+  let s = state;
+  for (const cr of state.creators) {
+    for (const lvl of kitsOwed(s, cr.id)) {
+      const kit: LevelKit = { id: newId("kit", `${cr.id}:${lvl}`), creatorId: cr.id, level: lvl, items: LEVEL_KITS[lvl].items, unlockedAt: at, shipment: null };
+      s = { ...s, levelKits: [...s.levelKits, kit] };
+      s = notify(s, `creator:${cr.id}`, "push", { en: `Your ${LEVEL_NAME[lvl].en} kit is unlocked`, ar: `كيت ${LEVEL_NAME[lvl].ar} جاهز لك` }, { en: "Confirm your address and we ship it. An unboxing mission opens when it lands.", ar: "أكّد عنوانك لنشحنه. تُفتح مهمة فتح الصندوق عند وصوله." }, at, "/creator/season");
+    }
+  }
+  return s;
+}
+
+/** Tell every creator who can see a mission that it just went live. */
+function announceMission(state: AppState, m: Mission, at: string): AppState {
+  let s = state;
+  for (const cr of state.creators) {
+    const fits = m.markets.includes(cr.market) && m.languages.some((l) => cr.languages.includes(l)) && (m.niches.length === 0 || m.niches.includes(cr.niche)) && levelIndex(m.levelRequired) <= levelIndex(levelOf(state, cr.id).level) && !m.kitLevel;
+    if (fits) s = notify(s, `creator:${cr.id}`, "push", { en: `New mission: ${m.title.en}`, ar: `مهمة جديدة: ${m.title.ar}` }, { en: `${m.sparks} base Sparks. Open until ${m.window.end}.`, ar: `${m.sparks} سباركس أساسية. متاحة حتى ${m.window.end}.` }, at, `/creator/missions/${m.id}`);
+  }
+  return s;
+}
+
 // ---------- reducer ----------
 
 export function reducer(state: AppState, action: Action): AppState {
   const at = action.at ?? new Date().toISOString();
+  const next = reduce(state, action, at);
+  return LEVEL_EVENTS.has(action.type) ? settleKits(next, at) : next;
+}
+
+function reduce(state: AppState, action: Action, at: string): AppState {
   const withNow = (s: AppState): AppState => (s.now < at ? { ...s, now: at } : s);
 
   switch (action.type) {
@@ -217,6 +259,7 @@ export function reducer(state: AppState, action: Action): AppState {
 
     case "registerCreator": {
       const i = action.input;
+      if (!i.charterAccepted) throw new Error("Accept the Squad charter to join.");
       const id = newId("cr", i.handle);
       const creator: Creator = {
         id,
@@ -247,6 +290,7 @@ export function reducer(state: AppState, action: Action): AppState {
         joinedAt: at,
         streakMonths: 0,
         referredBy: i.referralCode,
+        charter: { version: CHARTER_VERSION, acceptedAt: at },
       };
       let s: AppState = { ...state, creators: [...state.creators, creator], session: { ...state.session, seat: "creator", creatorId: id } };
       s = { ...s, ledger: [...s.ledger, { id: newId("led", `welcome:${id}`), creatorId: id, delta: 100, reason: { en: "Welcome bonus", ar: "مكافأة ترحيبية" }, ref: { kind: "bonus", id: "welcome" }, at }] };
@@ -388,11 +432,12 @@ export function reducer(state: AppState, action: Action): AppState {
       if (p.stage !== "post_verified") throw new Error("Sparks release only after the post is verified.");
       if (state.ledger.some((l) => l.ref.kind === "participation" && l.ref.id === p.id)) throw new Error("Sparks already released for this participation.");
       const c = campaignOf(state, p);
-      const entry = { id: newId("led", p.id), creatorId: p.creatorId, delta: c.points, reason: { en: `${c.title.en} completed`, ar: `اكتمال ${c.title.ar}` }, ref: { kind: "participation" as const, id: p.id }, at };
-      let s = replaceParticipation(state, move(p, "points_released", at, { by: brandUserName(state) }));
+      const award = campaignQuote(c, creatorOf(state, p.creatorId), p.publish?.platform);
+      const entry = { id: newId("led", p.id), creatorId: p.creatorId, delta: award.total, reason: { en: `${c.title.en} completed`, ar: `اكتمال ${c.title.ar}` }, ref: { kind: "participation" as const, id: p.id }, at };
+      let s = replaceParticipation(state, { ...move(p, "points_released", at, { by: brandUserName(state) }), award });
       s = { ...s, ledger: [...s.ledger, entry] };
       s = awardStreak(s, p.creatorId, at);
-      s = notify(s, `creator:${p.creatorId}`, "push", { en: `+${c.points} Sparks`, ar: `+${c.points} سباركس` }, { en: `${c.title.en} is done. Spend them in Rewards.`, ar: `اكتمل ${c.title.ar}. استخدمها في المكافآت.` }, at, "/creator/rewards");
+      s = notify(s, `creator:${p.creatorId}`, "push", { en: `+${award.total} Sparks`, ar: `+${award.total} سباركس` }, { en: `${c.title.en} is done. Spend them in Rewards.`, ar: `اكتمل ${c.title.ar}. استخدمها في المكافآت.` }, at, "/creator/rewards");
       return withNow(s);
     }
 
@@ -413,6 +458,7 @@ export function reducer(state: AppState, action: Action): AppState {
       if (m.entries[action.creatorId]) throw new Error("You already joined this mission.");
       if (!meetsLevel(state, action.creatorId, m.levelRequired)) throw new Error(`This mission opens at ${m.levelRequired} level.`);
       if (m.trackId && !trackProgress(state, action.creatorId, m.trackId).complete) throw new Error("Finish the Academy track first.");
+      if (m.kitLevel && !kitDelivered(state, action.creatorId, m.kitLevel)) throw new Error("This mission opens when your kit is delivered.");
       let squads = m.squads;
       if (m.type === "team") {
         if (!squads?.length) throw new Error("This team mission has no squads yet.");
@@ -431,8 +477,11 @@ export function reducer(state: AppState, action: Action): AppState {
       if (!e) throw new Error("Join the mission first.");
       if (e.state !== "joined" && e.state !== "changes") throw new Error("This mission is already submitted.");
       if (!/^https?:\/\//.test(action.url) && m.type !== "referral") throw new Error("Paste the full post link, starting with https://");
+      const format = action.format ?? formatsFor(m)[0];
+      if (!formatsFor(m).includes(format)) throw new Error(format === "story" ? "Stories only count when the mission asks for one." : "This mission does not take that format.");
+      const brandIds = (action.brandIds ?? []).filter((b) => b !== m.brandId && state.brands.some((x) => x.id === b));
       const check = missionCheck(action.caption, m.requiredHashtags, at, m.window);
-      const sub = { id: newId("ms", `${m.id}:${action.creatorId}:${e.submissions.length + 1}`), url: action.url, caption: action.caption, at, check };
+      const sub = { id: newId("ms", `${m.id}:${action.creatorId}:${e.submissions.length + 1}`), url: action.url, caption: action.caption, at, check, format, brandIds };
       const entries = { ...m.entries, [action.creatorId]: { ...e, state: "submitted" as const, submissions: [...e.submissions, sub] } };
       let s = replaceMission(state, { ...m, entries });
       const cr = creatorOf(state, action.creatorId);
@@ -453,8 +502,9 @@ export function reducer(state: AppState, action: Action): AppState {
         s = notify(s, `creator:${action.creatorId}`, "push", { en: `Changes on ${m.title.en}`, ar: `تعديلات على ${m.title.ar}` }, { en: action.note || "A reviewer asked for a small fix.", ar: action.note || "طلب المراجع تعديلاً بسيطاً." }, at, `/creator/missions/${m.id}`);
         return withNow(s);
       }
-      const awarded = isDoubleSparks(state, m) ? m.sparks * 2 : m.sparks;
-      let s = replaceMission(state, { ...m, entries: { ...m.entries, [action.creatorId]: { ...e, state: "completed", submissions, awarded } } });
+      const award = missionQuote(state, m, creatorOf(state, action.creatorId), { format: last.format, url: last.url, brandIds: last.brandIds });
+      const awarded = award.total;
+      let s = replaceMission(state, { ...m, entries: { ...m.entries, [action.creatorId]: { ...e, state: "completed", submissions, awarded, award } } });
       s = { ...s, ledger: [...s.ledger, { id: newId("led", `${m.id}:${action.creatorId}`), creatorId: action.creatorId, delta: awarded, reason: { en: `Mission: ${m.title.en}`, ar: `مهمة: ${m.title.ar}` }, ref: { kind: "mission", id: `${m.id}:${action.creatorId}` }, at }] };
       s = awardStreak(s, action.creatorId, at);
       s = notify(s, `creator:${action.creatorId}`, "push", { en: `+${awarded} Sparks`, ar: `+${awarded} سباركس` }, { en: `${m.title.en} approved.`, ar: `تم اعتماد ${m.title.ar}.` }, at, "/creator/rewards");
@@ -463,14 +513,18 @@ export function reducer(state: AppState, action: Action): AppState {
 
     case "saveMission": {
       requireBrand(state, "campaigns");
-      const exists = state.missions.some((m) => m.id === action.mission.id);
-      return withNow({ ...state, missions: exists ? state.missions.map((m) => (m.id === action.mission.id ? action.mission : m)) : [...state.missions, action.mission] });
+      const before = state.missions.find((m) => m.id === action.mission.id);
+      let s: AppState = { ...state, missions: before ? state.missions.map((m) => (m.id === action.mission.id ? action.mission : m)) : [...state.missions, action.mission] };
+      if (action.mission.status === "live" && before?.status !== "live") s = announceMission(s, action.mission, at);
+      return withNow(s);
     }
 
     case "setMissionStatus": {
       requireBrand(state, "campaigns");
       const m = missionOf(state, action.missionId);
-      return withNow(replaceMission(state, { ...m, status: action.status }));
+      let s = replaceMission(state, { ...m, status: action.status });
+      if (action.status === "live" && m.status !== "live") s = announceMission(s, { ...m, status: "live" }, at);
+      return withNow(s);
     }
 
     case "completeModule": {
@@ -675,8 +729,9 @@ export function reducer(state: AppState, action: Action): AppState {
     case "verifyCreator": {
       requireBrand(state, "invite");
       const cr = creatorOf(state, action.creatorId);
-      let s: AppState = { ...state, creators: state.creators.map((x) => (x.id === cr.id ? { ...x, verification: { ...x.verification, [action.field]: action.state } } : x)) };
-      const label = { identity: { en: "Identity", ar: "الهوية" }, instagram: { en: "Instagram", ar: "إنستغرام" }, tiktok: { en: "TikTok", ar: "تيك توك" } }[action.field];
+      const field = action.field;
+      let s: AppState = { ...state, creators: state.creators.map((x) => (x.id !== cr.id ? x : field === "licence" ? { ...x, licence: { ...x.licence, state: action.state } } : { ...x, verification: { ...x.verification, [field]: action.state } })) };
+      const label = { identity: { en: "Identity", ar: "الهوية" }, instagram: { en: "Instagram", ar: "إنستغرام" }, tiktok: { en: "TikTok", ar: "تيك توك" }, licence: { en: "Creator licence", ar: "ترخيص صانع المحتوى" } }[field];
       const body = action.state === "verified"
         ? { en: `${label.en} verified.`, ar: `تم التحقق من ${label.ar}.` }
         : action.state === "action"
@@ -684,6 +739,95 @@ export function reducer(state: AppState, action: Action): AppState {
           : { en: `${label.en} is being checked.`, ar: `${label.ar} قيد الفحص.` };
       s = notify(s, `creator:${cr.id}`, "push", { en: "Verification update", ar: "تحديث التحقق" }, body, at, "/creator/profile");
       return withNow(s);
+    }
+
+    case "claimLevelKit": {
+      const kit = state.levelKits.find((k) => k.id === action.kitId);
+      if (!kit) throw new Error("Unknown kit.");
+      requireCreatorSeat(state, kit.creatorId);
+      if (kit.shipment) throw new Error("This kit is already on its way.");
+      const cr = creatorOf(state, kit.creatorId);
+      if (!cr.address.line1 || !cr.address.phone) throw new Error("Add a delivery address and phone number first.");
+      const courier = COURIERS[fnv1a(kit.id) % COURIERS.length];
+      const shipment: Shipment = { courier, trackingNumber: trackingNumber(courier, kit.id), status: "address_confirmed", updatedAt: at, simulated: true };
+      let s: AppState = { ...state, levelKits: state.levelKits.map((k) => (k.id === kit.id ? { ...k, shipment } : k)), creators: state.creators.map((x) => (x.id === cr.id ? { ...x, address: { ...x.address, confirmed: true } } : x)) };
+      s = notify(s, "brand", "inapp", { en: `${cr.name} claimed the ${LEVEL_NAME[kit.level].en} kit`, ar: `${cr.name} طلب كيت ${LEVEL_NAME[kit.level].ar}` }, { en: `Ship to ${cr.address.city}.`, ar: `الشحن إلى ${cr.address.city}.` }, at, "/admin/logistics");
+      return withNow(s);
+    }
+
+    case "advanceKitShipment": {
+      requireBrand(state, "logistics");
+      const kit = state.levelKits.find((k) => k.id === action.kitId);
+      if (!kit?.shipment) throw new Error("This kit has not been claimed yet.");
+      const to = nextShipmentStatus(kit.shipment.status);
+      if (!to) throw new Error("This kit is already delivered.");
+      let s: AppState = { ...state, levelKits: state.levelKits.map((k) => (k.id === kit.id ? { ...k, shipment: { ...kit.shipment!, status: to, updatedAt: at } } : k)) };
+      if (to === "delivered") {
+        const mission = state.missions.find((m) => m.id === LEVEL_KITS[kit.level].missionId);
+        s = notify(s, `creator:${kit.creatorId}`, "push", { en: `Your ${LEVEL_NAME[kit.level].en} kit landed`, ar: `وصل كيت ${LEVEL_NAME[kit.level].ar}` }, { en: `The unboxing mission is open: +${LEVEL_KITS[kit.level].unboxSparks} base Sparks.`, ar: `مهمة فتح الصندوق متاحة: +${LEVEL_KITS[kit.level].unboxSparks} سباركس أساسية.` }, at, mission ? `/creator/missions/${mission.id}` : "/creator/missions");
+      } else if (to === "dispatched") {
+        s = notify(s, `creator:${kit.creatorId}`, "push", { en: "Your level kit has shipped", ar: "تم شحن كيت المستوى" }, { en: `${kit.shipment.courier} ${kit.shipment.trackingNumber}`, ar: `${kit.shipment.courier} ${kit.shipment.trackingNumber}` }, at, "/creator/season");
+      }
+      return withNow(s);
+    }
+
+    case "recheckPosts": {
+      // The 30-day "is it still up" job. Posts that came down hand their Sparks back.
+      requireBrand(state, "review");
+      const s0 = withNow(state);
+      const due = postsDueForCheck(s0);
+      if (due.length === 0) throw new Error(`No posts are past the ${LIVE_DAYS}-day mark.`);
+      let s = s0;
+      for (const d of due) {
+        const live = postLiveCheck(d.url, at);
+        if (d.kind === "mission") {
+          const [missionId, creatorId] = d.id.split(":");
+          const m = missionOf(s, missionId);
+          const e = m.entries[creatorId];
+          const submissions = [...e.submissions.slice(0, -1), { ...e.submissions[e.submissions.length - 1], live }];
+          s = replaceMission(s, { ...m, entries: { ...m.entries, [creatorId]: { ...e, submissions, ...(live.live ? {} : { clawedBack: { at, amount: d.amount } }) } } });
+        } else {
+          const p = participation(s, d.id);
+          s = replaceParticipation(s, { ...p, publish: { ...p.publish!, live }, ...(live.live ? {} : { clawedBack: { at, amount: d.amount } }) });
+        }
+        if (!live.live && d.amount > 0) {
+          s = { ...s, ledger: [...s.ledger, { id: newId("led", `clawback:${d.id}`), creatorId: d.creatorId, delta: -d.amount, reason: { en: `Post removed: ${d.title.en}`, ar: `منشور محذوف: ${d.title.ar}` }, ref: { kind: "clawback", id: d.id }, at }] };
+          s = notify(s, `creator:${d.creatorId}`, "email", { en: `${d.amount} Sparks returned`, ar: `تم استرداد ${d.amount} سباركس` }, { en: `Your ${d.title.en} post is no longer live. Posts stay up for ${LIVE_DAYS} days.`, ar: `منشور ${d.title.ar} لم يعد متاحاً. تبقى المنشورات ${LIVE_DAYS} يوماً.` }, at, "/creator/sparks");
+        }
+      }
+      return s;
+    }
+
+    case "expireSparks": {
+      // The nightly expiry job: warn inside the window, lapse the balance after it.
+      requireBrand(state, "loyalty");
+      let s = withNow(state);
+      let touched = 0;
+      for (const cr of state.creators) {
+        const x = sparksExpiry(s, cr.id);
+        if (x.expired) {
+          const bal = balance(s, cr.id);
+          s = { ...s, ledger: [...s.ledger, { id: newId("led", `expiry:${cr.id}:${x.expiresAt}`), creatorId: cr.id, delta: -bal, reason: { en: `Expired after ${EXPIRY_DAYS} days without activity`, ar: `انتهت بعد ${EXPIRY_DAYS} يوماً بلا نشاط` }, ref: { kind: "expiry", id: x.expiresAt ?? cr.id }, at }] };
+          s = notify(s, `creator:${cr.id}`, "email", { en: `${bal} Sparks expired`, ar: `انتهت صلاحية ${bal} سباركس` }, { en: "A year passed with no earning and no spending. Any mission starts a fresh balance.", ar: "مرّ عام بلا كسب أو إنفاق. أي مهمة تبدأ رصيداً جديداً." }, at, "/creator/missions");
+          touched += 1;
+        } else if (x.atRisk && cr.expiryWarnedFor !== x.expiresAt) {
+          s = { ...s, creators: s.creators.map((c) => (c.id === cr.id ? { ...c, expiryWarnedFor: x.expiresAt ?? undefined } : c)) };
+          s = notify(s, `creator:${cr.id}`, "email", { en: `${x.balance} Sparks expire in ${x.daysLeft} days`, ar: `${x.balance} سباركس تنتهي خلال ${x.daysLeft} يوماً` }, { en: "Earn or spend any amount and the clock resets for a year.", ar: "اكسب أو أنفق أي مبلغ ليبدأ العدّ من جديد لعام كامل." }, at, "/creator/rewards");
+          touched += 1;
+        }
+      }
+      if (touched === 0) throw new Error("No balances are near expiry.");
+      return s;
+    }
+
+    case "acceptCharter": {
+      requireCreatorSeat(state, action.creatorId);
+      return withNow({ ...state, creators: state.creators.map((x) => (x.id === action.creatorId ? { ...x, charter: { version: CHARTER_VERSION, acceptedAt: at } } : x)) });
+    }
+
+    case "setAlerts": {
+      requireCreatorSeat(state, action.creatorId);
+      return { ...state, creators: state.creators.map((x) => (x.id === action.creatorId ? { ...x, alerts: { drops: action.drops } } : x)) };
     }
 
     case "updateProfile": {

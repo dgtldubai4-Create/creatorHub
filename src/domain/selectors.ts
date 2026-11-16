@@ -1,6 +1,9 @@
-import type { AppState, Badge, Campaign, Creator, Level, Mission, MissionType, Participation, Season, Stage } from "./types";
+import type { AppState, Badge, Campaign, Creator, Level, LevelKit, Localised, Mission, MissionType, Participation, Platform, PostFormat, Season, SparksQuote, Stage } from "./types";
 import { actorFor, phaseOf, stageProgress } from "./stages";
-import { monthKey, prevMonthKey } from "./simulate";
+import { addDays, monthKey, prevMonthKey } from "./simulate";
+import { DEFAULT_FORMATS, EXPIRY_DAYS, EXPIRY_WARN_DAYS, FLAT_TYPES, KIT_LEVELS, LEVEL_ORDER, LEVEL_RULES, LEVEL_TASKS, LICENCE_MARKETS, LIVE_DAYS, quoteSparks, type KitLevel, type TaskKey } from "./policy";
+
+export { LEVEL_ORDER, LEVEL_RULES };
 
 // Every list view derives from the same entities. Nothing here is cached state.
 
@@ -8,8 +11,11 @@ export function balance(state: AppState, creatorId: string): number {
   return state.ledger.filter((l) => l.creatorId === creatorId).reduce((s, l) => s + l.delta, 0);
 }
 
+/** Earned Sparks: every award, less any that were taken back because the post came down. */
+const earns = (l: AppState["ledger"][number]) => l.delta > 0 || l.ref.kind === "clawback";
+
 export function lifetimeSparks(state: AppState, creatorId: string): number {
-  return state.ledger.filter((l) => l.creatorId === creatorId && l.delta > 0).reduce((s, l) => s + l.delta, 0);
+  return state.ledger.filter((l) => l.creatorId === creatorId && earns(l)).reduce((s, l) => s + l.delta, 0);
 }
 
 // ---------- Seasons ----------
@@ -24,9 +30,9 @@ export function seasonById(state: AppState, id: string): Season | undefined {
 }
 
 export function seasonSparks(state: AppState, creatorId: string, season: Season = currentSeason(state)): number {
-  return state.ledger
-    .filter((l) => l.creatorId === creatorId && l.delta > 0 && l.at.slice(0, 10) >= season.start && l.at.slice(0, 10) <= season.end)
-    .reduce((s, l) => s + l.delta, 0);
+  return Math.max(0, state.ledger
+    .filter((l) => l.creatorId === creatorId && earns(l) && l.at.slice(0, 10) >= season.start && l.at.slice(0, 10) <= season.end)
+    .reduce((s, l) => s + l.delta, 0));
 }
 
 export function daysLeftInSeason(state: AppState, season: Season = currentSeason(state)): number {
@@ -56,30 +62,118 @@ export function qualityScore(state: AppState, creatorId: string): number {
   return Math.round(auto * 0.4 + approved * 0.6);
 }
 
-export const LEVEL_ORDER: Level[] = ["member", "insider", "pro", "ambassador"];
-export const LEVEL_RULES = {
-  insider: { sparks: 400, quality: 60 },
-  pro: { sparks: 1200, quality: 75 },
-};
-
 export function levelIndex(l: Level): number {
   return LEVEL_ORDER.indexOf(l);
 }
 
-export function level(state: AppState, creatorId: string): { level: Level; seasonSparks: number; quality: number; next: Level | null; toNext: number; progress: number } {
+function inSeason(iso: string | undefined, season: Season): boolean {
+  const day = (iso ?? "").slice(0, 10);
+  return day >= season.start && day <= season.end;
+}
+
+/** One named requirement on the way to a level. Sparks and quality carry numbers; the rest are done or not. */
+export interface LevelTask {
+  key: TaskKey;
+  done: boolean;
+  current?: number;
+  target?: number;
+  /** Where the creator goes to do it. */
+  link: string;
+  /** The mission or track the task points at, when there is one to name. */
+  missionId?: string;
+  trackId?: string;
+}
+
+function taskDone(state: AppState, creator: Creator, key: TaskKey, season: Season, sparks: number, quality: number): boolean {
+  const id = creator.id;
+  const approved = (m: Mission) => m.entries[id]?.state === "completed" && !m.entries[id].clawedBack;
+  switch (key) {
+    case "sparks":
+    case "quality":
+      return true; // judged against the level's own thresholds by the caller
+    case "starter":
+      return state.missions.some((m) => m.type === "starter" && !m.kitLevel && approved(m));
+    case "challenge":
+      return state.missions.some((m) => (m.type === "monthly" || m.type === "team") && approved(m) && inSeason(m.entries[id].submissions.at(-1)?.reviewedAt, season));
+    case "journey":
+      return state.participations.some((p) => p.creatorId === id && (p.stage === "points_released" || p.stage === "completed") && !p.clawedBack);
+    case "certificate":
+      return certificatesFor(state, id).length >= 1;
+    case "licence":
+      return !LICENCE_MARKETS.includes(creator.market) || creator.licence.state === "verified";
+    case "hold_pro":
+      return earnedLevel(state, creator, season, sparks, quality) === "pro";
+    case "entered":
+      return season.ambassadors.shortlist.includes(id) || season.ambassadors.wildcards.includes(id);
+    case "selected":
+      return season.ambassadors.cohort.includes(id);
+  }
+}
+
+/** The level a creator has earned this season, before the Ambassador cohort is applied. */
+function earnedLevel(state: AppState, creator: Creator, season: Season, sparks: number, quality: number): Level {
+  const tasks = (lvl: "insider" | "pro") => LEVEL_TASKS[lvl].every((k) => taskDone(state, creator, k, season, sparks, quality));
+  const insider = sparks >= LEVEL_RULES.insider.sparks && quality >= LEVEL_RULES.insider.quality && tasks("insider");
+  const pro = insider && sparks >= LEVEL_RULES.pro.sparks && quality >= LEVEL_RULES.pro.quality && tasks("pro");
+  return pro ? "pro" : insider ? "insider" : "member";
+}
+
+export function level(state: AppState, creatorId: string): { level: Level; earned: Level; seasonSparks: number; quality: number; next: Level | null; toNext: number; progress: number } {
   const season = currentSeason(state);
   const sparks = seasonSparks(state, creatorId, season);
   const quality = qualityScore(state, creatorId);
-  let lvl: Level = "member";
-  if (sparks >= LEVEL_RULES.insider.sparks && quality >= LEVEL_RULES.insider.quality) lvl = "insider";
-  if (sparks >= LEVEL_RULES.pro.sparks && quality >= LEVEL_RULES.pro.quality) lvl = "pro";
+  const creator = creatorById(state, creatorId);
+  const earned: Level = creator ? earnedLevel(state, creator, season, sparks, quality) : "member";
+  let lvl: Level = earned;
   if (season.ambassadors.cohort.includes(creatorId)) lvl = "ambassador";
   const next: Level | null = lvl === "member" ? "insider" : lvl === "insider" ? "pro" : lvl === "pro" ? "ambassador" : null;
   const target = next === "insider" ? LEVEL_RULES.insider.sparks : next === "pro" ? LEVEL_RULES.pro.sparks : sparks;
   const floor = lvl === "member" ? 0 : lvl === "insider" ? LEVEL_RULES.insider.sparks : LEVEL_RULES.pro.sparks;
   const toNext = next && next !== "ambassador" ? Math.max(0, target - sparks) : 0;
   const progress = next === "ambassador" || !next ? 1 : Math.min(1, (sparks - floor) / Math.max(1, target - floor));
-  return { level: lvl, seasonSparks: sparks, quality, next, toNext, progress };
+  return { level: lvl, earned, seasonSparks: sparks, quality, next, toNext, progress };
+}
+
+/** The "next level" checklist: every requirement for `target`, each marked done or not, with somewhere to go. */
+export function levelTasks(state: AppState, creatorId: string, target: KitLevel): LevelTask[] {
+  const creator = creatorById(state, creatorId);
+  if (!creator) return [];
+  const season = currentSeason(state);
+  const sparks = seasonSparks(state, creatorId, season);
+  const quality = qualityScore(state, creatorId);
+  const open = (pred: (m: Mission) => boolean) => missionsFor(state, creator).find((m) => pred(m) && m.entries[creatorId]?.state !== "completed");
+  return LEVEL_TASKS[target].map((key): LevelTask => {
+    switch (key) {
+      case "sparks": {
+        const need = LEVEL_RULES[target as "insider" | "pro"].sparks;
+        return { key, done: sparks >= need, current: Math.min(sparks, need), target: need, link: "/creator/missions" };
+      }
+      case "quality": {
+        const need = LEVEL_RULES[target as "insider" | "pro"].quality;
+        return { key, done: quality >= need, current: quality, target: need, link: "/creator/sparks" };
+      }
+      case "starter": {
+        const m = open((x) => x.type === "starter" && !x.kitLevel);
+        return { key, done: taskDone(state, creator, key, season, sparks, quality), link: m ? `/creator/missions/${m.id}` : "/creator/missions", missionId: m?.id };
+      }
+      case "challenge": {
+        const m = open((x) => x.type === "monthly" || x.type === "team");
+        return { key, done: taskDone(state, creator, key, season, sparks, quality), link: m ? `/creator/missions/${m.id}` : "/creator/missions", missionId: m?.id };
+      }
+      case "journey": {
+        const p = participationsFor(state, creatorId).find((x) => x.stage !== "declined" && x.stage !== "completed");
+        return { key, done: taskDone(state, creator, key, season, sparks, quality), link: p ? (p.stage === "invited" ? "/creator/invitations" : `/creator/campaigns/${p.id}`) : "/creator/campaigns" };
+      }
+      case "certificate": {
+        const tr = state.academy.tracks.find((x) => !trackProgress(state, creatorId, x.id).complete && levelIndex(x.levelRequired) <= levelIndex(level(state, creatorId).level));
+        return { key, done: taskDone(state, creator, key, season, sparks, quality), link: tr ? `/creator/academy/${tr.id}` : "/creator/academy", trackId: tr?.id };
+      }
+      case "licence":
+        return { key, done: taskDone(state, creator, key, season, sparks, quality), link: "/creator/profile" };
+      default:
+        return { key, done: taskDone(state, creator, key, season, sparks, quality), link: "/creator/season" };
+    }
+  });
 }
 
 export function meetsLevel(state: AppState, creatorId: string, required: Level): boolean {
@@ -139,8 +233,35 @@ export function isDoubleSparks(state: AppState, m: Mission): boolean {
   return !!m.doubleSparksUntil && m.doubleSparksUntil > state.now;
 }
 
+/** Base Sparks for a mission, before the table. Doubled during a surprise drop. */
 export function missionSparks(state: AppState, m: Mission): number {
   return isDoubleSparks(state, m) ? m.sparks * 2 : m.sparks;
+}
+
+export function platformOf(url: string): Platform {
+  return /tiktok\.com/i.test(url) ? "tiktok" : "instagram";
+}
+
+/** Audience numbers for the platform a post went out on, from the connected account. */
+export function audienceFor(creator: Creator, platform: Platform): { followers: number; engagementRate: number } {
+  const acc = creator.connected[platform] ?? creator.connected.instagram ?? creator.connected.tiktok;
+  return { followers: acc?.followers ?? creator.followers, engagementRate: acc?.engagementRate ?? 0 };
+}
+
+export function formatsFor(m: Mission): PostFormat[] {
+  return m.formats?.length ? m.formats : DEFAULT_FORMATS;
+}
+
+/** What this creator earns on this mission, with the working shown. */
+export function missionQuote(state: AppState, m: Mission, creator: Creator, opts: { format?: PostFormat; url?: string; brandIds?: string[] } = {}): SparksQuote {
+  const audience = audienceFor(creator, platformOf(opts.url ?? ""));
+  const brands = new Set([m.brandId, ...(opts.brandIds ?? [])].filter(Boolean));
+  return quoteSparks({ base: m.sparks, format: opts.format ?? formatsFor(m)[0], ...audience, brandCount: brands.size, double: isDoubleSparks(state, m), flat: FLAT_TYPES.includes(m.type) });
+}
+
+/** Campaign journeys are video deliverables on one brand: reach and engagement apply. */
+export function campaignQuote(campaign: Campaign, creator: Creator, platform: Platform = "instagram"): SparksQuote {
+  return quoteSparks({ base: campaign.points, format: "video", ...audienceFor(creator, platform), brandCount: 1 });
 }
 
 /** Missions a creator can see: live, in their market, in a language they speak, in their niche (or open to all), at their level. */
@@ -152,7 +273,8 @@ export function missionsFor(state: AppState, creator: Creator): Mission[] {
       m.markets.includes(creator.market) &&
       m.languages.some((l) => creator.languages.includes(l)) &&
       (m.niches.length === 0 || m.niches.includes(creator.niche)) &&
-      (levelIndex(m.levelRequired) <= levelIndex(lvl) || !!m.entries[creator.id]),
+      (levelIndex(m.levelRequired) <= levelIndex(lvl) || !!m.entries[creator.id]) &&
+      (!m.kitLevel || !!m.entries[creator.id] || kitDelivered(state, creator.id, m.kitLevel)),
   );
 }
 
@@ -168,6 +290,97 @@ export function squadTotals(m: Mission): { squad: NonNullable<Mission["squads"]>
 }
 
 export const MISSION_TYPES: MissionType[] = ["starter", "routine", "monthly", "team", "review", "event", "academy", "referral"];
+
+// ---------- Level-up kits ----------
+
+export function kitsFor(state: AppState, creatorId: string): LevelKit[] {
+  return state.levelKits.filter((k) => k.creatorId === creatorId).sort((a, b) => levelIndex(a.level) - levelIndex(b.level));
+}
+
+export function kitDelivered(state: AppState, creatorId: string, lvl: KitLevel): boolean {
+  return state.levelKits.some((k) => k.creatorId === creatorId && k.level === lvl && k.shipment?.status === "delivered");
+}
+
+/**
+ * Levels this creator has reached and has no kit for yet. One kit per level, ever.
+ * Insider and Pro kits follow the level earned; the Ambassador kit follows selection.
+ */
+export function kitsOwed(state: AppState, creatorId: string): KitLevel[] {
+  const lv = level(state, creatorId);
+  const reached = (l: KitLevel) => (l === "ambassador" ? lv.level === "ambassador" : levelIndex(l) <= levelIndex(lv.earned));
+  return KIT_LEVELS.filter((l) => reached(l) && !state.levelKits.some((k) => k.creatorId === creatorId && k.level === l));
+}
+
+/** Claimed kits that logistics still has to move. */
+export function kitQueue(state: AppState): LevelKit[] {
+  return state.levelKits.filter((k) => k.shipment && k.shipment.status !== "delivered").sort((a, b) => a.shipment!.updatedAt.localeCompare(b.shipment!.updatedAt));
+}
+
+// ---------- Posts stay live ----------
+
+export interface DuePost {
+  kind: "mission" | "participation";
+  /** missionId:creatorId or the participation id. */
+  id: string;
+  creatorId: string;
+  title: Localised;
+  url: string;
+  approvedAt: string;
+  amount: number;
+}
+
+/** Approved posts past the 30-day mark that have not been re-checked yet. */
+export function postsDueForCheck(state: AppState): DuePost[] {
+  const cutoff = addDays(state.now, -LIVE_DAYS);
+  const out: DuePost[] = [];
+  for (const m of state.missions) {
+    if (FLAT_TYPES.includes(m.type)) continue;
+    for (const [creatorId, e] of Object.entries(m.entries)) {
+      const sub = e.submissions.at(-1);
+      if (e.state !== "completed" || e.clawedBack || !sub?.reviewedAt || sub.live || sub.reviewedAt > cutoff) continue;
+      out.push({ kind: "mission", id: `${m.id}:${creatorId}`, creatorId, title: m.title, url: sub.url, approvedAt: sub.reviewedAt, amount: e.awarded ?? 0 });
+    }
+  }
+  for (const p of state.participations) {
+    const pub = p.publish;
+    if (!pub?.verified || !pub.verifiedAt || pub.live || p.clawedBack || pub.verifiedAt > cutoff) continue;
+    const paid = state.ledger.find((l) => l.ref.kind === "participation" && l.ref.id === p.id);
+    if (!paid) continue;
+    const c = campaignById(state, p.campaignId);
+    out.push({ kind: "participation", id: p.id, creatorId: p.creatorId, title: c?.title ?? { en: "Campaign", ar: "حملة" }, url: pub.url, approvedAt: pub.verifiedAt, amount: paid.delta });
+  }
+  return out.sort((a, b) => a.approvedAt.localeCompare(b.approvedAt));
+}
+
+export function clawbacks(state: AppState): AppState["ledger"] {
+  return state.ledger.filter((l) => l.ref.kind === "clawback").slice().reverse();
+}
+
+// ---------- Sparks expiry ----------
+
+export interface Expiry {
+  balance: number;
+  lastActivityAt: string | null;
+  expiresAt: string | null;
+  daysLeft: number | null;
+  /** Inside the warning window with Sparks still to lose. */
+  atRisk: boolean;
+  expired: boolean;
+}
+
+/** Sparks lapse after a year with no earning and no spending. Any award or redemption resets the clock. */
+export function sparksExpiry(state: AppState, creatorId: string): Expiry {
+  const bal = balance(state, creatorId);
+  const last = state.ledger.filter((l) => l.creatorId === creatorId && l.ref.kind !== "expiry" && l.ref.kind !== "clawback").reduce<string | null>((m, l) => (m === null || l.at > m ? l.at : m), null);
+  if (!last) return { balance: bal, lastActivityAt: null, expiresAt: null, daysLeft: null, atRisk: false, expired: false };
+  const expiresAt = addDays(last, EXPIRY_DAYS);
+  const daysLeft = Math.ceil((new Date(expiresAt).getTime() - new Date(state.now).getTime()) / 86_400_000);
+  return { balance: bal, lastActivityAt: last, expiresAt, daysLeft, atRisk: bal > 0 && daysLeft > 0 && daysLeft <= EXPIRY_WARN_DAYS, expired: bal > 0 && daysLeft <= 0 };
+}
+
+export function expiryWatch(state: AppState): { creator: Creator; expiry: Expiry }[] {
+  return state.creators.map((creator) => ({ creator, expiry: sparksExpiry(state, creator.id) })).filter((x) => x.expiry.atRisk || x.expiry.expired).sort((a, b) => (a.expiry.daysLeft ?? 0) - (b.expiry.daysLeft ?? 0));
+}
 
 // ---------- Academy ----------
 
@@ -331,5 +544,8 @@ export function adminOverview(state: AppState) {
   const liveMissions = state.missions.filter((m) => m.status === "live").length;
   const monthActive = new Set(state.ledger.filter((l) => l.delta > 0 && monthKey(l.at) === monthKey(state.now)).map((l) => l.creatorId)).size;
   const referralsPending = state.referrals.filter((r) => r.status === "pending").length;
-  return { live, inFlight, pendingReview, missionReview, toShip, toVerify, toRelease, toFulfil, verifiedCreators, creators: state.creators.length, pointsOut, liveMissions, monthActive, referralsPending };
+  const kitsToShip = kitQueue(state).length;
+  const postsDue = postsDueForCheck(state).length;
+  const expiring = expiryWatch(state).length;
+  return { live, inFlight, pendingReview, missionReview, toShip, toVerify, toRelease, toFulfil, verifiedCreators, creators: state.creators.length, pointsOut, liveMissions, monthActive, referralsPending, kitsToShip, postsDue, expiring };
 }

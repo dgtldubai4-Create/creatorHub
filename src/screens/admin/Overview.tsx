@@ -30,6 +30,8 @@ export function AdminOverview() {
     can(role, "review") && { label: t("linksToVerify"), value: o.toVerify, to: "/admin/campaigns", tone: o.toVerify ? "marigold" : "neutral" },
     can(role, "loyalty") && { label: t("pointsToRelease"), value: o.toRelease, to: "/admin/loyalty", tone: o.toRelease ? "marigold" : "neutral" },
     can(role, "loyalty") && { label: t("redemptionsToFulfil"), value: o.toFulfil, to: "/admin/loyalty", tone: o.toFulfil ? "marigold" : "neutral" },
+    can(role, "logistics") && { label: t("levelKitsToShip"), value: o.kitsToShip, to: "/admin/logistics", tone: o.kitsToShip ? "marigold" : "neutral" },
+    can(role, "review") && { label: t("postsToRecheck"), value: o.postsDue, to: "/admin/loyalty", tone: o.postsDue ? "marigold" : "neutral" },
   ].filter(Boolean) as { label: string; value: number; to: string; tone: "marigold" | "neutral" }[];
 
   return (
@@ -45,7 +47,7 @@ export function AdminOverview() {
 
       {queues.length > 0 && (
         <Section title={t("queues")}>
-          <Stagger className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+          <Stagger className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {queues.map((q) => <Item key={q.label}><Stat label={q.label} value={num(q.value)} to={q.to} tone={q.tone} /></Item>)}
           </Stagger>
         </Section>

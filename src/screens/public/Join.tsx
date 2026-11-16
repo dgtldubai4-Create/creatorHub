@@ -12,6 +12,7 @@ import { useStore } from "../../app/store";
 import { Logo } from "../../app/shell";
 import { connectAccount, otpFor } from "../../domain/simulate";
 import type { ConnectedAccount, FollowerTier, Language, Market, Niche } from "../../domain/types";
+import { CharterList } from "../shared/program";
 import { cn } from "../../ui/cn";
 
 const NICHES: Niche[] = ["haircare", "beauty", "family", "wellness", "food", "fitness", "lifestyle", "oralcare", "comedy"];
@@ -29,7 +30,7 @@ export function Join() {
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
   const [touched, setTouched] = useState(false);
-  const [f, setF] = useState({ name: "", handle: "", email: "", mobile: "", market: "UAE" as Market, city: "", age: false, consent: false, code: "", verified: false, instagram: "", tiktok: "", niche: "haircare" as Niche, tier: "micro" as FollowerTier, languages: ["ar", "en"] as Language[], vibe: "", bio: "", posts: "", referral: "" });
+  const [f, setF] = useState({ name: "", handle: "", email: "", mobile: "", market: "UAE" as Market, city: "", age: false, consent: false, charter: false, code: "", verified: false, instagram: "", tiktok: "", niche: "haircare" as Niche, tier: "micro" as FollowerTier, languages: ["ar", "en"] as Language[], vibe: "", bio: "", posts: "", referral: "" });
   const [connected, setConnected] = useState<Partial<Record<"instagram" | "tiktok", ConnectedAccount>>>({});
   const [codeSent, setCodeSent] = useState(false);
   const set = <K extends keyof typeof f>(k: K) => (v: (typeof f)[K]) => setF((x) => ({ ...x, [k]: v }));
@@ -46,9 +47,11 @@ export function Join() {
     connect: !connected.instagram && !connected.tiktok ? t("required") : "",
     vibe: f.vibe.trim().length < 4 ? t("required") : "",
     consent: !f.consent ? t("required") : "",
+    charter: !f.charter ? t("required") : "",
   };
-  const stepValid = [!errors.name && !errors.handle && !errors.email && !errors.mobile && !errors.city && !errors.age, !errors.verified, !errors.connect, !errors.vibe && !errors.consent][step];
-  const steps = [t("joinStep1"), t("joinStep2"), t("joinStep3"), t("joinStep4")];
+  const stepValid = [!errors.name && !errors.handle && !errors.email && !errors.mobile && !errors.city && !errors.age, !errors.verified, !errors.connect, !errors.vibe && !errors.consent, !errors.charter][step];
+  const steps = [t("joinStep1"), t("joinStep2"), t("joinStep3"), t("joinStep4"), t("joinStep5")];
+  const LAST = steps.length - 1;
 
   const connect = (pl: "instagram" | "tiktok") => {
     const h = f[pl].trim();
@@ -59,7 +62,7 @@ export function Join() {
   const next = () => {
     setTouched(true);
     if (!stepValid) return;
-    if (step < 3) {
+    if (step < LAST) {
       setStep(step + 1);
       setTouched(false);
       return;
@@ -70,7 +73,7 @@ export function Join() {
       input: {
         name: f.name.trim(), handle: f.handle.trim(), email: f.email.trim(), mobile: f.mobile.trim(), market: f.market, city: f.city.trim(), niche: f.niche, tier: f.tier, followers,
         languages: f.languages, vibe: f.vibe.trim(), favouritePosts: f.posts.split("\n").map((x) => x.trim()).filter(Boolean).slice(0, 3),
-        socials: { instagram: connected.instagram?.handle, tiktok: connected.tiktok?.handle }, bio: f.bio.trim() || f.vibe.trim(), referralCode: f.referral.trim() || undefined,
+        socials: { instagram: connected.instagram?.handle, tiktok: connected.tiktok?.handle }, bio: f.bio.trim() || f.vibe.trim(), referralCode: f.referral.trim() || undefined, charterAccepted: f.charter,
       },
     });
     setDone(true);
@@ -182,11 +185,18 @@ export function Join() {
                         <label className="flex items-start gap-2 text-[14px]"><input type="checkbox" className="mt-1 h-4 w-4 accent-[var(--leaf)]" checked={f.consent} onChange={(e) => set("consent")(e.target.checked)} />{t("consent")}{touched && errors.consent && <span className="text-rose"> · {errors.consent}</span>}</label>
                       </>
                     )}
+                    {step === 4 && (
+                      <>
+                        <div><h2 className="text-2xl">{t("charterTitle")}</h2><p className="mt-1 text-[14px] text-ink-2">{t("charterSub")}</p></div>
+                        <CharterList />
+                        <label className="flex items-start gap-2 rounded-[14px] border-2 border-outline bg-lime-soft p-3 text-[14px] font-bold"><input type="checkbox" className="mt-1 h-4 w-4 accent-[var(--grape)]" checked={f.charter} onChange={(e) => set("charter")(e.target.checked)} />{t("charterAccept")}{touched && errors.charter && <span className="text-rose"> · {errors.charter}</span>}</label>
+                      </>
+                    )}
                   </motion.div>
                 </AnimatePresence>
                 <div className="mt-8 flex items-center justify-between">
                   <Button variant="ghost" onClick={() => { setStep(Math.max(0, step - 1)); setTouched(false); }} disabled={step === 0} icon={<ArrowLeft size={16} weight="bold" className="rtl:rotate-180" />}>{t("back")}</Button>
-                  <Button onClick={next} iconEnd={<ArrowRight size={16} weight="bold" className="rtl:rotate-180" />}>{step === 3 ? t("submitApplication") : t("continue")}</Button>
+                  <Button onClick={next} iconEnd={<ArrowRight size={16} weight="bold" className="rtl:rotate-180" />}>{step === LAST ? t("submitApplication") : t("continue")}</Button>
                 </div>
               </div>
             </motion.div>

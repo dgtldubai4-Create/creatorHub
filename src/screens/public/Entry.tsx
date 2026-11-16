@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Translate, Crown, Lightning, Sparkle, Quotes, Trophy, GraduationCap, Confetti, PaperPlaneTilt, ChatCircleDots, VideoCamera, ChartLineUp, Briefcase, Stamp as StampIcon, HeartHalf, ChatsCircle, type Icon } from "@phosphor-icons/react";
+import { ArrowRight, Translate, Crown, Lightning, Sparkle, Quotes, Trophy, GraduationCap, Confetti, PaperPlaneTilt, ChatCircleDots, VideoCamera, ChartLineUp, Briefcase, Stamp as StampIcon, HeartHalf, ChatsCircle, Package, Calculator, type Icon } from "@phosphor-icons/react";
 import { useStore } from "../../app/store";
 import { useFormat, useL, useT, useToggleLang } from "../../i18n";
 import { Button, Chip } from "../../ui/primitives";
@@ -13,6 +13,8 @@ import { Graphic } from "../../ui/Graphic";
 import { Logo } from "../../app/shell";
 import { BrandMark, LevelChip, MissionTypeChip } from "../shared/bits";
 import { LEVEL_ORDER, LEVEL_RULES, currentSeason, leaderboard } from "../../domain/selectors";
+import { ENGAGEMENT_BANDS, FORMAT_MULT, LEVEL_KITS, MULTI_BRAND_MULT, REACH_BANDS, quoteSparks } from "../../domain/policy";
+import { QuoteBreakdown } from "../shared/program";
 import type { Creator } from "../../domain/types";
 import { cn } from "../../ui/cn";
 
@@ -75,6 +77,9 @@ export function Entry() {
   const topFive = board.slice(0, 5);
   const packs = ["vatika-black-seed-hair-oil", "dabur-amla-hair-oil", "dabur-herbl-charcoal-toothpaste", "real-mango-juice", "dabur-honey", "hajmola-regular", "fem-creme-bleach", "dermoviva-body-lotion"].map((id) => s.products.find((p) => p.id === id)).filter((p): p is NonNullable<typeof p> => !!p);
   const track = s.academy.tracks[0];
+  const mathsMission = s.missions.find((m) => m.id === "ms_goldenhour")!;
+  const mathsCreator = s.creators.find((c) => c.id === "cr_laylaoils")!;
+  const maths = { creator: mathsCreator, quote: quoteSparks({ base: mathsMission.sparks, format: "video", followers: mathsCreator.connected.instagram?.followers ?? mathsCreator.followers, engagementRate: mathsCreator.connected.instagram?.engagementRate ?? 0, brandCount: 2 }) };
 
   return (
     <div className="relative min-h-[100dvh] overflow-x-clip bg-canvas">
@@ -183,7 +188,7 @@ export function Entry() {
               <AnimatePresence mode="wait">
                 <motion.div key={star.id} initial={{ opacity: 0, y: 30, rotate: -1.5 }} animate={{ opacity: 1, y: 0, rotate: 0 }} exit={{ opacity: 0, y: -20, rotate: 1.5 }} transition={{ type: "spring", stiffness: 200, damping: 22 }}>
                   <Tilt max={4}>
-                    <div className={cn("block relative overflow-hidden p-6 md:p-8", CANDIES[(pick + 1) % CANDIES.length])}>
+                    <div className={cn("slab relative overflow-hidden p-6 md:p-8", CANDIES[(pick + 1) % CANDIES.length])}>
                       <span aria-hidden className="absolute -end-16 -top-16 h-56 w-56 rounded-full bg-white/30" />
                       <div className="relative flex flex-col gap-6 md:flex-row md:items-start">
                         <Face name={star.name} hue={star.hue} size={160} className="shrink-0 rounded-full shadow-[6px_6px_0_var(--outline)]" />
@@ -235,7 +240,7 @@ export function Entry() {
             ].map((step, i) => (
               <Item key={step.n}>
                 <Parallax speed={0.08 * (i + 1)}>
-                  <div className={cn("block relative min-h-[320px] overflow-hidden p-7 text-plum lift", step.bg)}>
+                  <div className={cn("slab relative min-h-[320px] overflow-hidden p-7 text-plum lift", step.bg)}>
                     <span className="absolute -end-10 -top-10 text-[14rem] font-black leading-none text-white/35">{step.n}</span>
                     <step.icon size={56} weight="duotone" className="wobble" />
                     <h3 className="mt-6 text-3xl font-extrabold">{step.title}</h3>
@@ -292,6 +297,36 @@ export function Entry() {
         </div>
       </section>
 
+      {/* ---------- The Sparks table, in public ---------- */}
+      <section className="relative border-t-2 border-outline bg-surface py-16 lg:py-24">
+        <div className="mx-auto grid max-w-[1400px] items-center gap-10 px-4 md:px-6 lg:grid-cols-12">
+          <Reveal className="lg:col-span-5">
+            <Calculator size={56} weight="duotone" className="wobble text-tangerine" />
+            <h2 className="mt-4 text-4xl md:text-6xl">{t("lpMathsTitle")}</h2>
+            <p className="mt-3 text-lg text-ink-2">{t("lpMathsSub")}</p>
+            <div className="mt-6 rounded-[18px] border-2 border-outline bg-surface-2 p-4"><div className="meta mb-2">{L(mathsMission.title)} · {maths.creator.name.split(" ")[0]}</div><QuoteBreakdown quote={maths.quote} /></div>
+          </Reveal>
+          <Stagger className="grid grid-cols-2 gap-4 lg:col-span-7">
+            {[
+              { label: t("sp_format"), top: FORMAT_MULT.video, tone: "bg-sky", note: t("fmt_video") },
+              { label: t("sp_reach"), top: REACH_BANDS.at(-1)!.mult, tone: "bg-lemon", note: t("reachBand", { n: num(REACH_BANDS.at(-1)!.min) }) },
+              { label: t("sp_engagement"), top: ENGAGEMENT_BANDS.at(-1)!.mult, tone: "bg-bubblegum", note: t("engBand", { n: ENGAGEMENT_BANDS.at(-1)!.min }) },
+              { label: t("sp_brands"), top: MULTI_BRAND_MULT, tone: "bg-mint", note: t("brandsMulti") },
+            ].map((f, i) => (
+              <Item key={f.label}>
+                <Squish rotate={i % 2 ? 2 : -2} className="!block">
+                  <div className={cn("slab relative overflow-hidden p-5 text-plum !shadow-card", f.tone)}>
+                    <div className="meta !text-plum/70">{f.label}</div>
+                    <div className="mt-1 text-5xl font-extrabold tabular md:text-6xl" dir={i === 0 ? "ltr" : undefined}>{i === 0 ? `×${f.top}` : t("lpUpTo", { n: f.top })}</div>
+                    <div className="mt-2 text-[13.5px] font-bold opacity-80">{f.note}</div>
+                  </div>
+                </Squish>
+              </Item>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
       {/* ---------- Levels ---------- */}
       <section className="relative border-y-2 border-outline bg-grape py-16 text-white lg:py-24">
         <div className="mx-auto max-w-[1400px] px-4 md:px-6">
@@ -312,6 +347,7 @@ export function Entry() {
                     <div className="text-2xl font-extrabold">{t(`lv_${l}` as const)}</div>
                     <div className="text-[12.5px] font-bold text-white/70">{how}</div>
                     <p className="mt-2 text-[14px] text-white/85">{t(`lvUnlock_${l}` as const)}</p>
+                    {l !== "member" && <p className="mt-2 inline-flex items-center gap-1.5 rounded-full border-2 border-white/60 px-2.5 py-1 text-[12px] font-extrabold"><Package size={13} weight="fill" />{t("lpKitLine", { n: LEVEL_KITS[l].items.reduce((n, it) => n + it.qty, 0) })}</p>}
                   </div>
                 </Item>
               );
@@ -346,7 +382,7 @@ export function Entry() {
           </Reveal>
           <Reveal delay={0.1} className="flex flex-col gap-6 lg:col-span-5">
             <StampCard total={8} filled={5} size={56} label={<><span className="font-extrabold">{L(season.name)}</span><span className="meta">{t("stampCard")}</span></>} />
-            <div className="block relative overflow-hidden bg-tangerine p-6 text-plum">
+            <div className="slab relative overflow-hidden bg-tangerine p-6 text-plum">
               <Confetti size={44} weight="duotone" className="wobble" />
               <div className="mt-3 text-2xl font-extrabold">{t("circleCamp")}</div>
               <p className="mt-2 text-[15px] font-semibold opacity-85">{t("circleCampBody")}</p>
@@ -403,7 +439,7 @@ export function Entry() {
 
       {/* ---------- CTA ---------- */}
       <section className="mx-auto max-w-[1400px] px-4 pb-16 md:px-6 lg:pb-24">
-        <Reveal className="block relative overflow-hidden bg-lime p-8 text-plum md:p-14">
+        <Reveal className="slab relative overflow-hidden bg-lime p-8 text-plum md:p-14">
           <Blobs colors={["var(--lemon)", "var(--mint)"]} className="opacity-70" />
           <div className="relative flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
             <div>

@@ -10,7 +10,8 @@ import { useToast } from "../../ui/toast";
 import { JourneyTrail } from "../../ui/JourneyTrail";
 import { actorFor, stageOrder } from "../../domain/stages";
 import { SHIPMENT_ORDER } from "../../domain/simulate";
-import { campaignById, participationById } from "../../domain/selectors";
+import { campaignById, campaignQuote, participationById } from "../../domain/selectors";
+import { QuoteBreakdown } from "../shared/program";
 import { BrandMark, KitList, Points, StageChip, useCurrentCreator } from "../shared/bits";
 import type { Participation, Campaign, Platform } from "../../domain/types";
 import { cn } from "../../ui/cn";
@@ -46,7 +47,7 @@ export function Journey({ participationId, tab }: { participationId: string; tab
           </div>
           <div className="flex items-center gap-3">
             <StageChip stage={p.stage} className="h-8 px-3 text-[13px]" />
-            <Points value={c.points} className="text-lg" />
+            <Points value={p.award?.total ?? campaignQuote(c, me).total} className="text-lg" />
           </div>
         </div>
       </Reveal>
@@ -379,7 +380,9 @@ function PublishTab({ p, c }: { p: Participation; c: Campaign }) {
       <div className="card-soft flex flex-col justify-between gap-6 bg-leaf-soft p-6 text-leaf-ink">
         <div>
           <div className="text-[13px] opacity-70">{t("pointsValue")}</div>
-          <div className="text-4xl font-semibold tabular">{c.points}</div>
+          <div className="text-4xl font-semibold tabular">{p.award?.total ?? campaignQuote(c, me, platform).total}</div>
+          <QuoteBreakdown quote={p.award ?? campaignQuote(c, me, platform)} className="mt-3" />
+          {p.clawedBack && <p className="mt-3 text-[13px] font-bold text-rose">{t("postRemovedBody", { n: p.clawedBack.amount })}</p>}
         </div>
         <ol className="grid gap-2 text-[14px]">
           {(["link_submitted", "post_verified", "points_released", "completed"] as const).map((st) => {

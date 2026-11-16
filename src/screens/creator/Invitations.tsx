@@ -7,7 +7,7 @@ import { useFormat, useL, useT } from "../../i18n";
 import { Button, EmptyState, PageHeader, Sheet, Textarea, Chip } from "../../ui/primitives";
 import { Tilt, spring, useCelebrate } from "../../ui/motion";
 import { useToast } from "../../ui/toast";
-import { invitationsFor, campaignById } from "../../domain/selectors";
+import { invitationsFor, campaignById, campaignQuote } from "../../domain/selectors";
 import { BrandMark, KitList, Points, useCurrentCreator } from "../shared/bits";
 
 export function Invitations() {
@@ -54,7 +54,7 @@ export function Invitations() {
                     <article className="label-card flex h-full flex-col gap-5 p-6">
                       <div className="flex items-start justify-between gap-3">
                         <BrandMark brand={b} />
-                        <Points value={c.points} />
+                        <Points value={campaignQuote(c, me).total} />
                       </div>
                       <div>
                         <h2 className="text-2xl">{L(c.title)}</h2>

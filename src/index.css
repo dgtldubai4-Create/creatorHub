@@ -231,8 +231,9 @@
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
 }
-/* Candy block: a coloured section card with the same outline. Pair with bg-* */
-@utility block {
+/* Candy slab: a coloured section card with the same outline. Pair with bg-*.
+   Not called `block`: that name is Tailwind's display utility. */
+@utility slab {
   border: 2px solid var(--outline);
   border-radius: 1.75rem;
   box-shadow: var(--shadow-float);

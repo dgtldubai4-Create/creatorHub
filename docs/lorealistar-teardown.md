@@ -191,6 +191,9 @@ logistics. L'Oréal brand teams supply missions and product. [inferred]
 
 ## 8. What to take
 
+All seven are now built into Dabur Squad; see "Program rules" in the README. The
+expiry question in item 7 was settled as a 365-day lapse with a 30-day warning.
+
 Ranked by effect on the creator.
 
 1. **Level-up kits.** Ship a box at Insider, Pro and Ambassador, with an unboxing

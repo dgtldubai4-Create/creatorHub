@@ -10,6 +10,7 @@ import { Label, MembershipCard, Stamp, StampCard } from "../../ui/kit";
 import { STREAK_BONUS } from "../../domain/reducer";
 import { currentSeason, daysLeftInSeason, leaderboard, level, LEVEL_ORDER, LEVEL_RULES, monthlyStreak, balance } from "../../domain/selectors";
 import { LevelChip, useCurrentCreator } from "../shared/bits";
+import { LevelChecklist, LevelKitShelf } from "../shared/program";
 import { cn } from "../../ui/cn";
 
 export function SeasonPage() {
@@ -90,8 +91,13 @@ export function SeasonPage() {
               );
             })}
           </ol>
+          <LevelChecklist creatorId={me.id} className="mt-2" />
         </Section>
       </div>
+
+      <Section title={t("levelKits")} sub={t("levelKitsSub")}>
+        <LevelKitShelf creatorId={me.id} />
+      </Section>
 
       <Section title={t("ambassadorRound")} sub={t(`ap_${amb.phase}` as const)} action={<SimulatedTag />}>
         {amb.phase === "selected" ? (
