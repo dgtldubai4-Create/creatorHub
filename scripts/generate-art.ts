@@ -1,24 +1,31 @@
 /**
- * Generates every art slot listed in src/art/manifest.ts.
+ * Fills every slot in src/art/manifest.ts with a photograph.
  *
- *   RECRAFT_API_KEY=... HF_TOKEN=... npm run art
- *   npm run art -- --only level-pro,mission-team      # a subset
- *   npm run art -- --tool recraft                     # one provider only
- *   npm run art -- --force                            # overwrite existing files
- *   npm run art -- --dry-run                          # print the plan, call nothing
+ * With a Gemini API key (https://aistudio.google.com/apikey):
+ *   GEMINI_API_KEY=... npm run art
+ *   npm run art -- --only hero-golden-hour,mission-team   # a subset
+ *   npm run art -- --group portrait                       # ids starting with "portrait"
+ *   npm run art -- --force                                # overwrite existing files
+ *   npm run art -- --dry-run                              # print the plan, call nothing
+ *   GEMINI_IMAGE_MODEL=<model id> npm run art             # default gemini-2.5-flash-image
  *
- * Recraft:       POST https://external.api.recraft.ai/v1/images/generations
- *                body { prompt, style, substyle?, size: "WxH", n: 1, response_format: "b64_json" }
- *                https://www.recraft.ai/docs
- * Hugging Face:  POST https://router.huggingface.co/hf-inference/models/<model>
- *                body { inputs: prompt, parameters: { width, height } }  ->  image bytes
- *                default model black-forest-labs/FLUX.1-schnell (override with HF_MODEL)
+ * Without a key, using the Gemini app (gemini.google.com):
+ *   npm run art -- --prompts            # writes docs/art-prompts.md: one prompt per image
+ *   ...make each image in the Gemini app and save it as <id>.png (or .jpg) in one folder...
+ *   npm run art -- --from ./my-folder   # resizes, converts and files every image it recognises
  *
- * Output goes to src/art/generated/<id>.png and is picked up by <ArtSlot id="..."/>.
- * Both services are called only from this script, never from the app at runtime.
+ * Gemini:  POST https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent
+ *          header x-goog-api-key, body { contents: [{ parts: [{ text }] }],
+ *          generationConfig: { responseModalities: ["IMAGE"], imageConfig: { aspectRatio } } }
+ *          -> candidates[0].content.parts[].inlineData.data (base64)
+ * Recraft and Hugging Face remain available with --tool recraft / --tool hf.
+ *
+ * Every image is resized to its slot and saved as src/art/generated/<id>.webp, where
+ * <ArtSlot id="..."/> and <Face/> pick it up. Services are called only from this
+ * script, never from the app at runtime.
  */
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { basename, extname, join, resolve } from "node:path";
 import { ART_SLOTS, type ArtSlot } from "../src/art/manifest";
 
 const OUT_DIR = resolve(process.cwd(), "src/art/generated");
@@ -30,13 +37,72 @@ const opt = (name: string) => {
 };
 
 const only = opt("only")?.split(",").map((s) => s.trim()).filter(Boolean);
-const toolFilter = opt("tool") as ArtSlot["tool"] | undefined;
+const toolOverride = opt("tool") as ArtSlot["tool"] | undefined;
+const group = opt("group");
+const from = opt("from");
 const force = flag("force");
 const dry = flag("dry-run");
 
 const RECRAFT_KEY = process.env.RECRAFT_API_KEY;
 const HF_TOKEN = process.env.HF_TOKEN;
 const HF_MODEL = process.env.HF_MODEL ?? "black-forest-labs/FLUX.1-schnell";
+const GEMINI_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_MODEL = process.env.GEMINI_IMAGE_MODEL ?? "gemini-2.5-flash-image";
+// Override only to route through a gateway or a local stub in tests.
+const GEMINI_BASE = process.env.GEMINI_BASE_URL ?? "https://generativelanguage.googleapis.com";
+
+const RATIOS: [string, number][] = [["1:1", 1], ["4:5", 0.8], ["3:4", 0.75], ["2:3", 2 / 3], ["9:16", 9 / 16], ["5:4", 1.25], ["4:3", 4 / 3], ["3:2", 1.5], ["16:9", 16 / 9], ["21:9", 21 / 9]];
+export const aspectFor = (w: number, h: number) => RATIOS.reduce((best, r) => (Math.abs(r[1] - w / h) < Math.abs(best[1] - w / h) ? r : best))[0];
+
+async function gemini(slot: ArtSlot): Promise<Buffer> {
+  if (!GEMINI_KEY) throw new Error("GEMINI_API_KEY is not set");
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const res = await fetch(`${GEMINI_BASE}/v1beta/models/${GEMINI_MODEL}:generateContent`, {
+      method: "POST",
+      headers: { "x-goog-api-key": GEMINI_KEY, "content-type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: slot.prompt }] }], generationConfig: { responseModalities: ["IMAGE"], imageConfig: { aspectRatio: aspectFor(slot.width, slot.height) } } }),
+    });
+    if (res.status === 429 || res.status === 503) {
+      console.log(`  ${res.status}, retrying in ${10 * (attempt + 1)}s`);
+      await sleep(10_000 * (attempt + 1));
+      continue;
+    }
+    if (!res.ok) throw new Error(`Gemini ${res.status}: ${(await res.text()).slice(0, 300)}`);
+    const json = (await res.json()) as { candidates?: { content?: { parts?: { inlineData?: { data?: string } }[] } }[] };
+    const data = json.candidates?.[0]?.content?.parts?.find((p) => p.inlineData?.data)?.inlineData?.data;
+    if (!data) throw new Error("Gemini returned no image (the prompt may have been declined)");
+    return Buffer.from(data, "base64");
+  }
+  throw new Error("Gemini kept rate-limiting");
+}
+
+/** Resize to the slot and convert to WebP. Keeps the build small enough to inline. */
+async function optimise(buf: Buffer, slot: ArtSlot): Promise<Buffer> {
+  const sharp = (await import("sharp")).default;
+  return sharp(buf).resize(slot.width, slot.height, { fit: "cover", position: "attention" }).webp({ quality: 78 }).toBuffer();
+}
+
+function writePrompts() {
+  const out = resolve(process.cwd(), "docs/art-prompts.md");
+  const lines = ["# Image prompts", "", "One prompt per image. Paste each into the Gemini app, save the result under the file name shown, put them all in one folder, then run `npm run art -- --from <folder>`.", ""];
+  for (const slot of ART_SLOTS) lines.push(`## ${slot.label}`, "", `Save as: \`${slot.id}.png\` (${aspectFor(slot.width, slot.height)})`, "", `> ${slot.prompt}`, "");
+  writeFileSync(out, lines.join("\n"));
+  console.log(`${ART_SLOTS.length} prompts written to docs/art-prompts.md`);
+}
+
+async function importFolder(dir: string) {
+  const ids = new Map(ART_SLOTS.map((s) => [s.id, s]));
+  let ok = 0;
+  const unknown: string[] = [];
+  for (const name of readdirSync(resolve(dir))) {
+    if (!/\.(png|jpe?g|webp)$/i.test(name)) continue;
+    const slot = ids.get(basename(name, extname(name)).toLowerCase());
+    if (!slot) { unknown.push(name); continue; }
+    writeFileSync(resolve(OUT_DIR, `${slot.id}.webp`), await optimise(readFileSync(join(resolve(dir), name)), slot));
+    ok += 1;
+  }
+  console.log(`${ok} images imported${unknown.length ? `; not recognised: ${unknown.join(", ")}` : ""}`);
+}
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -83,24 +149,27 @@ async function huggingFace(slot: ArtSlot): Promise<Buffer> {
 
 async function main() {
   mkdirSync(OUT_DIR, { recursive: true });
-  const plan = ART_SLOTS.filter((s) => (!only || only.includes(s.id)) && (!toolFilter || s.tool === toolFilter));
+  if (flag("prompts")) return writePrompts();
+  if (from) return importFolder(from);
+  const plan = ART_SLOTS.filter((s) => (!only || only.includes(s.id)) && (!group || s.id.startsWith(group)));
   console.log(`${plan.length} slots${dry ? " (dry run)" : ""}`);
   let ok = 0;
   let skipped = 0;
   let failed = 0;
   for (const slot of plan) {
-    const file = resolve(OUT_DIR, `${slot.id}.png`);
+    const file = resolve(OUT_DIR, `${slot.id}.webp`);
     if (existsSync(file) && !force) {
       skipped += 1;
       continue;
     }
-    console.log(`${slot.tool === "recraft" ? "[recraft]" : "[hf]     "} ${slot.id}  ${slot.width}x${slot.height}`);
+    const tool = toolOverride ?? slot.tool;
+    console.log(`[${tool}] ${slot.id}  ${slot.width}x${slot.height}`);
     if (dry) continue;
     try {
-      const buf = slot.tool === "recraft" ? await recraft(slot) : await huggingFace(slot);
-      writeFileSync(file, buf);
+      const raw = tool === "recraft" ? await recraft(slot) : tool === "hf" ? await huggingFace(slot) : await gemini(slot);
+      writeFileSync(file, await optimise(raw, slot));
       ok += 1;
-      await sleep(slot.tool === "recraft" ? 1200 : 2500);
+      await sleep(tool === "gemini" ? 1500 : 2500);
     } catch (e) {
       failed += 1;
       console.error(`  failed: ${(e as Error).message}`);

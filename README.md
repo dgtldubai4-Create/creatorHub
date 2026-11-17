@@ -194,6 +194,30 @@ with `HF_MODEL`) handles photographic hero and season imagery. Output lands in
 runtime, and the sandbox this was built in could not reach either, so the files are
 not committed yet.
 
+## Photography (Gemini)
+
+Every photograph the app can show is listed in `src/art/manifest.ts`: the landing hero,
+mission and Academy covers, season banners, Circle Camp, and a portrait for each person
+in the seed cast (50 images). `npm run art` fills them with Gemini; the app picks the
+files up at build time and never calls a network at runtime. Until an image exists the
+interface shows its drawn panel or a monogram, so a partial set is fine.
+
+```bash
+# With a Gemini API key (free to create at https://aistudio.google.com/apikey)
+GEMINI_API_KEY=... npm run art
+npm run art -- --group portrait        # only the portraits
+npm run art -- --only hero-golden-hour # one image
+GEMINI_IMAGE_MODEL=<model id> npm run art   # default: gemini-2.5-flash-image
+
+# Without a key, using the Gemini app
+npm run art -- --prompts               # writes docs/art-prompts.md, one prompt per image
+# make each image in the Gemini app, save it under the file name shown, then:
+npm run art -- --from ./my-folder
+```
+
+Images are resized to their slot and saved as WebP in `src/art/generated`. The seed cast
+is fictional, so their portraits are generated; real creators upload their own.
+
 ## Social assets
 
 `npm run social` pulls posts from Dabur's own accounts into `src/art/social` (images plus

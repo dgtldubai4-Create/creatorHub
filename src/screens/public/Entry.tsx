@@ -12,6 +12,7 @@ import { ProductArt } from "../../ui/ProductArt";
 import { Certificate, MembershipCard, StampCard, Ticket } from "../../ui/kit";
 import { Graphic } from "../../ui/Graphic";
 import { SocialWall, hasSocial } from "../../ui/Social";
+import { ArtSlot, hasArt } from "../../ui/ArtSlot";
 import { Logo, ThemeToggle } from "../../app/shell";
 import { BrandMark, LevelChip, MissionTypeChip } from "../shared/bits";
 import { LEVEL_ORDER, LEVEL_RULES, currentSeason, leaderboard } from "../../domain/selectors";
@@ -72,7 +73,7 @@ export function Entry() {
   ];
   const reason = (l: (typeof ticker)[number]["l"]) => L(l.reason).replace(/^Mission: |^مهمة: /, "");
   const arrow = <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />;
-  const live = useTicker(ticker, 4);
+  const live = useTicker(ticker, hasArt("hero-golden-hour") ? 3 : 4);
 
   return (
     <div className="relative min-h-[100dvh] overflow-x-clip bg-canvas">
@@ -112,7 +113,12 @@ export function Entry() {
           </div>
           <div className="relative lg:col-span-6">
             <div className="relative mx-auto w-full max-w-[560px] lg:ms-auto lg:me-0">
-              <motion.div className="me-8 sm:me-20" initial={{ opacity: 0, y: 28, rotate: -4 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ type: "spring", stiffness: 120, damping: 16, delay: 0.1 }}>
+              {hasArt("hero-golden-hour") && (
+                <motion.div className="relative -mb-36 ms-12 overflow-hidden rounded-[28px] shadow-float sm:ms-28" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+                  <div className="h-[340px] w-full md:h-[380px]"><ArtSlot id="hero-golden-hour" /></div>
+                </motion.div>
+              )}
+              <motion.div className="relative z-10 me-8 sm:me-20" initial={{ opacity: 0, y: 28, rotate: -4 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ type: "spring", stiffness: 120, damping: 16, delay: 0.1 }}>
                 <Tilt max={7} className="float-y">
                   <MembershipCard id={hero.id} hue={hero.hue} name={hero.name} handle={hero.handle} level={levelFor(hero.id)} since={date(hero.joinedAt, { month: "short", year: "numeric" })} sparks={sparksFor(hero.id)} className="!max-w-none" />
                 </Tilt>
@@ -342,11 +348,11 @@ export function Entry() {
           </Reveal>
           <Reveal delay={0.1} className="flex flex-col gap-5 lg:col-span-5">
             <StampCard total={8} filled={5} size={52} label={<><span className="font-medium">{L(season.name)}</span><span className="text-ink-3">{t("stampCard")}</span></>} />
-            <div className="brand-fill shine rounded-card p-6 md:p-8">
+            <div className="brand-fill shine overflow-hidden rounded-card">{hasArt("circle-camp") && <div className="h-44 w-full"><ArtSlot id="circle-camp" /></div>}<div className="p-6 md:p-8">
               <div className="text-2xl font-medium tracking-tight">{t("circleCamp")}</div>
               <p className="mt-3 text-[15px] opacity-75">{t("circleCampBody")}</p>
               <div className="mt-6 flex items-center gap-3"><FacePile people={(season.ambassadors.cohort.length ? season.ambassadors.cohort : season.ambassadors.shortlist).map((id) => s.creators.find((c) => c.id === id)!).filter(Boolean)} size={36} max={6} className="[&_.ring-surface]:ring-brand" /><span className="text-[13px] opacity-75">{t("lv_ambassador")}</span></div>
-            </div>
+            </div></div>
           </Reveal>
         </div>
       </section>

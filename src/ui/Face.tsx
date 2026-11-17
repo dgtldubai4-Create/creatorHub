@@ -4,6 +4,15 @@
  * from their name so it never changes. No illustration, no characters.
  */
 import { cn } from "./cn";
+import { portraitId } from "../art/manifest";
+
+// Portraits written by scripts/generate-art.ts. Vite inlines or hashes them at build time.
+const PORTRAITS = import.meta.glob("../art/generated/portrait-*.{png,webp,jpg,jpeg}", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+export function portraitFor(name: string): string | undefined {
+  const id = portraitId(name);
+  const key = Object.keys(PORTRAITS).find((k) => k.includes(`/${id}.`));
+  return key ? PORTRAITS[key] : undefined;
+}
 
 const TONES: [string, string][] = [
   ["#2fd07a", "#067a3a"], // Dabur green
@@ -40,6 +49,8 @@ export function toneFor(name: string, hue = 0): [string, string] {
 export function Face({ name, hue = 0, size = 40, className, style }: { name: string; hue?: number; size?: number | string; className?: string; style?: React.CSSProperties }) {
   const [a, b] = toneFor(name, hue);
   const px = typeof size === "number" ? size : undefined;
+  const src = portraitFor(name);
+  if (src) return <img src={src} alt="" aria-hidden loading="lazy" className={cn("inline-block shrink-0 select-none rounded-full object-cover", className)} style={{ width: size, height: size, boxShadow: "inset 0 0 0 1px rgb(255 255 255 / 0.2)", ...style }} />;
   return (
     <span
       aria-hidden
