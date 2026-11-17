@@ -54,7 +54,7 @@ export function AdminSeasons() {
                       const sel = picked.has(id);
                       return (
                         <li key={id}>
-                          <label className={cn("flex cursor-pointer items-center gap-2 rounded-[8px] border p-2", sel ? "border-leaf bg-leaf-soft/30" : "border-line")}>
+                          <label className={cn("flex cursor-pointer items-center gap-2 rounded-[8px] border p-2", sel ? "border-ink bg-surface-2" : "border-line")}>
                             <input type="checkbox" className="h-4 w-4 accent-[var(--leaf)]" checked={sel} onChange={() => setPicked((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; })} />
                             <Avatar name={c.name} hue={c.hue} size={28} />
                             <span className="min-w-0 flex-1 truncate text-[13.5px] font-medium">{c.name}</span>

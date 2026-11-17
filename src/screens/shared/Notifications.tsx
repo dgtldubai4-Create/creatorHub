@@ -21,13 +21,13 @@ export function Notifications({ audience }: { audience: "creator" | "brand" }) {
     <div className="flex flex-col gap-8">
       <PageHeader title={t("notifications")} sub={t("notificationsSub")} eyebrow={<SimulatedTag />} actions={unread > 0 && <Button variant="secondary" size="sm" onClick={() => dispatch({ type: "markRead", audience: key })}>{t("markAllRead")}</Button>} />
       {list.length === 0 ? (
-        <EmptyState icon={<BellSlash size={24} weight="duotone" />} title={t("noNotifications")} body={t("noNotificationsBody")} />
+        <EmptyState icon={<BellSlash size={24} />} title={t("noNotifications")} body={t("noNotificationsBody")} />
       ) : (
         <Stagger className="grid gap-2" gap={0.03}>
           {list.map((n) => {
             const body = (
-              <div className={cn("label-card flex items-start gap-4 p-4", !n.read && "border-leaf/40 bg-leaf-soft/30", n.link && "press hover:border-ink-3")}>
-                <span className={cn("mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full", n.read ? "bg-surface-2 text-ink-3" : "bg-leaf-soft text-leaf")}>{icon[n.channel]}</span>
+              <div className={cn("label-card flex items-start gap-4 p-4", !n.read && "bg-surface-2", n.link && "press hover:border-line-2")}>
+                <span className={cn("mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full", n.read ? "bg-surface-2 text-ink-3" : "bg-accent-soft text-accent-text")}>{icon[n.channel]}</span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className={cn("text-[15px]", !n.read && "font-semibold")}>{L(n.title)}</span>

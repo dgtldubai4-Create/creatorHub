@@ -25,8 +25,8 @@ export function ProductArt({ product, brand, className, size = "md" }: { product
       <Pack type={product.packType} hue={hue} small={size === "sm"}>
         <span className="absolute inset-x-[10%] top-[26%] flex h-[48%] flex-col overflow-hidden rounded-[6%] bg-[#fbfaf6] text-[#132419] shadow-[inset_0_0_0_1px_rgb(0_0_0/0.08)]">
           <span className="flex items-center gap-[4%] px-[8%] pt-[7%]">
-            <Glyph weight="duotone" className="h-[14%] w-auto shrink-0" style={{ color: hue, fontSize: size === "sm" ? 7 : size === "md" ? 10 : 16 }} />
-            <span className={cn("truncate font-bold uppercase leading-none tracking-[0.06em]", size === "sm" ? "text-[5px]" : size === "md" ? "text-[7.5px]" : "text-[11px]")} style={{ color: hue }}>{brandName}</span>
+            <Glyph className="h-[14%] w-auto shrink-0" style={{ color: hue, fontSize: size === "sm" ? 7 : size === "md" ? 10 : 16 }} />
+            <span className={cn("truncate font-medium uppercase leading-none tracking-[0.06em]", size === "sm" ? "text-[5px]" : size === "md" ? "text-[7.5px]" : "text-[11px]")} style={{ color: hue }}>{brandName}</span>
           </span>
           {size !== "sm" && <span className={cn("mt-[5%] px-[8%] font-semibold leading-[1.05] text-[#132419]", size === "md" ? "line-clamp-2 text-[7.5px]" : "line-clamp-2 text-[12px]")}>{line}</span>}
           <span className="mt-auto flex items-center justify-between px-[8%] pb-[6%]" style={{ borderTop: `2px solid ${hue}` }}>

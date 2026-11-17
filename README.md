@@ -196,26 +196,29 @@ not committed yet.
 
 ## Design notes
 
-Bright, loud, personal. The interface is built on three things:
+Quiet, monochrome, personal. The interface is built on three things:
 
-- **Candy palette** (`src/index.css`): cream canvas, deep plum ink, and six candies
-  (lime, tangerine, bubblegum, sky, lemon, grape). Every card has a 2px ink outline and
-  a hard offset shadow; buttons and chips are pills. Dark mode keeps the candies and
-  flips the outline to cream.
-- **Faces drawn in code** (`src/ui/Face.tsx`): every creator and team member gets a
-  deterministic illustrated avatar from their name: skin, hair or hijab, colours,
-  glasses, expression. The seed cast has hand-set looks; anyone new gets a hashed one.
-  `Avatar` renders a `Face`, so faces appear everywhere a name does.
-- **Motion everywhere** (`src/ui/motion.tsx`): ambient drift (blobs, marquees, bobbing
-  faces, ticking counters, a rotating headline word, a cursor glow) and interaction
-  (magnetic buttons, tilt, squish, springy page transitions, stamps and confetti).
-  Everything collapses under `prefers-reduced-motion`.
+- **One accent on neutral** (`src/index.css`): zinc surfaces in light and dark, a single
+  saffron accent for the primary moment (Sparks, the active step, the one thing to do
+  next), green and red only for outcomes. Cards are a surface, a hairline and a soft
+  shadow; there are no outlines, hard shadows or colour blocks. Product packs and the
+  membership cards are the only saturated things on a screen.
+- **Monogram portraits** (`src/ui/Face.tsx`): until a creator uploads a photo they get a
+  tonal disc with their initials, one of eight muted tones picked from their name.
+  `Avatar` renders a `Face`, so a person appears everywhere their name does.
+- **Motivated motion** (`src/ui/motion.tsx`): content rises into place once, counters
+  tick, the membership card tilts under the pointer, the headline word rotates, the
+  ticker scrolls. Nothing wobbles or bobs. Everything collapses under
+  `prefers-reduced-motion`.
 
-The landing page leads with the people: a cloud of real Squad faces, a live ticker of
-Sparks earned, a rotating creator spotlight in their own words, then missions, levels,
-the season board, the Academy and the brands. The creator home greets you by name with
-your face, a note from a named team member, the creators nearest you on the board, and
-a feed of what the Squad is doing.
+Light and dark are both designed. The app follows the device by default and the moon or
+sun button in the header overrides it (stored per browser, outside the app state).
 
-- Type: Outfit for Latin, Readex Pro for Arabic, both self-hosted variable fonts.
+The landing page opens with the promise beside a real membership card and the live
+Sparks ledger, then the ticker, a creator spotlight in their own words, how it works,
+missions, the public Sparks maths, levels, the season board, the Academy and the brands.
+The creator home greets you by name with a note from a named team member, the creators
+nearest you on the board, and a feed of what the Squad is doing.
+
+- Type: Geist for Latin, Readex Pro for Arabic, both self-hosted variable fonts.
 - Icons: Phosphor, named imports only.

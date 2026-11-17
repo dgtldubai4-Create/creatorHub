@@ -145,27 +145,27 @@ export function AppAlertsCard({ creatorId }: { creatorId: string }) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <div className="label-card flex flex-col gap-3 p-5">
-        <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-[14px] border-2 border-outline bg-lime text-plum"><DeviceMobile size={22} weight="fill" /></span><div className="min-w-0"><div className="font-extrabold">{t("installTitle")}</div><div className="text-[13px] text-ink-2">{t("installBody")}</div></div></div>
+        <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-[14px] inverse-fill"><DeviceMobile size={22} weight="fill" /></span><div className="min-w-0"><div className="font-semibold">{t("installTitle")}</div><div className="text-[13px] text-ink-2">{t("installBody")}</div></div></div>
         {state === "installed" ? (
           <Chip tone="lime" icon={<Check size={13} weight="bold" />} className="self-start">{t("installed")}</Chip>
         ) : state === "ready" ? (
           <Button size="sm" className="self-start" onClick={() => void install()} icon={<DownloadSimple size={15} weight="bold" />}>{t("installCta")}</Button>
         ) : (
-          <p className="text-[13px] font-bold text-ink-2">{ios ? t("installHowIos") : t("installHow")}</p>
+          <p className="text-[13px] font-medium text-ink-2">{ios ? t("installHowIos") : t("installHow")}</p>
         )}
       </div>
       <div className="label-card flex flex-col gap-3 p-5">
-        <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-[14px] border-2 border-outline bg-lemon text-plum"><BellRinging size={22} weight="fill" /></span><div className="min-w-0 flex-1"><div className="font-extrabold">{t("alertsTitle")}</div><div className="text-[13px] text-ink-2">{t("alertsBody")}</div></div><SimulatedTag /></div>
+        <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-[14px] border border-line bg-accent-soft text-on"><BellRinging size={22} weight="fill" /></span><div className="min-w-0 flex-1"><div className="font-semibold">{t("alertsTitle")}</div><div className="text-[13px] text-ink-2">{t("alertsBody")}</div></div><SimulatedTag /></div>
         {perm === "unsupported" ? (
-          <p className="text-[13px] font-bold text-ink-2">{t("alertsUnsupported")}</p>
+          <p className="text-[13px] font-medium text-ink-2">{t("alertsUnsupported")}</p>
         ) : perm === "denied" ? (
-          <p className="text-[13px] font-bold text-rose">{t("alertsBlocked")}</p>
+          <p className="text-[13px] font-medium text-rose">{t("alertsBlocked")}</p>
         ) : on ? (
           <div className="flex flex-wrap items-center gap-2"><Chip tone="lime" icon={<Check size={13} weight="bold" />}>{t("alertsOn")}</Chip><Button size="sm" variant="ghost" onClick={turnOff}>{t("alertsTurnOff")}</Button></div>
         ) : (
           <Button size="sm" className="self-start" onClick={() => void turnOn()} icon={<BellRinging size={15} weight="bold" />}>{t("alertsTurnOn")}</Button>
         )}
-        <p className="text-[12px] font-bold text-ink-3">{t("alertsSimNote")}</p>
+        <p className="text-[12px] font-medium text-ink-3">{t("alertsSimNote")}</p>
       </div>
     </div>
   );

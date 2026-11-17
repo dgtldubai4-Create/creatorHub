@@ -106,13 +106,13 @@ export function CampaignEditor({ open, onClose, campaign }: { open: boolean; onC
             {products.map((p) => {
               const qty = f.kit[p.id] ?? 0;
               return (
-                <div key={p.id} className={cn("flex items-center gap-3 rounded-2xl border p-2 pe-3", qty > 0 ? "border-leaf bg-leaf-soft/40" : "border-line")}>
+                <div key={p.id} className={cn("flex items-center gap-3 rounded-2xl border p-2 pe-3", qty > 0 ? "border-ink bg-surface-2" : "border-line")}>
                   <ProductArt product={p} brand={s.brands.find((b) => b.id === p.brandId)} size="sm" className="h-12 w-12" />
                   <span className="min-w-0 flex-1 truncate text-[13.5px] font-medium">{L(p.names)}</span>
                   <div className="flex items-center gap-1">
-                    <button type="button" className="h-7 w-7 rounded-full bg-surface-2 font-bold" onClick={() => set("kit", { ...f.kit, [p.id]: Math.max(0, qty - 1) })}>-</button>
+                    <button type="button" className="h-7 w-7 rounded-full bg-surface-2 font-medium" onClick={() => set("kit", { ...f.kit, [p.id]: Math.max(0, qty - 1) })}>-</button>
                     <span className="w-5 text-center text-[13px] font-semibold tabular">{qty}</span>
-                    <button type="button" className="h-7 w-7 rounded-full bg-surface-2 font-bold" onClick={() => set("kit", { ...f.kit, [p.id]: qty + 1 })}>+</button>
+                    <button type="button" className="h-7 w-7 rounded-full bg-surface-2 font-medium" onClick={() => set("kit", { ...f.kit, [p.id]: qty + 1 })}>+</button>
                   </div>
                 </div>
               );

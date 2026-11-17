@@ -69,7 +69,7 @@ export function Profile() {
               const Icon = pl === "instagram" ? InstagramLogo : TiktokLogo;
               return (
                 <div key={pl} className="flex flex-wrap items-center gap-3 rounded-[8px] bg-surface-2 p-3">
-                  <Icon size={22} weight="duotone" className="text-ink-2" />
+                  <Icon size={22} className="text-ink-2" />
                   {acc ? (
                     <div className="min-w-0 flex-1 text-[13.5px]"><div className="font-medium">{t("connectedAs", { handle: acc.handle })}</div><div className="text-[12px] text-ink-3">{num(acc.followers)} {t("followers")} · {acc.engagementRate}% {t("engagement")} · {date(acc.connectedAt)}</div></div>
                   ) : (
@@ -110,7 +110,7 @@ export function Profile() {
             {me.charter?.version === CHARTER_VERSION ? (
               <Chip tone="lime" icon={<Check size={13} weight="bold" />} className="self-start">{t("charterAcceptedOn", { date: date(me.charter.acceptedAt, { day: "numeric", month: "short", year: "numeric" }) })}</Chip>
             ) : (
-              <div className="flex flex-wrap items-center gap-3"><span className="text-[14px] font-bold text-rose">{t("charterPending")}</span><Button size="sm" onClick={() => dispatch({ type: "acceptCharter", creatorId: me.id })}>{t("charterAccept")}</Button></div>
+              <div className="flex flex-wrap items-center gap-3"><span className="text-[14px] font-medium text-rose">{t("charterPending")}</span><Button size="sm" onClick={() => dispatch({ type: "acceptCharter", creatorId: me.id })}>{t("charterAccept")}</Button></div>
             )}
             <CharterList />
           </div>

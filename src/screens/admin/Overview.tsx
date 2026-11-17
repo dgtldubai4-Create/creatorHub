@@ -81,11 +81,11 @@ export function AdminOverview() {
             </div>
           </Reveal>
         </Section>
-        <Section title={t("whatsHappening")} className="lg:col-span-2" action={<Link to="/admin/notifications" className="text-[13px] font-medium text-leaf hover:underline">{t("viewAll")}</Link>}>
+        <Section title={t("whatsHappening")} className="lg:col-span-2" action={<Link to="/admin/notifications" className="text-[13px] font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink">{t("viewAll")}</Link>}>
           <ul className="label-card divide-y divide-line">
             {feed.map((n) => (
               <li key={n.id}>
-                <Link to={n.link ?? "/admin"} className={cn("block px-4 py-3 hover:bg-surface-2", !n.read && "bg-leaf-soft/30")}>
+                <Link to={n.link ?? "/admin"} className={cn("block px-4 py-3 hover:bg-surface-2", !n.read && "bg-surface-2")}>
                   <div className="text-[14px] font-medium">{L(n.title)}</div>
                   <div className="text-[13px] text-ink-2">{L(n.body)}</div>
                   <div className="mt-0.5 text-[12px] text-ink-3">{relative(n.at)}</div>
@@ -97,7 +97,7 @@ export function AdminOverview() {
       </div>
 
       {can(role, "campaigns") && (
-        <Section title={t("campaigns")} action={<Link to="/admin/campaigns" className="text-[13px] font-medium text-leaf hover:underline">{t("viewAll")}</Link>}>
+        <Section title={t("campaigns")} action={<Link to="/admin/campaigns" className="text-[13px] font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink">{t("viewAll")}</Link>}>
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {s.campaigns.filter((c) => c.status !== "draft" && c.status !== "completed").slice(0, 6).map((c) => {
               const b = s.brands.find((x) => x.id === c.brandId)!;

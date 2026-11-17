@@ -111,7 +111,7 @@ export function useCelebrate() {
   const reduce = useReducedMotion();
   return (origin?: { x: number; y: number }) => {
     if (reduce) return;
-    confetti({ particleCount: 90, spread: 70, startVelocity: 38, gravity: 1.1, scalar: 0.9, ticks: 180, origin: origin ?? { y: 0.6 }, colors: ["#c9f24a", "#ff7a3d", "#ff7bc8", "#3fa9ff", "#ffd43b", "#7b5bff"], disableForReducedMotion: true });
+    confetti({ particleCount: 60, spread: 62, startVelocity: 34, gravity: 1.1, scalar: 0.9, ticks: 180, origin: origin ?? { y: 0.6 }, colors: ["#f0a92d", "#f6c667", "#fbefd6", "#a1a1aa", "#3f3f46"], disableForReducedMotion: true });
   };
 }
 
@@ -120,7 +120,7 @@ export function Float({ children, className, delay = 0, amplitude = 8, duration 
   const reduce = useReducedMotion();
   if (reduce) return <div className={className}>{children}</div>;
   return (
-    <motion.div className={className} animate={{ y: [0, -amplitude, 0], rotate: [0, 1.5, 0] }} transition={{ duration, delay, repeat: Infinity, ease: "easeInOut" }}>
+    <motion.div className={className} animate={{ y: [0, -amplitude, 0] }} transition={{ duration, delay, repeat: Infinity, ease: "easeInOut" }}>
       {children}
     </motion.div>
   );
@@ -138,8 +138,8 @@ export function Marquee({ children, className, duration = 40, reverse }: { child
   );
 }
 
-/** Soft candy blobs drifting behind a section. */
-export function Blobs({ colors = ["var(--lime)", "var(--bubblegum)", "var(--sky)"], className }: { colors?: string[]; className?: string }) {
+/** One soft light drifting behind a section. */
+export function Blobs({ colors = ["var(--accent)"], className }: { colors?: string[]; className?: string }) {
   return (
     <div className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)} aria-hidden>
       {colors.map((c, i) => (
@@ -149,8 +149,8 @@ export function Blobs({ colors = ["var(--lime)", "var(--bubblegum)", "var(--sky)
   );
 }
 
-/** Follows the cursor with a soft candy glow. Mount once inside a `relative` section. */
-export function CursorGlow({ color = "var(--lemon)", size = 420 }: { color?: string; size?: number }) {
+/** Follows the cursor with a faint warm light. Mount once inside a `relative` section. */
+export function CursorGlow({ color = "var(--accent)", size = 520 }: { color?: string; size?: number }) {
   const reduce = useReducedMotion();
   const x = useSpring(useMotionValue(-1000), { stiffness: 120, damping: 20 });
   const y = useSpring(useMotionValue(-1000), { stiffness: 120, damping: 20 });
@@ -161,7 +161,7 @@ export function CursorGlow({ color = "var(--lemon)", size = 420 }: { color?: str
     return () => window.removeEventListener("pointermove", move);
   }, [x, y, size, reduce]);
   if (reduce) return null;
-  return <motion.span aria-hidden className="pointer-events-none fixed left-0 top-0 z-0 rounded-full opacity-40 mix-blend-multiply dark:mix-blend-screen" style={{ x, y, width: size, height: size, background: `radial-gradient(circle, ${color} 0%, transparent 65%)` }} />;
+  return <motion.span aria-hidden className="pointer-events-none fixed left-0 top-0 z-0 rounded-full opacity-[0.12]" style={{ x, y, width: size, height: size, background: `radial-gradient(circle, ${color} 0%, transparent 65%)` }} />;
 }
 
 /** Scroll-linked vertical drift for decorative layers. */
@@ -173,16 +173,16 @@ export function Parallax({ children, className, speed = 0.2 }: { children: React
   return <motion.div ref={ref} className={className} style={reduce ? undefined : { y }}>{children}</motion.div>;
 }
 
-/** Hover squish and a little tilt, for faces and candy tiles. */
-export function Squish({ children, className, rotate = -3 }: { children: ReactNode; className?: string; rotate?: number }) {
+/** A small lift on hover and a press on tap. `rotate` is accepted and ignored. */
+export function Squish({ children, className }: { children: ReactNode; className?: string; rotate?: number }) {
   return (
-    <motion.div className={cn("inline-block", className)} whileHover={{ scale: 1.08, rotate }} whileTap={{ scale: 0.94 }} transition={springSnappy}>
+    <motion.div className={cn("inline-block", className)} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }} transition={springSnappy}>
       {children}
     </motion.div>
   );
 }
 
-/** Cycles through words with a spring flip. */
+/** Cycles through words, each rising into place. */
 export function RotatingWord({ words, className, interval = 2200 }: { words: string[]; className?: string; interval?: number }) {
   const [i, setI] = useState(0);
   const reduce = useReducedMotion();
@@ -194,7 +194,7 @@ export function RotatingWord({ words, className, interval = 2200 }: { words: str
   return (
     <span className={cn("relative inline-grid overflow-visible align-baseline", className)}>
       <AnimatePresence mode="popLayout" initial={false}>
-        <motion.span key={words[i]} className="col-start-1 row-start-1 inline-block whitespace-nowrap" initial={{ y: "100%", opacity: 0, rotate: 6 }} animate={{ y: 0, opacity: 1, rotate: 0 }} exit={{ y: "-100%", opacity: 0, rotate: -6 }} transition={{ type: "spring", stiffness: 300, damping: 24 }}>
+        <motion.span key={words[i]} className="col-start-1 row-start-1 inline-block whitespace-nowrap" initial={{ y: "60%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: "-60%", opacity: 0 }} transition={{ type: "spring", stiffness: 300, damping: 24 }}>
           {words[i]}
         </motion.span>
       </AnimatePresence>

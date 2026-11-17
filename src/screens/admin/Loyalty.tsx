@@ -41,7 +41,7 @@ export function AdminLoyalty() {
       <PageHeader title={t("loyalty")} sub={t("loyaltySub")} />
       <div className="grid gap-8 lg:grid-cols-2">
         <Section title={`${t("releaseQueue")} · ${release.length}`}>
-          {release.length === 0 ? <EmptyState icon={<Coins size={22} weight="duotone" />} title={t("nothingHere")} /> : (
+          {release.length === 0 ? <EmptyState icon={<Coins size={22} />} title={t("nothingHere")} /> : (
             <Stagger className="grid gap-2">
               {release.map((p) => {
                 const cr = s.creators.find((x) => x.id === p.creatorId)!;
@@ -60,7 +60,7 @@ export function AdminLoyalty() {
           )}
         </Section>
         <Section title={`${t("fulfilQueue")} · ${fulfil.length}`}>
-          {fulfil.length === 0 ? <EmptyState icon={<Gift size={22} weight="duotone" />} title={t("nothingHere")} /> : (
+          {fulfil.length === 0 ? <EmptyState icon={<Gift size={22} />} title={t("nothingHere")} /> : (
             <Stagger className="grid gap-2">
               {fulfil.map((rd) => {
                 const cr = s.creators.find((x) => x.id === rd.creatorId)!;
@@ -82,25 +82,25 @@ export function AdminLoyalty() {
       <Section title={t("housekeeping")} sub={t("housekeepingSub")} action={<SimulatedTag />}>
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="label-card flex flex-col gap-3 p-5">
-            <div className="flex items-start gap-3"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border-2 border-outline bg-sky text-plum"><LinkSimple size={22} weight="bold" /></span><div className="min-w-0 flex-1"><div className="font-extrabold">{t("linkCheck")}</div><div className="text-[13px] text-ink-2">{t("linkCheckSub", { n: due.length })}</div></div></div>
+            <div className="flex items-start gap-3"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border border-line bg-surface-2 text-on"><LinkSimple size={22} weight="bold" /></span><div className="min-w-0 flex-1"><div className="font-semibold">{t("linkCheck")}</div><div className="text-[13px] text-ink-2">{t("linkCheckSub", { n: due.length })}</div></div></div>
             {due.length > 0 && (
-              <ul className="max-h-48 divide-y divide-line overflow-y-auto rounded-[12px] border-2 border-outline" data-lenis-prevent>
-                {due.map((d) => { const cr = s.creators.find((x) => x.id === d.creatorId); return <li key={d.id} className="flex items-center gap-2 px-3 py-2 text-[13px]">{cr && <Avatar name={cr.name} hue={cr.hue} size={24} />}<span className="min-w-0 flex-1 truncate"><span className="font-bold">{cr?.name.split(" ")[0]}</span> · {L(d.title)}</span><span className="shrink-0 text-ink-3">{relative(d.approvedAt)}</span><span className="shrink-0 font-extrabold tabular">{num(d.amount)}</span></li>; })}
+              <ul className="max-h-48 divide-y divide-line overflow-y-auto rounded-[12px] border border-line" data-lenis-prevent>
+                {due.map((d) => { const cr = s.creators.find((x) => x.id === d.creatorId); return <li key={d.id} className="flex items-center gap-2 px-3 py-2 text-[13px]">{cr && <Avatar name={cr.name} hue={cr.hue} size={24} />}<span className="min-w-0 flex-1 truncate"><span className="font-medium">{cr?.name.split(" ")[0]}</span> · {L(d.title)}</span><span className="shrink-0 text-ink-3">{relative(d.approvedAt)}</span><span className="shrink-0 font-semibold tabular">{num(d.amount)}</span></li>; })}
               </ul>
             )}
             <Button size="sm" className="self-start" disabled={due.length === 0 || !canReview} onClick={runLinks} icon={<LinkSimple size={15} weight="bold" />}>{t("runLinkCheck")}</Button>
             {returned.length > 0 && (
               <div>
                 <div className="meta mb-2 flex items-center gap-1.5"><ArrowCounterClockwise size={13} weight="bold" />{t("clawbackLog")}</div>
-                <ul className="grid gap-1.5">{returned.slice(0, 5).map((l) => { const cr = s.creators.find((x) => x.id === l.creatorId); return <li key={l.id} className="flex items-center gap-2 text-[13px]">{cr && <Avatar name={cr.name} hue={cr.hue} size={22} />}<span className="min-w-0 flex-1 truncate">{cr?.name} · {L(l.reason)}</span><span className="shrink-0 font-extrabold tabular text-rose">{num(l.delta)}</span></li>; })}</ul>
+                <ul className="grid gap-1.5">{returned.slice(0, 5).map((l) => { const cr = s.creators.find((x) => x.id === l.creatorId); return <li key={l.id} className="flex items-center gap-2 text-[13px]">{cr && <Avatar name={cr.name} hue={cr.hue} size={22} />}<span className="min-w-0 flex-1 truncate">{cr?.name} · {L(l.reason)}</span><span className="shrink-0 font-semibold tabular text-rose">{num(l.delta)}</span></li>; })}</ul>
               </div>
             )}
           </div>
           <div className="label-card flex flex-col gap-3 p-5">
-            <div className="flex items-start gap-3"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border-2 border-outline bg-lemon text-plum"><HourglassMedium size={22} weight="bold" /></span><div className="min-w-0 flex-1"><div className="font-extrabold">{t("expiryJob")}</div><div className="text-[13px] text-ink-2">{t("expiryJobSub", { n: watch.length })}</div></div></div>
+            <div className="flex items-start gap-3"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border border-line bg-accent-soft text-on"><HourglassMedium size={22} weight="bold" /></span><div className="min-w-0 flex-1"><div className="font-semibold">{t("expiryJob")}</div><div className="text-[13px] text-ink-2">{t("expiryJobSub", { n: watch.length })}</div></div></div>
             {watch.length > 0 && (
-              <ul className="divide-y divide-line rounded-[12px] border-2 border-outline">
-                {watch.map(({ creator, expiry }) => <li key={creator.id} className="flex items-center gap-2 px-3 py-2 text-[13px]"><Avatar name={creator.name} hue={creator.hue} size={24} /><span className="min-w-0 flex-1 truncate font-bold">{creator.name}</span><Chip tone={expiry.expired ? "rose" : "lemon"} className="h-6 text-[11.5px]">{expiry.expired ? t("expiredLabel") : t("daysLeftN", { n: expiry.daysLeft ?? 0 })}</Chip><span className="shrink-0 font-extrabold tabular">{num(expiry.balance)}</span></li>)}
+              <ul className="divide-y divide-line rounded-[12px] border border-line">
+                {watch.map(({ creator, expiry }) => <li key={creator.id} className="flex items-center gap-2 px-3 py-2 text-[13px]"><Avatar name={creator.name} hue={creator.hue} size={24} /><span className="min-w-0 flex-1 truncate font-medium">{creator.name}</span><Chip tone={expiry.expired ? "rose" : "lemon"} className="h-6 text-[11.5px]">{expiry.expired ? t("expiredLabel") : t("daysLeftN", { n: expiry.daysLeft ?? 0 })}</Chip><span className="shrink-0 font-semibold tabular">{num(expiry.balance)}</span></li>)}
               </ul>
             )}
             <Button size="sm" className="self-start" disabled={watch.length === 0 || !canLoyalty} onClick={runExpiry} icon={<HourglassMedium size={15} weight="bold" />}>{t("runExpiry")}</Button>

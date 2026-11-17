@@ -15,9 +15,9 @@ import { cn } from "../../ui/cn";
 function Row({ label, mult, mine, note }: { label: string; mult: number; mine?: boolean; note?: string }) {
   const t = useT();
   return (
-    <li className={cn("flex items-center justify-between gap-3 px-4 py-2.5", mine && "bg-lime text-plum")}>
-      <span className="min-w-0"><span className="text-[14.5px] font-bold">{label}</span>{note && <span className="block text-[12px] font-bold opacity-70">{note}</span>}</span>
-      <span className="flex shrink-0 items-center gap-2">{mine && <span className="meta !text-plum/70">{t("thatsYou")}</span>}<span className="text-lg font-extrabold tabular" dir="ltr">×{mult}</span></span>
+    <li className={cn("flex items-center justify-between gap-3 px-4 py-2.5", mine && "accent-fill")}>
+      <span className="min-w-0"><span className="text-[14.5px] font-medium">{label}</span>{note && <span className="block text-[12px] font-medium opacity-70">{note}</span>}</span>
+      <span className="flex shrink-0 items-center gap-2">{mine && <span className="meta !text-on/70">{t("thatsYou")}</span>}<span className="text-lg font-semibold tabular" dir="ltr">×{mult}</span></span>
     </li>
   );
 }
@@ -25,8 +25,8 @@ function Row({ label, mult, mine, note }: { label: string; mult: number; mine?: 
 function Table({ title, icon, tone, children }: { title: string; icon: React.ReactNode; tone: string; children: React.ReactNode }) {
   return (
     <div className="label-card h-full overflow-hidden">
-      <div className={cn("flex items-center gap-2 border-b-2 border-outline px-4 py-3 text-plum", tone)}>{icon}<h3 className="text-lg font-extrabold">{title}</h3></div>
-      <ul className="divide-y-2 divide-outline">{children}</ul>
+      <div className={cn("flex items-center gap-2 border-b border-line px-4 py-3 text-on", tone)}>{icon}<h3 className="text-lg font-semibold">{title}</h3></div>
+      <ul className="divide-y divide-line">{children}</ul>
     </div>
   );
 }
@@ -51,39 +51,39 @@ export function SparksPage() {
 
   return (
     <div className="flex flex-col gap-10">
-      <Link to="/creator/rewards" className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-ink-2 hover:text-ink"><ArrowLeft size={16} weight="bold" className="rtl:rotate-180" />{t("rewards")}</Link>
+      <Link to="/creator/rewards" className="inline-flex items-center gap-1.5 text-[13.5px] font-medium text-ink-2 hover:text-ink"><ArrowLeft size={16} weight="bold" className="rtl:rotate-180" />{t("rewards")}</Link>
       <PageHeader title={t("sparksHow")} sub={t("sparksHowSub")} actions={<Chip tone="lime" icon={<Lightning size={14} weight="fill" />}>{t("neverBelow")}</Chip>} />
 
       <Reveal inView={false}>
-        <div className="slab bg-grape p-6 text-white md:p-8">
-          <div className="meta !text-white/70">{t("yourEstimate")}</div>
-          <div className="mt-2 text-2xl font-extrabold md:text-4xl">{t("sparksFormula")}</div>
-          <p className="mt-3 text-[14.5px] font-bold text-white/80">{t("estimateHint", { followers: num(mine.followers), rate: mine.engagementRate })} {t("roundNote")}</p>
+        <div className="inverse-fill rounded-[1.75rem] p-6 md:p-8">
+          <div className="meta !text-on/60">{t("yourEstimate")}</div>
+          <div className="mt-2 text-2xl font-semibold md:text-4xl">{t("sparksFormula")}</div>
+          <p className="mt-3 text-[14.5px] text-on/75">{t("estimateHint", { followers: num(mine.followers), rate: mine.engagementRate })} {t("roundNote")}</p>
         </div>
       </Reveal>
 
       <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Item>
-          <Table title={t("sp_format")} icon={<FilmSlate size={20} weight="fill" />} tone="bg-sky">
+          <Table title={t("sp_format")} icon={<FilmSlate size={20} weight="fill" />} tone="bg-surface-2">
             {FORMATS.map((f) => <Row key={f} label={t(`fmt_${f}` as const)} mult={FORMAT_MULT[f]} note={f === "story" ? t("fmtStoryNote") : undefined} />)}
           </Table>
         </Item>
         <Item>
-          <Table title={t("sp_reach")} icon={<UsersThree size={20} weight="fill" />} tone="bg-lemon">
+          <Table title={t("sp_reach")} icon={<UsersThree size={20} weight="fill" />} tone="bg-accent-soft">
             {REACH_BANDS.map((b, i) => <Row key={b.min} label={i === 0 ? t("reachFloor", { n: num(REACH_BANDS[1].min) }) : t("reachBand", { n: num(b.min) })} mult={b.mult} mine={b === myReach} />)}
           </Table>
         </Item>
         <Item>
-          <Table title={t("sp_engagement")} icon={<ChartLineUp size={20} weight="fill" />} tone="bg-bubblegum">
+          <Table title={t("sp_engagement")} icon={<ChartLineUp size={20} weight="fill" />} tone="bg-surface-2">
             {ENGAGEMENT_BANDS.map((b, i) => <Row key={b.min} label={i === 0 ? t("engFloor", { n: ENGAGEMENT_BANDS[1].min }) : t("engBand", { n: b.min })} mult={b.mult} mine={b === myEng} />)}
           </Table>
         </Item>
         <Item>
-          <Table title={t("sp_brands")} icon={<Stack size={20} weight="fill" />} tone="bg-mint">
+          <Table title={t("sp_brands")} icon={<Stack size={20} weight="fill" />} tone="bg-surface-2">
             <Row label={t("brandsOne")} mult={1} />
             <Row label={t("brandsMulti")} mult={MULTI_BRAND_MULT} />
             <Row label={t("sp_double")} mult={2} />
-            <li className="px-4 py-2.5 text-[12.5px] font-bold text-ink-2">{t("flatNote")}</li>
+            <li className="px-4 py-2.5 text-[12.5px] font-medium text-ink-2">{t("flatNote")}</li>
           </Table>
         </Item>
       </Stagger>
@@ -103,8 +103,8 @@ export function SparksPage() {
               <Button size="sm" variant="ghost" onClick={() => { setFollowers(String(mine.followers)); setRate(String(mine.engagementRate)); }}>{t("calcMine")}</Button>
             </div>
           </div>
-          <div className="flex flex-col justify-center gap-4 rounded-[18px] border-2 border-outline bg-surface-2 p-5">
-            <div className="text-6xl font-extrabold tabular md:text-7xl" dir="ltr">+{num(quote.total)}</div>
+          <div className="flex flex-col justify-center gap-4 rounded-[18px] border border-line bg-surface-2 p-5">
+            <div className="text-6xl font-semibold tabular md:text-7xl" dir="ltr">+{num(quote.total)}</div>
             <QuoteBreakdown quote={quote} />
           </div>
         </div>
@@ -113,17 +113,16 @@ export function SparksPage() {
       <Section title={t("rulesTitle")}>
         <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
-            { icon: LinkSimple, tone: "bg-sky", title: t("ruleLive"), body: t("ruleLiveBody"), tag: `${LIVE_DAYS}` },
-            { icon: HourglassMedium, tone: "bg-lemon", title: t("ruleExpiry"), body: t("ruleExpiryBody"), tag: `${EXPIRY_DAYS}` },
-            { icon: Package, tone: "bg-lime", title: t("ruleKits"), body: t("ruleKitsBody"), tag: "3" },
-            { icon: Handshake, tone: "bg-bubblegum", title: t("ruleCharter"), body: t("ruleCharterBody"), tag: "6" },
+            { icon: LinkSimple, tone: "bg-surface-2", title: t("ruleLive"), body: t("ruleLiveBody"), tag: `${LIVE_DAYS}` },
+            { icon: HourglassMedium, tone: "bg-surface-2", title: t("ruleExpiry"), body: t("ruleExpiryBody"), tag: `${EXPIRY_DAYS}` },
+            { icon: Package, tone: "bg-surface-2", title: t("ruleKits"), body: t("ruleKitsBody"), tag: "3" },
+            { icon: Handshake, tone: "bg-surface-2", title: t("ruleCharter"), body: t("ruleCharterBody"), tag: "6" },
           ].map((r) => (
             <Item key={r.title}>
-              <div className={cn("slab relative h-full overflow-hidden p-5 text-plum !shadow-card", r.tone)}>
-                <span className="absolute -end-3 -top-6 text-[6.5rem] font-black leading-none text-white/35" dir="ltr">{r.tag}</span>
-                <r.icon size={32} weight="duotone" className="relative" />
-                <h3 className="relative mt-3 text-xl font-extrabold">{r.title}</h3>
-                <p className="relative mt-2 text-[14px] font-bold opacity-85">{r.body}</p>
+              <div className="label-card h-full p-5">
+                <div className="flex items-start justify-between"><r.icon size={24} className="text-ink-2" /><span className="text-3xl font-medium tabular tracking-tight text-ink-3" dir="ltr">{r.tag}</span></div>
+                <h3 className="mt-6 text-lg">{r.title}</h3>
+                <p className="mt-2 text-[14px] text-ink-2">{r.body}</p>
               </div>
             </Item>
           ))}

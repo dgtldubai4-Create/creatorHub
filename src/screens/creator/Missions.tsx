@@ -25,8 +25,8 @@ export function Missions() {
 function PriceTag({ value, double }: { value: number; double?: boolean }) {
   const t = useT();
   return (
-    <span className={cn("inline-flex flex-col items-center rounded-[12px] px-2.5 py-1.5 leading-none", double ? "bg-lemon text-plum border-2 border-outline" : "bg-ink text-canvas")}>
-      <span className="text-[15px] font-extrabold tabular">+{value}</span>
+    <span className={cn("inline-flex flex-col items-center rounded-[12px] px-2.5 py-1.5 leading-none", double ? "accent-fill" : "bg-surface-2 text-ink")}>
+      <span className="text-[15px] font-semibold tabular">+{value}</span>
       <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] opacity-80">{t("sparks")}</span>
     </span>
   );
@@ -57,7 +57,7 @@ function MissionCard({ m, creatorId }: { m: Mission; creatorId: string }) {
           <h2 className="mt-2 text-lg leading-tight">{L(m.title)}</h2>
           <p className="mt-1 line-clamp-2 text-[13.5px] text-ink-2">{L(m.prompt)}</p>
           <div className="mt-auto flex items-end justify-between gap-3 pt-3">
-            <div className="meta flex items-center gap-1 !tracking-normal !normal-case"><CalendarBlank size={13} />{date(m.window.start)} - {date(m.window.end)}{dbl && m.doubleSparksUntil && <span className="ms-2 inline-flex items-center gap-1 text-marigold-ink"><Lightning size={12} weight="fill" />{t("endsIn", { when: relative(m.doubleSparksUntil, new Date(s.now).getTime()) })}</span>}</div>
+            <div className="meta flex items-center gap-1 !tracking-normal !normal-case"><CalendarBlank size={13} />{date(m.window.start)} - {date(m.window.end)}{dbl && m.doubleSparksUntil && <span className="ms-2 inline-flex items-center gap-1 text-accent-text"><Lightning size={12} weight="fill" />{t("endsIn", { when: relative(m.doubleSparksUntil, new Date(s.now).getTime()) })}</span>}</div>
             {locked ? <Chip icon={<Lock size={12} weight="bold" />}>{t(`lv_${m.levelRequired}` as const)}</Chip> : <PriceTag value={mine} double={dbl} />}
           </div>
         </div>
@@ -126,7 +126,7 @@ function MissionBoard() {
         }
       >
         {open.length === 0 ? (
-          <EmptyState icon={<Lightning size={24} weight="duotone" />} title={t("noMissions")} body={t("noMissionsBody")} action={<Button variant="secondary" to="/creator/academy">{t("academy")}</Button>} />
+          <EmptyState icon={<Lightning size={24} />} title={t("noMissions")} body={t("noMissionsBody")} action={<Button variant="secondary" to="/creator/academy">{t("academy")}</Button>} />
         ) : (
           <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {open.map((m) => <Item key={m.id}><MissionCard m={m} creatorId={me.id} /></Item>)}
@@ -225,7 +225,7 @@ function MissionDetail({ id }: { id: string }) {
                   {!e && lvOk && !trackOk && track && <Button variant="secondary" to={`/creator/academy/${track.id}`}>{t("trackLocked", { track: L(track.title) })}</Button>}
                   {e && (e.state === "joined" || e.state === "changes") && m.type !== "referral" && <Button onClick={() => setOpen(true)} icon={<PaperPlaneTilt size={16} weight="bold" />}>{e.state === "changes" ? t("resubmitPost") : t("submitPost")}</Button>}
                   {e?.state === "completed" && !e.clawedBack && <span className="inline-flex items-center gap-2 text-[14px] font-medium text-leaf"><Stamp pressed size={40} animate={false} />{t("missionDone")}</span>}
-                  {e?.clawedBack && <span className="inline-flex items-center gap-2 rounded-[14px] border-2 border-outline bg-rose-soft px-3 py-2 text-[13.5px] font-bold text-rose"><Warning size={18} weight="fill" />{t("postRemovedBody", { n: e.clawedBack.amount })}</span>}
+                  {e?.clawedBack && <span className="inline-flex items-center gap-2 rounded-[14px] border border-line bg-rose-soft px-3 py-2 text-[13.5px] font-medium text-rose"><Warning size={18} weight="fill" />{t("postRemovedBody", { n: e.clawedBack.amount })}</span>}
                 </div>
               </div>
             </div>
@@ -234,11 +234,11 @@ function MissionDetail({ id }: { id: string }) {
         <div className="flex flex-col gap-4 lg:col-span-4">
           {m.type !== "referral" && (
             <Label className="p-5">
-              <div className="flex items-center justify-between gap-2"><h3 className="text-[15px] font-semibold">{e?.award ? t("yourAward") : t("yourEstimate")}</h3><Link to="/creator/sparks" className="text-[12.5px] font-extrabold text-grape hover:underline">{t("viewSparksTable")}</Link></div>
+              <div className="flex items-center justify-between gap-2"><h3 className="text-[15px] font-semibold">{e?.award ? t("yourAward") : t("yourEstimate")}</h3><Link to="/creator/sparks" className="text-[12.5px] font-semibold text-accent-text hover:underline">{t("viewSparksTable")}</Link></div>
               <QuoteBreakdown quote={quote} className="mt-3" />
-              {!flat && !e?.award && <p className="mt-3 text-[12.5px] font-bold text-ink-3">{t("estimateHint", { followers: quote.followers.toLocaleString(), rate: quote.engagementRate })}</p>}
-              {last?.live?.live && <p className="mt-3 inline-flex items-center gap-1.5 text-[12.5px] font-bold text-leaf"><ShieldCheck size={15} weight="fill" />{t("liveChecked")}</p>}
-              {e?.state === "completed" && !flat && last?.reviewedAt && !last.live && <p className="mt-3 text-[12.5px] font-bold text-ink-3">{t("liveCheckDue", { date: date(addDays(last.reviewedAt, LIVE_DAYS)) })}</p>}
+              {!flat && !e?.award && <p className="mt-3 text-[12.5px] font-medium text-ink-3">{t("estimateHint", { followers: quote.followers.toLocaleString(), rate: quote.engagementRate })}</p>}
+              {last?.live?.live && <p className="mt-3 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-leaf"><ShieldCheck size={15} weight="fill" />{t("liveChecked")}</p>}
+              {e?.state === "completed" && !flat && last?.reviewedAt && !last.live && <p className="mt-3 text-[12.5px] font-medium text-ink-3">{t("liveCheckDue", { date: date(addDays(last.reviewedAt, LIVE_DAYS)) })}</p>}
             </Label>
           )}
           {e && e.submissions.length > 0 ? (
@@ -254,7 +254,7 @@ function MissionDetail({ id }: { id: string }) {
                       </div>
                     ))}
                   </div>
-                  <div className="mt-4 flex flex-wrap items-center gap-2 text-[12.5px] text-ink-3"><a href={sub.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-medium text-leaf hover:underline"><LinkSimple size={14} />{t("openPost")}</a><span>{relative(sub.at)}</span>{sub.decision && <Chip tone={sub.decision === "approved" ? "leaf" : "rose"}>{sub.decision === "approved" ? t("es_approved") : t("es_changes")}</Chip>}</div>
+                  <div className="mt-4 flex flex-wrap items-center gap-2 text-[12.5px] text-ink-3"><a href={sub.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink"><LinkSimple size={14} />{t("openPost")}</a><span>{relative(sub.at)}</span>{sub.decision && <Chip tone={sub.decision === "approved" ? "leaf" : "rose"}>{sub.decision === "approved" ? t("es_approved") : t("es_changes")}</Chip>}</div>
                   <p className="mt-2 text-[13.5px] text-ink-2">{sub.caption}</p>
                   {sub.note && <p className="mt-3 rounded-[8px] bg-surface-2 p-3 text-[13.5px]"><span className="font-medium">{sub.reviewerName}: </span>{sub.note}</p>}
                 </div>
@@ -279,7 +279,7 @@ function MissionDetail({ id }: { id: string }) {
               const mine = squad.id === e?.squadId;
               return (
                 <Label key={squad.id} className={cn("flex flex-col gap-3 p-4", mine && "ring-2 ring-leaf")}>
-                  <div className="flex items-center justify-between"><span className="inline-flex items-center gap-2 text-[15px] font-semibold"><UsersThree size={18} weight="duotone" className="text-leaf" />{L(squad.name)}</span><span className="meta">#{i + 1}</span></div>
+                  <div className="flex items-center justify-between"><span className="inline-flex items-center gap-2 text-[15px] font-semibold"><UsersThree size={18} className="text-ink-2" />{L(squad.name)}</span><span className="meta">#{i + 1}</span></div>
                   <div className="flex -space-x-2 rtl:space-x-reverse">{squad.memberIds.map((cid) => { const c = s.creators.find((x) => x.id === cid); return c ? <Avatar key={cid} name={c.name} hue={c.hue} size={30} ring /> : null; })}</div>
                   <div className="flex items-center justify-between text-[13px] text-ink-2"><span>{squad.memberIds.length} {t("members")} · {submitted} {t("es_submitted").toLowerCase()}</span><Points value={sparks} /></div>
                   {!e && lvOk && m.status === "live" && <Button size="sm" variant={squadPick === squad.id ? "primary" : "secondary"} onClick={() => setSquadPick(squad.id)}>{squadPick === squad.id ? t("joinTeam", { squad: L(squad.name) }) : t("pickSquad")}</Button>}
@@ -325,7 +325,7 @@ function MissionDetail({ id }: { id: string }) {
             <>
               <Field label={t("postFormat")} hint={formats.includes("story") ? undefined : t("fmtStoryNote")}><div className="flex flex-wrap gap-2">{formats.map((k) => <ChipButton key={k} type="button" selected={fmt === k} onClick={() => setFormat(k)}>{t(`fmt_${k}` as const)}</ChipButton>)}</div></Field>
               <Field label={t("alsoFeatures")} hint={t("alsoFeaturesHint")}><div className="flex max-h-28 flex-wrap gap-2 overflow-y-auto" data-lenis-prevent>{otherBrands.map((x) => <ChipButton key={x.id} type="button" selected={extra.includes(x.id)} onClick={() => setExtra(extra.includes(x.id) ? extra.filter((y) => y !== x.id) : [...extra, x.id])}>{L(x.localisedName)}</ChipButton>)}</div></Field>
-              <div className="rounded-[14px] border-2 border-outline bg-surface-2 p-3"><div className="meta mb-2">{t("yourEstimate")}</div><QuoteBreakdown quote={quote} /></div>
+              <div className="rounded-[14px] border border-line bg-surface-2 p-3"><div className="meta mb-2">{t("yourEstimate")}</div><QuoteBreakdown quote={quote} /></div>
             </>
           )}
           <div className="flex justify-end gap-2"><Button variant="ghost" onClick={() => setOpen(false)}>{t("cancel")}</Button><Button onClick={submit} disabled={!url.trim() || !caption.trim()}>{t("submitPost")}</Button></div>

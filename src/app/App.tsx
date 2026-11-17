@@ -51,7 +51,7 @@ function RequirePermission({ permission, children }: { permission: Permission; c
   const { session } = useStore();
   const t = useT();
   if (!can(session.role, permission)) {
-    return <EmptyState icon={<LockKey size={26} weight="duotone" />} title={t("noPermission")} action={<Button variant="secondary" to="/admin">{t("overview")}</Button>} />;
+    return <EmptyState icon={<LockKey size={26} />} title={t("noPermission")} action={<Button variant="secondary" to="/admin">{t("overview")}</Button>} />;
   }
   return <>{children}</>;
 }

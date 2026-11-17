@@ -145,7 +145,7 @@ function KitTab({ p, c }: { p: Participation; c: Campaign }) {
         {p.stage === "accepted" && (
           <div className="grid gap-3">
             <div className="rounded-[8px] bg-surface-2 p-4 text-[14px]">
-              <div className="mb-1 flex items-center gap-1.5 font-medium"><MapPin size={16} className="text-leaf" />{t("deliverTo")}</div>
+              <div className="mb-1 flex items-center gap-1.5 font-medium"><MapPin size={16} className="text-ink-2" />{t("deliverTo")}</div>
               {addressReady ? <div className="text-ink-2">{me.address.line1}, {me.address.city}<br /><span dir="ltr">{me.address.phone}</span></div> : <div className="text-rose">{t("addressMissing")}</div>}
             </div>
             {addressReady ? (
@@ -161,14 +161,14 @@ function KitTab({ p, c }: { p: Participation; c: Campaign }) {
               <div><div className="text-[12px] text-ink-3">{t("courier")}</div><div className="font-medium">{p.shipment.courier}</div></div>
               <div><div className="text-[12px] text-ink-3">{t("tracking")}</div><div className="font-medium tabular">{p.shipment.trackingNumber}</div></div>
             </div>
-            <ol className="relative grid gap-3 border-s-2 border-line ps-5">
+            <ol className="relative grid gap-3 border-s border-line ps-5">
               {SHIPMENT_ORDER.map((st, i) => {
                 const done = i <= shipmentIdx;
                 const active = i === shipmentIdx;
                 const entry = p.stageLog.find((e) => e.stage === (st === "address_confirmed" ? "profile_confirmed" : st));
                 return (
                   <li key={st} className="relative text-[14px]">
-                    <span className={cn("absolute -start-[27px] top-1 flex h-4 w-4 items-center justify-center rounded-full border-2", done ? "border-leaf bg-leaf" : "border-line-2 bg-surface")}>{active && <motion.span layoutId="ship-dot" className="h-1.5 w-1.5 rounded-full bg-white" transition={spring} />}</span>
+                    <span className={cn("absolute -start-[27px] top-1 flex h-4 w-4 items-center justify-center rounded-full border", done ? "border-ink bg-ink" : "border-line-2 bg-surface")}>{active && <motion.span layoutId="ship-dot" className="h-1.5 w-1.5 rounded-full bg-white" transition={spring} />}</span>
                     <span className={cn(active ? "font-semibold" : done ? "" : "text-ink-3")}>{t(`sh_${st}` as const)}</span>
                     {entry && <span className="ms-2 text-[12px] text-ink-3">{date(entry.at, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>}
                   </li>
@@ -248,9 +248,9 @@ function UploadTab({ p, c }: { p: Participation; c: Campaign }) {
               onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
               onDragLeave={() => setDrag(false)}
               onDrop={(e) => { e.preventDefault(); setDrag(false); pick(e.dataTransfer.files?.[0]); }}
-              className={cn("flex flex-col items-center gap-2 rounded-[8px] border-2 border-dashed p-8 text-center transition-colors", drag ? "border-leaf bg-leaf-soft" : "border-line-2 hover:border-ink-3")}
+              className={cn("flex flex-col items-center gap-2 rounded-[8px] border border-dashed p-8 text-center transition-colors", drag ? "border-ink bg-surface-2" : "border-line-2 hover:border-ink-3")}
             >
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-leaf-soft text-leaf"><Upload size={22} weight="bold" /></span>
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-2"><Upload size={22} /></span>
               <span className="text-[14px] font-medium">{file ? file.name : t("chooseFile")}</span>
               <span className="text-[12.5px] text-ink-3">{file ? bytes(file.size) : t("dropHere")}</span>
             </button>
@@ -268,12 +268,12 @@ function UploadTab({ p, c }: { p: Participation; c: Campaign }) {
           <SimulatedTag />
         </div>
         {p.submissions.length === 0 ? (
-          <EmptyState icon={<Sparkle size={22} weight="duotone" />} title={t("nothingHere")} />
+          <EmptyState icon={<Sparkle size={22} />} title={t("nothingHere")} />
         ) : (
           p.submissions.slice().reverse().map((sub) => (
             <div key={sub.id} className="label-card p-5">
               <div className="flex flex-wrap items-center gap-4">
-                <ProgressRing value={sub.check.score / 100} size={64} stroke={7}><span className="text-[14px] font-bold tabular">{sub.check.score}</span></ProgressRing>
+                <ProgressRing value={sub.check.score / 100} size={64} stroke={7}><span className="text-[14px] font-medium tabular">{sub.check.score}</span></ProgressRing>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[15px] font-semibold">v{sub.version}</span>
@@ -301,7 +301,7 @@ function UploadTab({ p, c }: { p: Participation; c: Campaign }) {
 function FeedbackTab({ p }: { p: Participation }) {
   const t = useT();
   const { relative, clock } = useFormat();
-  if (p.reviews.length === 0) return <EmptyState icon={<ChatCenteredText size={22} weight="duotone" />} title={t("noFeedback")} body={t("noFeedbackBody")} />;
+  if (p.reviews.length === 0) return <EmptyState icon={<ChatCenteredText size={22} />} title={t("noFeedback")} body={t("noFeedbackBody")} />;
   return (
     <div className="grid gap-4">
       {p.reviews.slice().reverse().map((r) => {
@@ -368,7 +368,7 @@ function PublishTab({ p, c }: { p: Participation; c: Campaign }) {
         )}
         {p.publish && (
           <div className="mt-5 grid gap-3">
-            <a href={p.publish.url} target="_blank" rel="noreferrer" className="truncate rounded-[8px] bg-surface-2 p-4 text-[14px] font-medium text-leaf hover:underline">{p.publish.url}</a>
+            <a href={p.publish.url} target="_blank" rel="noreferrer" className="truncate rounded-[8px] bg-surface-2 p-4 text-[14px] font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink">{p.publish.url}</a>
             <div className="flex flex-wrap items-center gap-2">
               <Chip>{p.publish.platform}</Chip>
               <Chip>{date(p.publish.postedAt)}</Chip>
@@ -377,17 +377,17 @@ function PublishTab({ p, c }: { p: Participation; c: Campaign }) {
           </div>
         )}
       </div>
-      <div className="card-soft flex flex-col justify-between gap-6 bg-leaf-soft p-6 text-leaf-ink">
+      <div className="card-soft flex flex-col justify-between gap-6 p-6">
         <div>
           <div className="text-[13px] opacity-70">{t("pointsValue")}</div>
           <div className="text-4xl font-semibold tabular">{p.award?.total ?? campaignQuote(c, me, platform).total}</div>
           <QuoteBreakdown quote={p.award ?? campaignQuote(c, me, platform)} className="mt-3" />
-          {p.clawedBack && <p className="mt-3 text-[13px] font-bold text-rose">{t("postRemovedBody", { n: p.clawedBack.amount })}</p>}
+          {p.clawedBack && <p className="mt-3 text-[13px] font-medium text-rose">{t("postRemovedBody", { n: p.clawedBack.amount })}</p>}
         </div>
         <ol className="grid gap-2 text-[14px]">
           {(["link_submitted", "post_verified", "points_released", "completed"] as const).map((st) => {
             const done = stageOrder(p.stage) >= stageOrder(st);
-            return <li key={st} className={cn("flex items-center gap-2", !done && "opacity-50")}><span className={cn("flex h-5 w-5 items-center justify-center rounded-full", done ? "bg-leaf text-white" : "border border-current")}>{done && <Check size={12} weight="bold" />}</span>{t(`stage_${st}` as const)}</li>;
+            return <li key={st} className={cn("flex items-center gap-2", !done && "opacity-50")}><span className={cn("flex h-5 w-5 items-center justify-center rounded-full", done ? "positive-fill" : "border border-current")}>{done && <Check size={12} weight="bold" />}</span>{t(`stage_${st}` as const)}</li>;
           })}
         </ol>
       </div>

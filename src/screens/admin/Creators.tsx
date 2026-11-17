@@ -54,7 +54,7 @@ export function AdminCreators() {
                   <div className="truncate text-[12.5px] text-ink-3">{t(`niche_${cr.niche}` as const)} · {t(`tier_${cr.tier}` as const)} · {cr.city}</div>
                   <div className="mt-1 text-[12px] text-ink-2">{t(`lv_${lv.level}` as const)} · {num(cr.followers)} {t("followers")} · {t(`market_${cr.market}` as const)}</div>
                 </div>
-                <div className="text-end"><div className={cn("text-xl font-semibold tabular leading-none", m.score >= 70 ? "text-leaf" : m.score >= 40 ? "text-marigold-ink" : "text-ink-3")}>{m.score}</div><div className="text-[11px] text-ink-3">{t("match")}</div></div>
+                <div className="text-end"><div className={cn("text-xl font-semibold tabular leading-none", m.score >= 70 ? "text-leaf" : m.score >= 40 ? "text-accent-text" : "text-ink-3")}>{m.score}</div><div className="text-[11px] text-ink-3">{t("match")}</div></div>
               </button>
             </Item>
           );
@@ -84,7 +84,7 @@ export function AdminCreators() {
                   </div>
                 ))}
                 <div className="flex flex-col gap-2 rounded-[8px] bg-surface-2 p-3 sm:col-span-3">
-                  <div className="flex flex-wrap items-center gap-2"><VerificationChip state={open.licence.state} label={t("licence")} />{open.licence.number && <span className="text-[12.5px] font-bold tabular text-ink-2" dir="ltr">{open.licence.number}</span>}</div>
+                  <div className="flex flex-wrap items-center gap-2"><VerificationChip state={open.licence.state} label={t("licence")} />{open.licence.number && <span className="text-[12.5px] font-medium tabular text-ink-2" dir="ltr">{open.licence.number}</span>}</div>
                   <Select value={open.licence.state} onChange={(e) => dispatch({ type: "verifyCreator", creatorId: open.id, field: "licence", state: e.target.value as VerificationState })} className="py-1.5 text-[13px] sm:max-w-xs" aria-label={t("verifyLicence")}>
                     {(["pending", "verified", "action"] as const).map((v) => <option key={v} value={v}>{t(`vs_${v}` as const)}</option>)}
                   </Select>

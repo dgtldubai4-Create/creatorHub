@@ -28,7 +28,7 @@ export function AdminProducts() {
         title={t("products")}
         sub={t("productsSub")}
         eyebrow={pending > 0 ? <Chip tone="marigold" className="cursor-help" >{t("pendingSync")}: {pending}/{s.products.length}</Chip> : <Chip tone="leaf">{t("source")}: {catalogue.syncedAt ? date(catalogue.syncedAt) : ""}</Chip>}
-        actions={<a href={catalogue.source} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-leaf hover:underline">{catalogue.source.replace("https://", "")}<ArrowSquareOut size={14} /></a>}
+        actions={<a href={catalogue.source} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink">{catalogue.source.replace("https://", "")}<ArrowSquareOut size={14} /></a>}
       />
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative me-2 w-full max-w-xs">
@@ -67,7 +67,7 @@ export function AdminProducts() {
                 {open.pendingSync && <Chip tone="marigold" className="cursor-help" >{t("pendingSync")}</Chip>}
               </div>
               <p className="text-[14.5px] text-ink-2">{L(open.description)}</p>
-              {open.pendingSync && <p className="rounded-[8px] bg-marigold-soft p-3 text-[12.5px] text-marigold-ink">{t("pendingSyncHint")}</p>}
+              {open.pendingSync && <p className="rounded-[8px] bg-accent-soft p-3 text-[12.5px] text-accent-text">{t("pendingSyncHint")}</p>}
               <div>
                 <h3 className="text-[13px] font-semibold text-ink-2">{t("ingredients")}</h3>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">{open.ingredients.map((i) => <Chip key={i}>{i}</Chip>)}</div>
@@ -84,7 +84,7 @@ export function AdminProducts() {
                 <h3 className="text-[13px] font-semibold text-ink-2">{t("usedIn")}</h3>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">{usedIn(open.id).length === 0 ? <span className="text-[13px] text-ink-3">{t("nothingHere")}</span> : usedIn(open.id).map((c) => <Button key={c.id} size="sm" variant="secondary" to={`/admin/campaigns/${c.id}`}>{L(c.title)}</Button>)}</div>
               </div>
-              <a href={open.sourceUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-leaf hover:underline">{t("source")}<ArrowSquareOut size={14} /></a>
+              <a href={open.sourceUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink">{t("source")}<ArrowSquareOut size={14} /></a>
             </div>
           </div>
         )}

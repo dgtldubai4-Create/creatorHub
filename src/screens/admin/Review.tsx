@@ -51,7 +51,7 @@ export function AdminReview() {
         <aside className="lg:col-span-4 xl:col-span-3">
           <h2 className="mb-3 text-[14px] font-semibold text-ink-2">{t("queue")} · {queue.length}</h2>
           {queue.length === 0 ? (
-            <EmptyState icon={<PlayCircle size={22} weight="duotone" />} title={t("emptyQueue")} body={t("emptyQueueBody")} />
+            <EmptyState icon={<PlayCircle size={22} />} title={t("emptyQueue")} body={t("emptyQueueBody")} />
           ) : (
             <Stagger className="grid gap-2" gap={0.03}>
               {queue.map((q) => {
@@ -61,7 +61,7 @@ export function AdminReview() {
                 const active = q.id === p?.id;
                 return (
                   <Item key={q.id}>
-                    <Link to={`/admin/review/${q.id}/${qs.id}`} className={cn("label-card lift flex items-center gap-3 p-3 ", active && "border-leaf bg-leaf-soft/30")}>
+                    <Link to={`/admin/review/${q.id}/${qs.id}`} className={cn("label-card lift flex items-center gap-3 p-3 ", active && "border-ink bg-surface-2")}>
                       <Avatar name={qcr.name} hue={qcr.hue} size={36} />
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-[14px] font-medium">{qcr.name}</div>
@@ -88,7 +88,7 @@ export function AdminReview() {
                 <Link to="/admin/campaigns" className="hidden" aria-hidden><ArrowLeft /></Link>
               </div>
               {/* Simulated player: a scrubbable timeline. No media is stored. */}
-              <div className="mt-4 rounded-[8px] bg-ink p-4 text-canvas">
+              <div className="inverse-fill mt-4 rounded-[14px] p-4">
                 <div className="mb-2 flex items-center justify-between text-[12px] opacity-70"><span>{t("player")}</span><SimulatedTag className="border-canvas/30 text-canvas/70" /></div>
                 <Scrubber bars={bars} duration={duration} pos={pos} onChange={setPos} notes={[...notes, ...p.reviews.flatMap((r) => r.notes)]} />
                 <div className="mt-2 flex items-center justify-between text-[13px] tabular"><span>{clock(pos)}</span><span className="opacity-70">{clock(duration)}</span></div>
@@ -102,7 +102,7 @@ export function AdminReview() {
                 <ul className="mt-3 grid gap-1.5">
                   {notes.map((n, i) => (
                     <li key={i} className="flex items-center gap-2 rounded-[8px] bg-surface-2 px-3 py-2 text-[13.5px]">
-                      <button className="rounded-md bg-surface px-1.5 py-0.5 text-[12px] font-semibold tabular hover:text-leaf" onClick={() => setPos(n.t)}>{clock(n.t)}</button>
+                      <button className="rounded-md bg-surface px-1.5 py-0.5 text-[12px] font-semibold tabular hover:text-accent-text" onClick={() => setPos(n.t)}>{clock(n.t)}</button>
                       <span className="flex-1">{n.text}</span>
                       <button aria-label={t("close")} onClick={() => setNotes((xs) => xs.filter((_, j) => j !== i))} className="text-ink-3 hover:text-rose"><Trash size={15} /></button>
                     </li>
@@ -115,7 +115,7 @@ export function AdminReview() {
               <div className="label-card p-5">
                 <div className="flex items-center justify-between"><h3 className="text-[14px] font-semibold">{t("autoCheck")}</h3><SimulatedTag /></div>
                 <div className="mt-3 flex items-center gap-4">
-                  <ProgressRing value={sub.check.score / 100} size={60} stroke={7}><span className="text-[13px] font-bold tabular">{sub.check.score}</span></ProgressRing>
+                  <ProgressRing value={sub.check.score / 100} size={60} stroke={7}><span className="text-[13px] font-medium tabular">{sub.check.score}</span></ProgressRing>
                   <Chip tone={sub.check.passed ? "leaf" : "rose"}>{sub.check.passed ? t("passed") : t("needsWork")}</Chip>
                 </div>
                 <ul className="mt-3 grid gap-1.5">
@@ -137,7 +137,7 @@ export function AdminReview() {
             </div>
           </div>
         ) : (
-          <div className="lg:col-span-8 xl:col-span-9"><EmptyState icon={<PlayCircle size={22} weight="duotone" />} title={t("emptyQueue")} body={t("emptyQueueBody")} /></div>
+          <div className="lg:col-span-8 xl:col-span-9"><EmptyState icon={<PlayCircle size={22} />} title={t("emptyQueue")} body={t("emptyQueueBody")} /></div>
         )}
       </div>
     </div>
@@ -158,9 +158,9 @@ function Scrubber({ bars, duration, pos, onChange, notes }: { bars: number[]; du
   return (
     <div className="relative h-16 cursor-pointer select-none touch-none" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); seek(e); }} onPointerMove={(e) => { if (e.buttons) seek(e); }} role="slider" aria-valuemin={0} aria-valuemax={duration} aria-valuenow={Math.round(pos)} tabIndex={0} onKeyDown={(e) => { if (e.key === "ArrowRight") onChange(Math.min(duration, pos + 1)); if (e.key === "ArrowLeft") onChange(Math.max(0, pos - 1)); }}>
       <div className="absolute inset-0 flex items-end gap-[2px]">
-        {bars.map((b, i) => <span key={i} className={cn("flex-1 rounded-sm", i / bars.length <= pos / duration ? "bg-marigold" : "bg-canvas/25")} style={{ height: `${b * 100}%` }} />)}
+        {bars.map((b, i) => <span key={i} className={cn("flex-1 rounded-sm", i / bars.length <= pos / duration ? "bg-accent" : "bg-current opacity-25")} style={{ height: `${b * 100}%` }} />)}
       </div>
-      {notes.map((n, i) => <span key={i} className="absolute top-0 h-full w-0.5 bg-leaf-deep" style={{ insetInlineStart: `${(n.t / duration) * 100}%` }} title={n.text} />)}
+      {notes.map((n, i) => <span key={i} className="absolute top-0 h-full w-0.5 bg-accent" style={{ insetInlineStart: `${(n.t / duration) * 100}%` }} title={n.text} />)}
       <motion.span className="absolute top-0 h-full w-0.5 bg-canvas" style={{ insetInlineStart: left }} />
     </div>
   );

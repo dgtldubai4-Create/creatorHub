@@ -77,7 +77,7 @@ function AcademyHub() {
             const left = ms.seats - ms.bookedBy.length;
             return (
               <Label key={ms.id} className="flex flex-wrap items-center gap-4 p-4" watermark={false}>
-                <span className={cn("flex h-11 w-11 items-center justify-center rounded-[10px]", ms.kind === "group" ? "bg-leaf-soft text-leaf" : "bg-marigold-soft text-marigold-ink")}>{ms.kind === "group" ? <Users size={20} weight="duotone" /> : <ChalkboardTeacher size={20} weight="duotone" />}</span>
+                <span className={cn("flex h-11 w-11 items-center justify-center rounded-[10px]", "bg-surface-2 text-ink-2")}>{ms.kind === "group" ? <Users size={20} /> : <ChalkboardTeacher size={20} />}</span>
                 <div className="min-w-0 flex-1">
                   <div className="text-[15px] font-semibold">{L(ms.title)}</div>
                   <div className="text-[12.5px] text-ink-3">{ms.mentor} · {date(ms.at, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} · {left > 0 ? t("seatsLeft", { n: left }) : t("full")}</div>
@@ -143,7 +143,7 @@ function TrackDetail({ id }: { id: string }) {
               const done = progress[m.id];
               return (
                 <li key={m.id}>
-                  <Label className={cn("flex flex-wrap items-center gap-4 p-4", done && "bg-leaf-soft/30")} watermark={false}>
+                  <Label className={cn("flex flex-wrap items-center gap-4 p-4", done && "bg-surface-2")} watermark={false}>
                     <Stamp pressed={!!done} size={52} animate={i === tr.modules.findIndex((x) => progress[x.id]) + (tr.modules.filter((x) => progress[x.id]).length - 1)} icon={done ? <Check weight="bold" size={20} /> : undefined} />
                     <div className="min-w-0 flex-1">
                       <div className="text-[15px] font-semibold">{i + 1}. {L(m.title)}</div>

@@ -14,7 +14,7 @@ import type { Reward } from "../../domain/types";
 import { cn } from "../../ui/cn";
 
 type K = "all" | Reward["kind"];
-const ICON: Record<Reward["kind"], React.ReactNode> = { product: <Package size={18} weight="duotone" />, experience: <Star size={18} weight="duotone" />, voucher: <Ticket size={18} weight="duotone" />, boost: <Rocket size={18} weight="duotone" /> };
+const ICON: Record<Reward["kind"], React.ReactNode> = { product: <Package size={18} />, experience: <Star size={18} />, voucher: <Ticket size={18} />, boost: <Rocket size={18} /> };
 
 export function Rewards() {
   const t = useT();
@@ -54,7 +54,7 @@ export function Rewards() {
           <div className="text-5xl font-semibold tabular leading-none"><Counter value={bal} format={num} /> <span className="text-lg font-medium text-ink-3">{t("sparks")}</span></div>
           <div className="mt-2 text-[13.5px] text-ink-2">{t("lifetime")}: {num(life)} · {t(`lv_${lv.level}` as const)}{lv.next && lv.next !== "ambassador" ? ` · ${t("toNextLevel", { n: num(lv.toNext), level: t(`lv_${lv.next}` as const) })}` : ""}</div>
           <ExpiryNote creatorId={me.id} className="mt-1" />
-          <Link to="/creator/sparks" className="mt-1 inline-flex items-center gap-1.5 self-start text-[13px] font-extrabold text-grape hover:underline">{t("viewSparksTable")}</Link>
+          <Link to="/creator/sparks" className="mt-1 inline-flex items-center gap-1.5 self-start text-[13px] font-semibold text-accent-text hover:underline">{t("viewSparksTable")}</Link>
         </Label>
       </div>
 
@@ -75,7 +75,7 @@ export function Rewards() {
                     <p className="text-[14px] text-ink-2">{L(r.description)}</p>
                     <div className="mt-auto flex items-center justify-between gap-3 pt-2">
                       <div className="flex items-center gap-3">
-                        <span className="inline-flex flex-col items-center rounded-[8px] bg-marigold px-2.5 py-1.5 leading-none text-marigold-ink"><span className="text-[15px] font-semibold tabular">{num(r.cost)}</span><span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] opacity-80">{t("sparks")}</span></span>
+                        <span className="inline-flex flex-col items-center rounded-[12px] bg-surface-2 px-2.5 py-1.5 leading-none text-ink"><span className="text-[15px] font-semibold tabular">{num(r.cost)}</span><span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] opacity-80">{t("sparks")}</span></span>
                         <div className="text-[12px] text-ink-3">{r.stock > 0 ? `${r.stock} ${t("left")}` : t("outOfStock")}</div>
                       </div>
                       <Button size="sm" variant={can ? "primary" : "secondary"} disabled={r.stock <= 0} onClick={() => setConfirm(r)}>{can ? t("redeem") : r.stock <= 0 ? t("outOfStock") : t("needMore", { n: num(r.cost - bal) })}</Button>

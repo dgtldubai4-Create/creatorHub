@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
-import { Bell, CaretDown, Gift, House, Leaf, Megaphone, Package, Path, SealCheck, SignOut, Translate, Users, ArrowsClockwise, Coins, ListChecks, PlayCircle, MapTrifold, Lightning, GraduationCap, Trophy } from "@phosphor-icons/react";
+import { Bell, CaretDown, Gift, House, Leaf, Megaphone, Package, Path, SealCheck, SignOut, Translate, Users, ArrowsClockwise, Coins, ListChecks, PlayCircle, MapTrifold, Lightning, GraduationCap, Trophy, Moon, Sun } from "@phosphor-icons/react";
 import { useDispatch, useReset, useStore } from "./store";
 import { useT, useToggleLang } from "../i18n";
 import { Avatar } from "../ui/primitives";
@@ -11,15 +11,16 @@ import { ROLES, can } from "../domain/permissions";
 import { unreadCount } from "../domain/selectors";
 import type { Permission, Role, Seat } from "../domain/types";
 import { DeviceAlerts } from "./pwa";
+import { useTheme } from "./theme";
 
 export function Logo({ className, compact }: { className?: string; compact?: boolean }) {
   const t = useT();
   return (
-    <span className={cn("inline-flex items-center gap-2 font-semibold tracking-tight", className)}>
-      <span className="squish flex h-10 w-10 -rotate-6 items-center justify-center rounded-[12px] border-2 border-outline bg-lime text-plum shadow-[3px_3px_0_var(--outline)]">
-        <Leaf size={20} weight="fill" />
+    <span className={cn("inline-flex items-center gap-2 whitespace-nowrap font-semibold tracking-tight", className)}>
+      <span className="accent-fill flex h-9 w-9 items-center justify-center rounded-[11px]">
+        <Leaf size={17} weight="fill" />
       </span>
-      {!compact && <span className="text-[18px] font-extrabold tracking-tight">{t("appName")}</span>}
+      {!compact && <span className="text-[16.5px] font-medium tracking-tight">{t("appName")}</span>}
     </span>
   );
 }
@@ -33,10 +34,10 @@ function SeatSwitch() {
     dispatch({ type: "switchSeat", seat });
   };
   return (
-    <div className="relative inline-flex rounded-full border-2 border-outline bg-surface p-1" role="tablist" aria-label={t("switchSeat")}>
+    <div className="relative inline-flex rounded-full bg-surface-2 p-1" role="tablist" aria-label={t("switchSeat")}>
       {(["creator", "brand"] as Seat[]).map((s) => (
-        <button key={s} role="tab" aria-selected={session.seat === s} onClick={() => set(s)} className={cn("relative z-10 h-8 whitespace-nowrap rounded-full px-3 text-[13px] font-bold transition-colors", session.seat === s ? "text-plum" : "text-ink-2 hover:text-ink")}>
-          {session.seat === s && <motion.span layoutId="seat-pill" className="absolute inset-0 -z-10 rounded-full bg-lime" transition={springSnappy} />}
+        <button key={s} role="tab" aria-selected={session.seat === s} onClick={() => set(s)} className={cn("relative z-10 h-8 whitespace-nowrap rounded-full px-3 text-[13px] font-medium transition-colors", session.seat === s ? "text-ink" : "text-ink-3 hover:text-ink")}>
+          {session.seat === s && <motion.span layoutId="seat-pill" className="absolute inset-0 -z-10 rounded-full bg-surface shadow-card" transition={springSnappy} />}
           {s === "creator" ? t("creatorSeat") : t("brandSeat")}
         </button>
       ))}
@@ -51,7 +52,7 @@ function RoleSwitch() {
   return (
     <label className="relative inline-flex items-center">
       <span className="sr-only">{t("role")}</span>
-      <select value={session.role} onChange={(e) => dispatch({ type: "setRole", role: e.target.value as Role })} className="h-10 cursor-pointer appearance-none rounded-full border-2 border-outline bg-surface pe-8 ps-3.5 text-[13px] font-bold shadow-[3px_3px_0_var(--outline)]">
+      <select value={session.role} onChange={(e) => dispatch({ type: "setRole", role: e.target.value as Role })} className="h-10 cursor-pointer appearance-none rounded-full border border-line-2 bg-surface pe-8 ps-3.5 text-[13px] font-medium">
         {ROLES.map((r) => (
           <option key={r} value={r}>{t(`role_${r}` as const)}</option>
         ))}
@@ -65,9 +66,20 @@ function LangToggle() {
   const t = useT();
   const toggle = useToggleLang();
   return (
-    <button onClick={toggle} className="press inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-outline bg-surface px-3 text-[13px] font-bold shadow-[3px_3px_0_var(--outline)] hover:bg-lemon" aria-label={t("language")}>
-      <Translate size={15} weight="bold" />
+    <button onClick={toggle} className="press inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-[13px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink" aria-label={t("language")}>
+      <Translate size={16} />
       {t("language")}
+    </button>
+  );
+}
+
+export function ThemeToggle({ className }: { className?: string }) {
+  const t = useT();
+  const { dark, toggle } = useTheme();
+  const label = dark ? t("themeLight") : t("themeDark");
+  return (
+    <button onClick={toggle} aria-label={label} title={label} className={cn("press inline-flex h-10 w-10 items-center justify-center rounded-full text-ink-2 hover:bg-surface-2 hover:text-ink", className)}>
+      {dark ? <Sun size={18} /> : <Moon size={18} />}
     </button>
   );
 }
@@ -79,7 +91,7 @@ function Bellicon({ audience, to }: { audience: string; to: string }) {
   return (
     <NavLink to={to} className={({ isActive }) => cn("relative inline-flex h-10 w-10 items-center justify-center rounded-full text-ink-2 hover:bg-surface-2 hover:text-ink", isActive && "bg-surface-2 text-ink")} aria-label={t("notifications")}>
       <Bell size={20} weight={n ? "fill" : "regular"} />
-      {n > 0 && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={spring} className="absolute -top-0.5 -end-0.5 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-outline bg-tangerine px-1 text-[11px] font-extrabold text-plum">{n}</motion.span>}
+      {n > 0 && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={spring} className="accent-fill absolute -top-0.5 -end-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10.5px] font-semibold ring-2 ring-canvas">{n}</motion.span>}
     </NavLink>
   );
 }
@@ -91,6 +103,7 @@ function UserMenu({ name, hue, profileTo }: { name: string; hue: number; profile
   const nav = useNavigate();
   const [open, setOpen] = useState(false);
   const [armed, setArmed] = useState(false);
+  const { dark, toggle: toggleTheme } = useTheme();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!open) return;
@@ -103,7 +116,7 @@ function UserMenu({ name, hue, profileTo }: { name: string; hue: number; profile
   }, [open]);
   return (
     <div ref={ref} className="relative">
-      <button onClick={() => setOpen((o) => !o)} className="squish flex items-center gap-2 rounded-full p-0.5 pe-2 hover:bg-surface-2" aria-haspopup="menu" aria-expanded={open}>
+      <button onClick={() => setOpen((o) => !o)} className="press flex items-center gap-2 rounded-full p-0.5 pe-2 hover:bg-surface-2" aria-haspopup="menu" aria-expanded={open}>
         <Avatar name={name} hue={hue} size={36} />
         <CaretDown size={12} weight="bold" className="text-ink-3" />
       </button>
@@ -112,6 +125,7 @@ function UserMenu({ name, hue, profileTo }: { name: string; hue: number; profile
           <motion.div role="menu" initial={{ opacity: 0, y: 6, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.98 }} transition={springSnappy} className="card absolute end-0 top-full z-40 mt-2 w-56 overflow-hidden p-1.5">
             <div className="px-3 py-2 text-[13px] font-medium">{name}</div>
             {profileTo && <MenuItem icon={<SealCheck size={16} />} onClick={() => { setOpen(false); nav(profileTo); }}>{t("profile")}</MenuItem>}
+            <MenuItem icon={dark ? <Sun size={16} /> : <Moon size={16} />} onClick={toggleTheme}>{dark ? t("themeLight") : t("themeDark")}</MenuItem>
             <MenuItem icon={<ArrowsClockwise size={16} />} onClick={() => { if (!armed) { setArmed(true); return; } reset(); setArmed(false); setOpen(false); nav("/"); }}>{armed ? t("resetArmed") : t("resetDemo")}</MenuItem>
             <MenuItem icon={<SignOut size={16} />} onClick={() => { dispatch({ type: "signOut" }); setOpen(false); nav("/"); }}>{t("signOut")}</MenuItem>
           </motion.div>
@@ -134,12 +148,12 @@ interface NavItem { to: string; label: string; icon: ReactNode; end?: boolean; p
 
 function TopNav({ items, compact }: { items: NavItem[]; compact?: boolean }) {
   return (
-    <nav className="hide-scrollbar flex items-center gap-0.5 overflow-x-auto rounded-full border-2 border-outline bg-surface p-1 shadow-[3px_3px_0_var(--outline)]" aria-label="Primary">
+    <nav className="hide-scrollbar flex items-center gap-0.5 overflow-x-auto" aria-label="Primary">
       {items.map((it) => (
-        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative isolate flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13.5px] font-bold transition-colors", isActive ? "text-canvas" : "text-ink-2 hover:text-ink hover:bg-surface-2")}>
+        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative isolate flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[13.5px] font-medium transition-colors", isActive ? "text-ink" : "text-ink-3 hover:text-ink")}>
           {({ isActive }) => (
             <>
-              {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-ink" transition={springSnappy} />}
+              {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-surface-2" transition={springSnappy} />}
               {it.icon}
               <span className={cn(compact && "hidden 2xl:inline")}>{it.label}</span>
             </>
@@ -152,10 +166,10 @@ function TopNav({ items, compact }: { items: NavItem[]; compact?: boolean }) {
 
 function BottomTabs({ items }: { items: NavItem[] }) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-outline bg-surface/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] md:hidden" aria-label="Primary">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)] md:hidden" aria-label="Primary">
       <div className="flex justify-around">
         {items.map((it) => (
-          <NavLink key={it.to} to={it.to} end={it.end} className={({ isActive }) => cn("flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-bold", isActive ? "text-grape" : "text-ink-3")}>
+          <NavLink key={it.to} to={it.to} end={it.end} className={({ isActive }) => cn("flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-medium", isActive ? "text-ink" : "text-ink-3")}>
             {it.icon}
             {it.label}
           </NavLink>
@@ -169,13 +183,13 @@ function Frame({ children, nav, bottom }: { children: ReactNode; nav: ReactNode;
   const location = useLocation();
   return (
     <div className="min-h-[100dvh] bg-canvas">
-      <header className="sticky top-0 z-40 border-b-2 border-outline bg-canvas/90 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-line bg-canvas/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 md:px-6">{nav}</div>
       </header>
       <main className="mx-auto max-w-[1400px] px-4 pb-28 pt-6 md:px-6 md:pb-16 md:pt-8">
         {/* Enter-only transition keyed by section. An exit animation around an Outlet would
             keep rendering the new route inside the exiting element, so there is none. */}
-        <motion.div key={location.pathname.split("/").slice(0, 3).join("/")} initial={{ opacity: 0, y: 24, scale: 0.985 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", stiffness: 220, damping: 24 }}>
+        <motion.div key={location.pathname.split("/").slice(0, 3).join("/")} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
           {children}
         </motion.div>
       </main>
@@ -189,12 +203,12 @@ export function CreatorShell() {
   const state = useStore();
   const creator = state.creators.find((c) => c.id === state.session.creatorId) ?? state.creators[0];
   const items: NavItem[] = [
-    { to: "/creator", label: t("home"), icon: <House size={18} weight="duotone" />, end: true },
-    { to: "/creator/missions", label: t("missions"), icon: <Lightning size={18} weight="duotone" /> },
-    { to: "/creator/campaigns", label: t("campaigns"), icon: <Path size={18} weight="duotone" /> },
-    { to: "/creator/academy", label: t("academy"), icon: <GraduationCap size={18} weight="duotone" /> },
-    { to: "/creator/season", label: t("season"), icon: <Trophy size={18} weight="duotone" /> },
-    { to: "/creator/rewards", label: t("rewards"), icon: <Gift size={18} weight="duotone" /> },
+    { to: "/creator", label: t("home"), icon: <House size={18} />, end: true },
+    { to: "/creator/missions", label: t("missions"), icon: <Lightning size={18} /> },
+    { to: "/creator/campaigns", label: t("campaigns"), icon: <Path size={18} /> },
+    { to: "/creator/academy", label: t("academy"), icon: <GraduationCap size={18} /> },
+    { to: "/creator/season", label: t("season"), icon: <Trophy size={18} /> },
+    { to: "/creator/rewards", label: t("rewards"), icon: <Gift size={18} /> },
   ];
   return (
     <Frame
@@ -205,6 +219,7 @@ export function CreatorShell() {
           <div className="ms-auto flex items-center gap-2">
             <div className="hidden sm:block"><SeatSwitch /></div>
             <LangToggle />
+            <ThemeToggle className="hidden sm:inline-flex" />
             <Bellicon audience={`creator:${creator.id}`} to="/creator/notifications" />
             <UserMenu name={creator.name} hue={creator.hue} profileTo="/creator/profile" />
           </div>
@@ -224,16 +239,16 @@ export function AdminShell() {
   const user = state.brandUsers.find((u) => u.id === state.session.brandUserId) ?? state.brandUsers[0];
   const role = state.session.role;
   const all: NavItem[] = [
-    { to: "/admin", label: t("overview"), icon: <MapTrifold size={18} weight="duotone" />, end: true, permission: null },
-    { to: "/admin/campaigns", label: t("campaigns"), icon: <Megaphone size={18} weight="duotone" />, permission: "campaigns" },
-    { to: "/admin/missions", label: t("missions"), icon: <Lightning size={18} weight="duotone" />, permission: "review" },
-    { to: "/admin/seasons", label: t("seasons"), icon: <Trophy size={18} weight="duotone" />, permission: "campaigns" },
-    { to: "/admin/academy", label: t("academy"), icon: <GraduationCap size={18} weight="duotone" />, permission: "campaigns" },
-    { to: "/admin/creators", label: t("creators"), icon: <Users size={18} weight="duotone" />, permission: "invite" },
-    { to: "/admin/review", label: t("review"), icon: <PlayCircle size={18} weight="duotone" />, permission: "review" },
-    { to: "/admin/logistics", label: t("logistics"), icon: <Package size={18} weight="duotone" />, permission: "logistics" },
-    { to: "/admin/loyalty", label: t("loyalty"), icon: <Coins size={18} weight="duotone" />, permission: "loyalty" },
-    { to: "/admin/products", label: t("products"), icon: <ListChecks size={18} weight="duotone" />, permission: "products" },
+    { to: "/admin", label: t("overview"), icon: <MapTrifold size={18} />, end: true, permission: null },
+    { to: "/admin/campaigns", label: t("campaigns"), icon: <Megaphone size={18} />, permission: "campaigns" },
+    { to: "/admin/missions", label: t("missions"), icon: <Lightning size={18} />, permission: "review" },
+    { to: "/admin/seasons", label: t("seasons"), icon: <Trophy size={18} />, permission: "campaigns" },
+    { to: "/admin/academy", label: t("academy"), icon: <GraduationCap size={18} />, permission: "campaigns" },
+    { to: "/admin/creators", label: t("creators"), icon: <Users size={18} />, permission: "invite" },
+    { to: "/admin/review", label: t("review"), icon: <PlayCircle size={18} />, permission: "review" },
+    { to: "/admin/logistics", label: t("logistics"), icon: <Package size={18} />, permission: "logistics" },
+    { to: "/admin/loyalty", label: t("loyalty"), icon: <Coins size={18} />, permission: "loyalty" },
+    { to: "/admin/products", label: t("products"), icon: <ListChecks size={18} />, permission: "products" },
   ];
   const items = all.filter((it) => !it.permission || can(role, it.permission));
   return (
@@ -246,6 +261,7 @@ export function AdminShell() {
             <div className="hidden sm:block"><SeatSwitch /></div>
             <RoleSwitch />
             <div className="hidden md:block"><LangToggle /></div>
+            <ThemeToggle className="hidden sm:inline-flex" />
             <Bellicon audience="brand" to="/admin/notifications" />
             <UserMenu name={user.name} hue={210} />
           </div>

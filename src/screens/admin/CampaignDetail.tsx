@@ -87,7 +87,7 @@ export function AdminCampaignDetail() {
             {(["invite", "kit", "create", "review", "publish", "done"] as const).map((ph) => (
               <li key={ph} className="flex items-center gap-3 text-[13.5px]">
                 <span className="w-16 text-ink-2">{t(`phase_${ph}` as const)}</span>
-                <span className="h-2 rounded-full bg-leaf" style={{ width: `${(fn.counts[ph] / Math.max(1, fn.total)) * 100}%`, minWidth: fn.counts[ph] ? 8 : 0 }} />
+                <span className="h-2 rounded-full bg-ink" style={{ width: `${(fn.counts[ph] / Math.max(1, fn.total)) * 100}%`, minWidth: fn.counts[ph] ? 8 : 0 }} />
                 <span className="tabular text-ink-3">{fn.counts[ph]}</span>
               </li>
             ))}
@@ -125,7 +125,7 @@ export function AdminCampaignDetail() {
                         {p.stage === "link_submitted" && can(role, "review") && <Button size="sm" onClick={() => { dispatch({ type: "verifyPost", participationId: p.id }); toast(t("verified"), "success"); }} icon={<SealCheck size={15} weight="bold" />}>{t("verifyPost")}</Button>}
                         {p.stage === "post_verified" && can(role, "loyalty") && <Button size="sm" variant="accent" onClick={() => { dispatch({ type: "releasePoints", participationId: p.id }); celebrate(); toast(t("released", { n: num(campaignQuote(c, cr, p.publish?.platform).total) }), "success"); }} icon={<Coins size={15} weight="bold" />}>{t("releasePoints")} · {num(campaignQuote(c, cr, p.publish?.platform).total)}</Button>}
                         {p.stage === "points_released" && <Button size="sm" variant="secondary" onClick={() => dispatch({ type: "complete", participationId: p.id })}>{t("markComplete")}</Button>}
-                        {p.publish && <a href={p.publish.url} target="_blank" rel="noreferrer" className="text-[12.5px] font-medium text-leaf hover:underline">{p.publish.platform}</a>}
+                        {p.publish && <a href={p.publish.url} target="_blank" rel="noreferrer" className="text-[12.5px] font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink">{p.publish.platform}</a>}
                       </div>
                     </div>
                   </Item>
@@ -140,7 +140,7 @@ export function AdminCampaignDetail() {
               const sel = picked.has(cr.id);
               return (
                 <Item key={cr.id}>
-                  <label className={cn("label-card flex cursor-pointer flex-wrap items-center gap-4 p-3 pe-4", sel && "border-leaf bg-leaf-soft/30", on && "opacity-60")}>
+                  <label className={cn("label-card flex cursor-pointer flex-wrap items-center gap-4 p-3 pe-4", sel && "border-ink bg-surface-2", on && "opacity-60")}>
                     <input type="checkbox" className="h-5 w-5 accent-[var(--leaf)]" disabled={on} checked={sel} onChange={() => setPicked((set) => { const n = new Set(set); if (n.has(cr.id)) n.delete(cr.id); else n.add(cr.id); return n; })} />
                     <Avatar name={cr.name} hue={cr.hue} size={38} />
                     <div className="min-w-40"><div className="text-[14px] font-medium">{cr.name}</div><div className="text-[12px] text-ink-3">{t(`niche_${cr.niche}` as const)} · {t(`tier_${cr.tier}` as const)} · {cr.city}</div></div>

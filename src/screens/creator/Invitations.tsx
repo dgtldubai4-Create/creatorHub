@@ -41,7 +41,7 @@ export function Invitations() {
     <div className="flex flex-col gap-8">
       <PageHeader title={t("invitations")} sub={t("invitationsSub")} />
       {list.length === 0 ? (
-        <EmptyState icon={<Sparkle size={24} weight="duotone" />} title={t("noInvitations")} body={t("noInvitationsBody")} action={<Button variant="secondary" to="/creator/side-quests">{t("sideQuests")}</Button>} />
+        <EmptyState icon={<Sparkle size={24} />} title={t("noInvitations")} body={t("noInvitationsBody")} action={<Button variant="secondary" to="/creator/side-quests">{t("sideQuests")}</Button>} />
       ) : (
         <div className="grid gap-5 lg:grid-cols-2">
           <AnimatePresence>

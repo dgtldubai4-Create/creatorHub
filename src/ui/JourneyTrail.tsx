@@ -86,23 +86,23 @@ export function JourneyTrail({ participation, className }: { participation: Part
                 <div className="group relative flex items-center justify-center">
                   <span
                     className={cn(
-                      "flex items-center justify-center rounded-full border-2 transition-colors",
+                      "flex items-center justify-center rounded-full border transition-colors",
                       loop ? "h-3.5 w-3.5" : "h-5 w-5",
-                      isDone || (loop && visited) ? "border-leaf bg-leaf text-white" : isCurrent ? "border-leaf bg-surface" : "border-line-2 bg-surface",
+                      isDone || (loop && visited) ? "border-ink inverse-fill" : isCurrent ? "border-accent bg-surface" : "border-line-2 bg-surface",
                     )}
                   >
                     {isDone && !loop && <Check size={11} weight="bold" />}
                   </span>
                   {isCurrent && (
-                    <motion.span layoutId={`marker-${participation.id}`} transition={spring} className="absolute -top-1 -left-1 flex h-7 w-7 items-center justify-center rounded-full bg-marigold text-marigold-ink shadow-float">
+                    <motion.span layoutId={`marker-${participation.id}`} transition={spring} className="absolute -top-1 -left-1 flex h-7 w-7 items-center justify-center rounded-full accent-fill shadow-card">
                       <Leaf size={15} weight="fill" />
-                      {!reduce && <motion.span className="absolute inset-0 rounded-full bg-marigold" animate={{ scale: [1, 1.9], opacity: [0.5, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }} />}
+                      {!reduce && <motion.span className="absolute inset-0 rounded-full accent-fill" animate={{ scale: [1, 1.9], opacity: [0.5, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }} />}
                     </motion.span>
                   )}
                   <div className={cn("pointer-events-none absolute left-1/2 w-28 -translate-x-1/2 text-center text-[11.5px] leading-tight transition-opacity", above ? "top-7" : "bottom-7", isCurrent ? "font-semibold text-ink opacity-100" : "text-ink-3 opacity-0 group-hover:opacity-100", loop && !visited && "hidden")}>
                     <div>{t(`stage_${stage}` as const)}</div>
                     {at && <div className="mt-0.5 text-[10.5px] text-ink-3">{date(at)}</div>}
-                    {isCurrent && <div className="mt-0.5 text-[10px] uppercase tracking-wide text-leaf">{t("youAreHere")}</div>}
+                    {isCurrent && <div className="mt-0.5 text-[10px] uppercase tracking-wide text-accent-text">{t("youAreHere")}</div>}
                   </div>
                 </div>
               </div>
@@ -133,7 +133,7 @@ export function PhaseTrail({ stage, className, size = "md" }: { stage: Stage; cl
         const active = i === cur && !completed;
         return (
           <div key={ph} className="flex items-center gap-1">
-            <span className={cn("rounded-full transition-colors", size === "sm" ? "h-1.5" : "h-2", active ? "w-6 bg-marigold" : done ? "w-3 bg-leaf" : "w-3 bg-line-2", stage === "declined" && "bg-rose-soft")} />
+            <span className={cn("rounded-full transition-colors", size === "sm" ? "h-1.5" : "h-2", active ? "w-6 bg-accent" : done ? "w-3 bg-ink" : "w-3 bg-line-2", stage === "declined" && "bg-rose-soft")} />
           </div>
         );
       })}

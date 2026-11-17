@@ -53,7 +53,7 @@ export function SeasonPage() {
           <div className="mt-4 grid grid-cols-2 gap-3 text-[13px]">
             <div><div className="meta">{t("leaderboardTitle")}</div><div className="text-2xl font-semibold tabular">{myRank > 0 ? `#${myRank}` : "-"}</div></div>
             <div><div className="meta">{t("quality")}</div><div className="text-2xl font-semibold tabular">{lv.quality}</div></div>
-            <div className="col-span-2 flex items-center gap-2 text-ink-2"><Fire size={16} weight={streak > 0 ? "fill" : "regular"} className="text-marigold" />{t("streakMonths", { n: streak })} · {t("streakHint", { n: STREAK_BONUS })}</div>
+            <div className="col-span-2 flex items-center gap-2 text-ink-2"><Fire size={16} weight={streak > 0 ? "fill" : "regular"} className="text-accent-text" />{t("streakMonths", { n: streak })} · {t("streakHint", { n: STREAK_BONUS })}</div>
           </div>
         </Label>
       </div>
@@ -63,12 +63,12 @@ export function SeasonPage() {
           <Stagger className="label-card divide-y divide-line" gap={0.02}>
             {(showAll ? board : board.slice(0, 10)).map((row, i) => (
               <Item key={row.creator.id}>
-                <div className={cn("flex items-center gap-3 px-4 py-3", row.creator.id === me.id && "bg-leaf-soft/30")}>
-                  <span className={cn("w-7 text-center text-[14px] font-semibold tabular", i < 3 ? "text-marigold-ink" : "text-ink-3")}>{i < 3 ? <Trophy size={18} weight="fill" className="inline text-marigold" /> : i + 1}</span>
+                <div className={cn("flex items-center gap-3 px-4 py-3", row.creator.id === me.id && "bg-surface-2")}>
+                  <span className={cn("w-7 text-center text-[14px] font-semibold tabular", i < 3 ? "text-accent-text" : "text-ink-3")}>{i < 3 ? <Trophy size={18} weight="fill" className="inline text-accent-text" /> : i + 1}</span>
                   <Avatar name={row.creator.name} hue={row.creator.hue} size={34} />
                   <div className="min-w-0 flex-1"><div className="truncate text-[14px] font-medium">{row.creator.name}</div><div className="text-[12px] text-ink-3">{row.creator.city} · {t(`market_${row.creator.market}` as const)}</div></div>
                   <LevelChip level={row.level} className="hidden sm:inline-flex" />
-                  <span className="hidden h-1.5 w-28 overflow-hidden rounded-full bg-surface-3 md:block"><motion.span className="block h-full rounded-full bg-grape" initial={{ width: 0 }} animate={{ width: `${(row.sparks / Math.max(1, board[0].sparks)) * 100}%` }} transition={{ duration: 0.9, delay: 0.1 + i * 0.04, ease: [0.22, 1, 0.36, 1] }} /></span>
+                  <span className="hidden h-1.5 w-28 overflow-hidden rounded-full bg-surface-3 md:block"><motion.span className="block h-full rounded-full bg-ink" initial={{ width: 0 }} animate={{ width: `${(row.sparks / Math.max(1, board[0].sparks)) * 100}%` }} transition={{ duration: 0.9, delay: 0.1 + i * 0.04, ease: [0.22, 1, 0.36, 1] }} /></span>
                   <span className="w-14 text-end font-semibold tabular">{num(row.sparks)}</span>
                 </div>
               </Item>
@@ -84,7 +84,7 @@ export function SeasonPage() {
               return (
                 <li key={l}>
                   <Label className={cn("flex items-start gap-3 p-3", !reached && "opacity-70")} watermark={false}>
-                    <Stamp pressed={reached} size={44} animate={false} tone={l === "ambassador" ? "marigold" : "leaf"}><span className="text-[7px]">{l.toUpperCase()}</span></Stamp>
+                    <Stamp pressed={reached} size={44} animate={false} tone={l === "ambassador" || l === "pro" ? "marigold" : "ink"}><span className="text-[7px]">{l.toUpperCase()}</span></Stamp>
                     <div className="min-w-0 flex-1"><div className="flex items-center gap-2 text-[14px] font-semibold">{t(`lv_${l}` as const)}{reached && <Check size={14} weight="bold" className="text-leaf" />}</div><div className="text-[12px] text-ink-3">{how}</div><div className="text-[12.5px] text-ink-2">{t(`lvUnlock_${l}` as const)}</div></div>
                   </Label>
                 </li>
@@ -102,7 +102,7 @@ export function SeasonPage() {
       <Section title={t("ambassadorRound")} sub={t(`ap_${amb.phase}` as const)} action={<SimulatedTag />}>
         {amb.phase === "selected" ? (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {amb.cohort.map((id) => { const c = s.creators.find((x) => x.id === id)!; return <Label key={id} className="flex items-center gap-3 p-4" watermark={false}><Avatar name={c.name} hue={c.hue} size={44} /><div><div className="flex items-center gap-1 text-[15px] font-semibold"><Crown size={16} weight="fill" className="text-marigold" />{c.name}</div><div className="text-[12.5px] text-ink-3">{c.city}</div></div></Label>; })}
+            {amb.cohort.map((id) => { const c = s.creators.find((x) => x.id === id)!; return <Label key={id} className="flex items-center gap-3 p-4" watermark={false}><Avatar name={c.name} hue={c.hue} size={44} /><div><div className="flex items-center gap-1 text-[15px] font-semibold"><Crown size={16} weight="fill" className="text-accent-text" />{c.name}</div><div className="text-[12.5px] text-ink-3">{c.city}</div></div></Label>; })}
           </div>
         ) : amb.phase === "upcoming" ? (
           <Label className="p-6 text-[14.5px] text-ink-2" watermark={false}>{t("ap_upcoming")}</Label>
@@ -122,7 +122,7 @@ export function SeasonPage() {
                   const c = s.creators.find((x) => x.id === id)!;
                   const voted = myVote === id;
                   return (
-                    <div key={id} className={cn("flex items-center gap-3 px-4 py-3", voted && "bg-leaf-soft/30")}>
+                    <div key={id} className={cn("flex items-center gap-3 px-4 py-3", voted && "bg-surface-2")}>
                       <Stamp pressed={voted} size={40} tone="marigold" icon={<Check weight="bold" size={16} />} />
                       <Avatar name={c.name} hue={c.hue} size={36} />
                       <div className="min-w-0 flex-1"><div className="truncate text-[14px] font-medium">{c.name}</div><div className="text-[12px] text-ink-3">{amb.shortlist.includes(id) ? t("shortlisted") : t("wildcard")} · {voteCounts[id]} {t("votes")}</div></div>
@@ -139,7 +139,7 @@ export function SeasonPage() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Label className="flex gap-5 p-6 lg:col-span-2" watermark={false}>
-          <Stamp pressed size={72} tone="ink" animate={false}><Tent size={28} weight="duotone" /></Stamp>
+          <Stamp pressed size={72} tone="ink" animate={false}><Tent size={28} /></Stamp>
           <div>
             <div className="meta">{t("circleCamp")}</div>
             <p className="mt-1 text-[14.5px] text-ink-2">{t("circleCampBody")}</p>

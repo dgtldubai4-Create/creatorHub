@@ -1,6 +1,8 @@
 /**
- * The Kit: the objects every screen is built from. Paper labels, stamps, tickets,
- * a membership card, a certificate, a stamp card, and the kit box itself.
+ * The objects every screen is built from: labels, stamps, tickets, a membership
+ * card, a certificate, a stamp card and the welcome box. All of them are drawn
+ * from the same neutral material; the membership card and the box are the only
+ * two that carry their own fixed card stock, because they are physical things.
  */
 import { useEffect, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
@@ -39,39 +41,37 @@ export function BrandGlyph({ brandId, size = 16, weight = "duotone", className }
 export function Watermark({ brandId, className, count = 3 }: { brandId: string | null | undefined; className?: string; count?: number }) {
   const I = brandGlyph(brandId);
   return (
-    <span aria-hidden className={cn("pointer-events-none absolute -bottom-3 -end-3 flex gap-1 text-leaf opacity-[0.09]", className)}>
-      {Array.from({ length: count }, (_, i) => <I key={i} size={64 - i * 14} weight="duotone" className="self-end" />)}
+    <span aria-hidden className={cn("pointer-events-none absolute -bottom-3 -end-3 flex gap-1 text-ink opacity-[0.05]", className)}>
+      {Array.from({ length: count }, (_, i) => <I key={i} size={64 - i * 14} weight="light" className="self-end" />)}
     </span>
   );
 }
 
 // ---------- Label ----------
 
-export function Label({ children, className, brandId, watermark = true, as: Tag = "div", ...rest }: { children: ReactNode; className?: string; brandId?: string | null; watermark?: boolean; as?: "div" | "article" | "section" } & Record<string, unknown>) {
+export function Label({ children, className, brandId: _brandId, watermark: _watermark, as: Tag = "div", ...rest }: { children: ReactNode; className?: string; brandId?: string | null; watermark?: boolean; as?: "div" | "article" | "section" } & Record<string, unknown>) {
   return (
     <Tag className={cn("label-card relative overflow-hidden", className)} {...rest}>
-      {watermark && brandId !== undefined && <Watermark brandId={brandId} />}
-      {children}
+            {children}
     </Tag>
   );
 }
 
 // ---------- Stamp ----------
 
-/** A rubber stamp. Pressed stamps land with a press animation the first time they appear. */
+/** A seal. Empty until earned; a pressed seal lands once, the first time it appears. */
 export function Stamp({ pressed, children, size = 64, tone = "leaf", className, icon, animate = true }: { pressed: boolean; children?: ReactNode; size?: number; tone?: "leaf" | "marigold" | "rose" | "ink"; className?: string; icon?: ReactNode; animate?: boolean }) {
   const reduce = useReducedMotion();
-  const color = { leaf: "border-leaf text-leaf", marigold: "border-tangerine text-tangerine", rose: "border-rose text-rose", ink: "border-ink text-ink" }[tone];
+  const color = { leaf: "border-leaf text-leaf bg-leaf-soft", marigold: "border-accent text-accent-text bg-accent-soft", rose: "border-rose text-rose bg-rose-soft", ink: "border-line-2 text-ink-2 bg-surface-2" }[tone];
   return (
     <span className={cn("relative inline-flex shrink-0 items-center justify-center", className)} style={{ width: size, height: size }}>
-      <span className="absolute inset-0 rounded-full border-2 border-dashed border-ink-3/60" />
+      {!pressed && <span className="absolute inset-0 rounded-full border border-dashed border-line-2" />}
       {pressed && (
         <span
-          className={cn("absolute inset-[6%] flex items-center justify-center rounded-full border-[3px] bg-transparent text-center font-bold uppercase leading-none", color)}
-          style={{ transform: "rotate(-8deg)", animation: animate && !reduce ? "stamp-press 520ms cubic-bezier(0.22, 1, 0.36, 1) both" : undefined, fontSize: size * 0.16, letterSpacing: "0.04em" }}
+          className={cn("absolute inset-0 flex items-center justify-center rounded-full border text-center font-medium uppercase leading-none", color)}
+          style={{ animation: animate && !reduce ? "stamp-press 420ms cubic-bezier(0.22, 1, 0.36, 1) both" : undefined, fontSize: size * 0.15, letterSpacing: "0.06em" }}
         >
-          <span className={cn("absolute inset-[9%] rounded-full border", color.split(" ")[0])} />
-          <span className="relative px-1">{icon ?? children ?? <Check weight="bold" size={size * 0.4} />}</span>
+          <span className="relative px-1">{icon ?? children ?? <Check weight="bold" size={size * 0.36} />}</span>
         </span>
       )}
     </span>
@@ -82,20 +82,20 @@ export function Stamp({ pressed, children, size = 64, tone = "leaf", className, 
 
 /** A ticket with a tear-off stub. `stub` sits past the perforation. */
 export function Ticket({ children, stub, className, torn, tone = "paper", onClick, to }: { children: ReactNode; stub?: ReactNode; className?: string; torn?: boolean; tone?: "paper" | "marigold" | "forest"; onClick?: () => void; to?: string }) {
-  const bg = tone === "marigold" ? "bg-lemon text-plum" : tone === "forest" ? "bg-ink text-canvas" : "bg-surface text-ink";
+  const bg = tone === "marigold" ? "bg-accent-soft text-ink" : tone === "forest" ? "inverse-fill" : "bg-surface text-ink";
   const Comp = to ? motion.a : motion.div;
   return (
     <Comp
       href={to}
       onClick={onClick}
-      className={cn("relative block overflow-visible rounded-[20px] border-2 border-outline shadow-card", bg, (onClick || to) && "lift cursor-pointer", className)}
+      className={cn("relative flex flex-col overflow-visible rounded-[20px] border border-line shadow-card", bg, (onClick || to) && "lift cursor-pointer", className)}
       initial={false}
       animate={torn ? { opacity: 0.75 } : { opacity: 1 }}
       transition={{ type: "spring", stiffness: 220, damping: 22 }}
     >
-      <div className="p-5">{children}</div>
+      <div className="flex-1 p-5">{children}</div>
       {stub && (
-        <div className={cn("perf-x rounded-b-[18px] px-5 py-3", tone === "paper" ? "bg-surface-2" : "bg-black/10")}>{stub}</div>
+        <div className={cn("perf-x rounded-b-[19px] px-5 py-3", tone === "paper" ? "bg-surface-2/60" : "bg-black/5")}>{stub}</div>
       )}
     </Comp>
   );
@@ -105,28 +105,37 @@ export function Ticket({ children, stub, className, torn, tone = "paper", onClic
 
 const LEVEL_LABEL: Record<Level, string> = { member: "MEMBER", insider: "INSIDER", pro: "PRO", ambassador: "AMBASSADOR" };
 
+/** Card stock per level. Fixed colours: a card looks the same in a light or a dark room. */
+const STOCK: Record<Level, { bg: string; fg: string; edge: string; mark: string }> = {
+  member: { bg: "linear-gradient(140deg, #f1f1f3 0%, #dcdce2 100%)", fg: "#111114", edge: "rgb(17 17 20 / 0.1)", mark: "#111114" },
+  insider: { bg: "linear-gradient(140deg, #4a4a52 0%, #2a2a30 100%)", fg: "#f4f4f5", edge: "rgb(255 255 255 / 0.12)", mark: "#f4f4f5" },
+  pro: { bg: "linear-gradient(140deg, #222226 0%, #0c0c0e 100%)", fg: "#f4f4f5", edge: "rgb(255 255 255 / 0.12)", mark: "#f2b23a" },
+  ambassador: { bg: "linear-gradient(140deg, #f6c058 0%, #dc9520 100%)", fg: "#1c1303", edge: "rgb(28 19 3 / 0.16)", mark: "#1c1303" },
+};
+
 export function MembershipCard({ name, handle, level, since, sparks, className, compact, id, hue = 0 }: { name: string; handle: string; level: Level; since: string; sparks: number; className?: string; compact?: boolean; id: string; hue?: number }) {
-  const face = level === "ambassador" ? "bg-tangerine text-plum" : level === "pro" ? "bg-grape text-white" : level === "insider" ? "bg-lime text-plum" : "bg-sky text-plum";
+  const stock = STOCK[level];
   // A deterministic dot matrix stands in for the card's code.
   const dots = Array.from({ length: 36 }, (_, i) => ((id.charCodeAt(i % id.length) * (i + 7)) % 5) > 1);
   return (
-    <div className={cn("relative overflow-hidden rounded-[22px] border-2 border-outline shadow-float", face, compact ? "aspect-[1.6] w-64" : "aspect-[1.586] w-full max-w-md", className)}>
-      <span aria-hidden className="absolute -end-10 -top-12 h-44 w-44 rounded-full bg-white/25" />
-      <Face name={name} hue={hue} size={compact ? 56 : 84} className="absolute end-5 top-[24%] border-2 border-outline" />
+    <div className={cn("sheen relative overflow-hidden rounded-[20px] shadow-float", compact ? "aspect-[1.6] w-64" : "aspect-[1.586] w-full max-w-md", className)} style={{ background: stock.bg, color: stock.fg, boxShadow: `inset 0 0 0 1px ${stock.edge}, var(--shadow-float)` }}>
       <div className="flex h-full flex-col justify-between p-5">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2"><span className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-outline bg-lime text-plum"><Leaf size={14} weight="fill" /></span><span className="text-[12px] font-extrabold tracking-wide">DABUR SQUAD</span></div>
-          <span className="meta !text-current opacity-80">{LEVEL_LABEL[level]}</span>
+          <div className="flex items-center gap-2"><Leaf size={16} weight="fill" style={{ color: stock.mark }} /><span className="text-[11.5px] font-medium tracking-[0.14em]">DABUR SQUAD</span></div>
+          <span className="text-[11px] font-medium tracking-[0.14em] opacity-70">{LEVEL_LABEL[level]}</span>
         </div>
-        <div className="grid grid-cols-6 gap-1 self-start" aria-hidden>
-          {dots.map((on, i) => <span key={i} className={cn("h-1.5 w-1.5 rounded-[2px]", on ? "bg-current opacity-70" : "bg-current opacity-15")} />)}
+        <div className="flex items-center justify-between">
+          <div className="grid grid-cols-6 gap-1" aria-hidden>
+            {dots.map((on, i) => <span key={i} className={cn("h-1 w-1 rounded-full bg-current", on ? "opacity-60" : "opacity-15")} />)}
+          </div>
+          <Face name={name} hue={hue} size={compact ? 44 : 64} />
         </div>
         <div className="flex items-end justify-between gap-3">
           <div className="min-w-0">
-            <div className={cn("truncate font-extrabold", compact ? "text-[15px]" : "text-xl")}>{name}</div>
-            <div className="truncate text-[12px] opacity-75">@{handle} · {since}</div>
+            <div className={cn("truncate font-medium tracking-tight", compact ? "text-[15px]" : "text-xl")}>{name}</div>
+            <div className="truncate text-[12px] opacity-65">@{handle} / {since}</div>
           </div>
-          <div className="text-end"><div className={cn("font-extrabold tabular", compact ? "text-lg" : "text-3xl")}>{sparks.toLocaleString()}</div><div className="meta !text-current opacity-75">Sparks</div></div>
+          <div className="text-end"><div className={cn("font-medium tabular tracking-tight", compact ? "text-lg" : "text-3xl")}>{sparks.toLocaleString()}</div><div className="text-[11px] font-medium uppercase tracking-[0.1em] opacity-65">Sparks</div></div>
         </div>
       </div>
     </div>
@@ -139,10 +148,10 @@ export function Certificate({ title, name, date, className, sealed, meta }: { ti
   return (
     <div className={cn("label-card relative p-6 text-center", className)}>
       <div className="meta">Dabur Squad Academy</div>
-      <div className="mt-3 text-xl font-semibold">{title}</div>
+      <div className="mt-3 text-xl font-medium tracking-tight">{title}</div>
       <div className="mt-1 text-[13px] text-ink-2">{meta}</div>
       <div className="mt-5 text-[13px] text-ink-3">awarded to</div>
-      <div className="text-lg font-semibold">{name}</div>
+      <div className="text-lg font-medium">{name}</div>
       <div className="mt-4 flex items-center justify-center gap-4">
         <span className="h-px flex-1 bg-line" />
         <Stamp pressed={!!sealed} size={64} tone="leaf"><span className="text-[9px]">PASSED</span></Stamp>
@@ -161,7 +170,7 @@ export function StampCard({ total, filled, className, label, size = 44 }: { tota
     <div className={cn("label-card p-4", className)}>
       {label && <div className="mb-3 flex items-center justify-between gap-3 text-[13px]">{label}</div>}
       <div className="flex flex-wrap gap-2">
-        {Array.from({ length: total }, (_, i) => <Stamp key={i} pressed={i < filled} size={size} animate={i === filled - 1} />)}
+        {Array.from({ length: total }, (_, i) => <Stamp key={i} pressed={i < filled} size={size} tone="marigold" animate={i === filled - 1} />)}
       </div>
     </div>
   );
@@ -190,7 +199,7 @@ export function KitBox({ children, className, open: openProp }: { children: Reac
             const n = children.length;
             const x = n === 1 ? 50 : 14 + (72 * i) / (n - 1);
             const y = [8, 0, 10, 2, 12][i % 5];
-            const r = [-8, 4, -3, 7, -5][i % 5];
+            const r = [-4, 2, -2, 3, -3][i % 5];
             return (
               <motion.div
                 key={i}
@@ -198,25 +207,25 @@ export function KitBox({ children, className, open: openProp }: { children: Reac
                 style={{ left: `${x}%`, top: `${y}%`, translateX: "-50%", zIndex: 10 + i }}
                 initial={{ y: 160, opacity: 0, rotate: 0, scale: 0.8 }}
                 animate={open ? { y: 0, opacity: 1, rotate: r, scale: 1 } : { y: 160, opacity: 0, rotate: 0, scale: 0.8 }}
-                transition={{ type: "spring", stiffness: 140, damping: 16, delay: 0.25 + i * 0.1 }}
+                transition={{ type: "spring", stiffness: 130, damping: 20, delay: 0.25 + i * 0.1 }}
               >
-                <motion.div animate={reduce ? {} : { y: [0, -6, 0] }} transition={{ duration: 4 + i * 0.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}>{child}</motion.div>
+                {child}
               </motion.div>
             );
           })}
         </div>
         {/* box body */}
-        <div className="absolute inset-x-[6%] bottom-[6%] h-[40%] rounded-b-[18px] rounded-t-[8px] border-2 border-outline bg-grape shadow-float" style={{ zIndex: 20 }}>
-          <div className="absolute inset-x-0 top-0 h-[14%] bg-black/25" />
+        <div className="absolute inset-x-[6%] bottom-[6%] h-[40%] rounded-b-[18px] rounded-t-[6px] shadow-float" style={{ zIndex: 20, background: "linear-gradient(180deg, #232327 0%, #121214 100%)", boxShadow: "inset 0 0 0 1px rgb(255 255 255 / 0.08), var(--shadow-float)" }}>
+          <div className="absolute inset-x-0 top-0 h-[14%] bg-black/30" />
           <div className="absolute inset-x-[8%] top-[34%] flex items-center justify-between text-white/85">
-            <span className="flex items-center gap-2 text-[13px] font-extrabold tracking-wide"><Leaf size={16} weight="fill" className="text-lime" />DABUR SQUAD</span>
-            <span className="meta !text-white/60">Welcome kit</span>
+            <span className="flex items-center gap-2 text-[12px] font-medium tracking-[0.14em]"><Leaf size={15} weight="fill" style={{ color: "#f2b23a" }} />DABUR SQUAD</span>
+            <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-white/50">Welcome kit</span>
           </div>
-          <div className="absolute inset-x-[8%] bottom-[14%] h-px bg-white/15" />
+          <div className="absolute inset-x-[8%] bottom-[14%] h-px bg-white/10" />
         </div>
         {/* lid */}
-        <div className="absolute inset-x-[6%] bottom-[46%] h-[10%] rounded-[8px] border-2 border-outline bg-lime shadow-[0_10px_30px_-10px_rgb(0_0_0/0.5)]" style={{ zIndex: 30, transformOrigin: "50% 100%", transformStyle: "preserve-3d", transform: open ? "rotateX(-112deg)" : "rotateX(0deg)", transition: reduce ? "none" : "transform 900ms cubic-bezier(0.22, 1, 0.36, 1)" }}>
-          <div className="absolute inset-x-[8%] top-1/2 h-px -translate-y-1/2 bg-white/15" />
+        <div className="absolute inset-x-[6%] bottom-[46%] h-[10%] rounded-[6px]" style={{ zIndex: 30, background: "linear-gradient(180deg, #3a3a41 0%, #2a2a30 100%)", boxShadow: "inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 10px 30px -12px rgb(0 0 0 / 0.5)", transformOrigin: "50% 100%", transformStyle: "preserve-3d", transform: open ? "rotateX(-112deg)" : "rotateX(0deg)", transition: reduce ? "none" : "transform 900ms cubic-bezier(0.22, 1, 0.36, 1)" }}>
+          <div className="absolute inset-x-[8%] top-1/2 h-px -translate-y-1/2 bg-white/10" />
         </div>
         {/* shadow on the table */}
         <div className="absolute inset-x-[10%] bottom-[2%] h-[6%] rounded-[50%] bg-black/20 blur-md" />
@@ -228,7 +237,7 @@ export function KitBox({ children, className, open: openProp }: { children: Reac
 // ---------- Level badge on paper ----------
 
 export function LevelSeal({ level, size = 44, className }: { level: Level; size?: number; className?: string }) {
-  const tone = level === "ambassador" ? "marigold" : level === "member" ? "ink" : "leaf";
+  const tone = level === "ambassador" || level === "pro" ? "marigold" : "ink";
   return <Stamp pressed size={size} tone={tone} animate={false} className={className}><span style={{ fontSize: size * 0.17 }}>{LEVEL_LABEL[level]}</span></Stamp>;
 }
 

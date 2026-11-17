@@ -56,7 +56,7 @@ export function AdminMissions() {
       />
 
       {list.length === 0 ? (
-        <EmptyState icon={<Lightning size={24} weight="duotone" />} title={f === "review" ? t("emptyQueue") : t("nothingHere")} body={f === "review" ? t("emptyQueueBody") : undefined} />
+        <EmptyState icon={<Lightning size={24} />} title={f === "review" ? t("emptyQueue") : t("nothingHere")} body={f === "review" ? t("emptyQueueBody") : undefined} />
       ) : (
         <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" gap={0.03}>
           {list.map((m) => {
@@ -68,7 +68,7 @@ export function AdminMissions() {
                 <Link to={`/admin/missions/${m.id}`} className="label-card lift flex h-full flex-col overflow-hidden ">
                   <div className="relative h-28"><ArtSlot id={`mission-${m.type}`} /><div className="absolute start-3 top-3 flex gap-1.5"><MissionTypeChip type={m.type} /><Chip tone={m.status === "live" ? "leaf" : m.status === "draft" ? "neutral" : "ink"}>{t(`mStatus_${m.status}` as const)}</Chip></div></div>
                   <div className="flex flex-1 flex-col gap-2 p-4">
-                    <div className="flex items-center justify-between gap-2">{b ? <BrandMark brand={b} size="sm" /> : <span className="text-[12.5px] font-semibold text-leaf">{t("appName")}</span>}{toReview > 0 && <Chip tone="marigold">{toReview} {t("review").toLowerCase()}</Chip>}</div>
+                    <div className="flex items-center justify-between gap-2">{b ? <BrandMark brand={b} size="sm" /> : <span className="text-[12.5px] font-medium text-ink-2">{t("appName")}</span>}{toReview > 0 && <Chip tone="marigold">{toReview} {t("review").toLowerCase()}</Chip>}</div>
                     <h2 className="text-lg">{L(m.title)}</h2>
                     <div className="mt-auto flex items-center justify-between pt-2 text-[12.5px] text-ink-3"><span>{entries.length} {t("entries").toLowerCase()} · {m.markets.length === 6 ? t("sixMarkets") : m.markets.map((x) => t(`market_${x}` as const)).join(", ")}</span><span className="font-semibold tabular text-ink">{m.sparks} {t("sparks")}</span></div>
                   </div>
@@ -118,7 +118,7 @@ export function AdminMissions() {
                 const sub = e.submissions[e.submissions.length - 1];
                 const key = `${open.id}:${creatorId}`;
                 return (
-                  <li key={creatorId} className={cn("rounded-[8px] border border-line p-3", e.state === "submitted" && "border-marigold/50 bg-marigold-soft/20")}>
+                  <li key={creatorId} className={cn("rounded-[8px] border border-line p-3", e.state === "submitted" && "border-accent/50 bg-accent-soft/20")}>
                     <div className="flex flex-wrap items-center gap-3">
                       <Avatar name={cr.name} hue={cr.hue} size={34} />
                       <div className="min-w-0 flex-1"><div className="text-[14px] font-medium">{cr.name}</div><div className="text-[12px] text-ink-3">{cr.city} · {t(`market_${cr.market}` as const)}{e.squadId && ` · ${L(open.squads?.find((q) => q.id === e.squadId)?.name ?? { en: "", ar: "" })}`}</div></div>
@@ -128,18 +128,18 @@ export function AdminMissions() {
                     {sub && (
                       <div className="mt-3 grid gap-2">
                         <div className="flex flex-wrap items-center gap-2 text-[12.5px]">
-                          <a href={sub.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-medium text-leaf hover:underline"><LinkSimple size={13} />{t("openPost")}</a>
+                          <a href={sub.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink"><LinkSimple size={13} />{t("openPost")}</a>
                           <span className="text-ink-3">{relative(sub.at)}</span>
                           {(["hashtags", "disclosure", "timing"] as const).map((k) => <span key={k} className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium", sub.check[k] ? "bg-leaf-soft text-leaf-ink" : "bg-rose-soft text-rose")}>{sub.check[k] ? <Check size={11} weight="bold" /> : <X size={11} weight="bold" />}{t(`pc_${k}` as const)}</span>)}
                         </div>
                         <p className="text-[13.5px] text-ink-2">{sub.caption}</p>
                         {(e.state === "submitted" || e.award) && (
-                          <div className="rounded-[12px] border-2 border-outline bg-surface p-2.5">
+                          <div className="rounded-[12px] border border-line bg-surface p-2.5">
                             <div className="meta mb-1.5">{e.award ? t("yourAward") : t("awardPreview")}</div>
                             <QuoteBreakdown quote={e.award ?? missionQuote(s, open, cr, { format: sub.format, url: sub.url, brandIds: sub.brandIds })} />
                           </div>
                         )}
-                        {e.clawedBack && <p className="text-[13px] font-bold text-rose">{t("postRemovedBody", { n: e.clawedBack.amount })}</p>}
+                        {e.clawedBack && <p className="text-[13px] font-medium text-rose">{t("postRemovedBody", { n: e.clawedBack.amount })}</p>}
                         {e.state === "submitted" && can(role, "review") && (
                           <div className="flex flex-wrap items-end gap-2">
                             <div className="min-w-56 flex-1"><Field label={t("reviewerNote")}><Textarea value={notes[key] ?? ""} onChange={(ev) => setNotes((n) => ({ ...n, [key]: ev.target.value }))} className="min-h-12" /></Field></div>

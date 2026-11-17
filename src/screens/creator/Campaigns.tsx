@@ -24,7 +24,7 @@ export function CreatorCampaigns() {
     <div className="flex flex-col gap-8">
       <PageHeader title={t("campaigns")} sub={t("campaignsSub")} actions={<Segmented value={f} onChange={setF} options={[{ value: "active", label: t("active") }, { value: "done", label: t("done") }, { value: "declined", label: t("declined") }]} />} />
       {list.length === 0 ? (
-        <EmptyState icon={<Path size={24} weight="duotone" />} title={t("noCampaigns")} body={t("noCampaignsBody")} action={<Button variant="secondary" to="/creator/invitations">{t("invitations")}</Button>} />
+        <EmptyState icon={<Path size={24} />} title={t("noCampaigns")} body={t("noCampaignsBody")} action={<Button variant="secondary" to="/creator/invitations">{t("invitations")}</Button>} />
       ) : (
         <Stagger className="grid gap-4 md:grid-cols-2">
           {list.map((p) => {

@@ -33,7 +33,7 @@ export function AdminCampaigns() {
         }
       />
       {list.length === 0 ? (
-        <EmptyState icon={<Megaphone size={24} weight="duotone" />} title={t("nothingHere")} action={<Button onClick={() => setCreating(true)}>{t("newCampaign")}</Button>} />
+        <EmptyState icon={<Megaphone size={24} />} title={t("nothingHere")} action={<Button onClick={() => setCreating(true)}>{t("newCampaign")}</Button>} />
       ) : (
         <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {list.map((c) => {
@@ -47,7 +47,7 @@ export function AdminCampaigns() {
                   <KitList campaign={c} compact />
                   <div className="mt-auto flex items-center justify-between gap-3 pt-2">
                     <div className="flex items-center gap-3">
-                      <ProgressRing value={fn.progress} size={40} stroke={5}><span className="text-[10px] font-bold tabular">{fn.total}</span></ProgressRing>
+                      <ProgressRing value={fn.progress} size={40} stroke={5}><span className="text-[10px] font-medium tabular">{fn.total}</span></ProgressRing>
                       <div className="text-[12.5px] text-ink-3">{num(fn.counts.done)} {t("done").toLowerCase()} · {date(c.window.start)} - {date(c.window.end)}</div>
                     </div>
                     <Points value={c.points} />

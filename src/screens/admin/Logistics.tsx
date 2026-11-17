@@ -25,7 +25,7 @@ export function AdminLogistics() {
     <div className="flex flex-col gap-8">
       <PageHeader title={t("logistics")} sub={t("logisticsSub")} eyebrow={<SimulatedTag />} />
       {queue.length === 0 ? (
-        <EmptyState icon={<Package size={24} weight="duotone" />} title={t("deliveredAll")} body={t("deliveredAllBody")} />
+        <EmptyState icon={<Package size={24} />} title={t("deliveredAll")} body={t("deliveredAllBody")} />
       ) : (
         <Stagger className="grid gap-3">
           {queue.map((p) => {
@@ -47,7 +47,7 @@ export function AdminLogistics() {
                   </div>
                   <div className="md:col-span-5">
                     <div className="flex items-center gap-1.5">
-                      {SHIPMENT_ORDER.map((st, i) => <span key={st} className={cn("h-2 flex-1 rounded-full", i < idx ? "bg-leaf" : i === idx ? "bg-marigold" : "bg-line-2")} title={t(`sh_${st}` as const)} />)}
+                      {SHIPMENT_ORDER.map((st, i) => <span key={st} className={cn("h-2 flex-1 rounded-full", i < idx ? "bg-ink" : i === idx ? "bg-accent" : "bg-line-2")} title={t(`sh_${st}` as const)} />)}
                     </div>
                     <div className="mt-2 flex flex-wrap items-center gap-2 text-[12.5px] text-ink-3">
                       <Chip tone="marigold">{t(`sh_${sh.status}` as const)}</Chip>
@@ -66,7 +66,7 @@ export function AdminLogistics() {
 
       <Section title={`${t("levelKits")} · ${kits.length}`} sub={unclaimed > 0 ? t("unclaimedKits", { n: unclaimed }) : t("levelKitsSub")}>
         {kits.length === 0 ? (
-          <EmptyState icon={<Package size={24} weight="duotone" />} title={t("deliveredAll")} />
+          <EmptyState icon={<Package size={24} />} title={t("deliveredAll")} />
         ) : (
           <Stagger className="grid gap-3">
             {kits.map((k) => {
@@ -86,7 +86,7 @@ export function AdminLogistics() {
                       </div>
                     </div>
                     <div className="md:col-span-5">
-                      <div className="flex items-center gap-1.5">{SHIPMENT_ORDER.map((st, i) => <span key={st} className={cn("h-2 flex-1 rounded-full", i < idx ? "bg-leaf" : i === idx ? "bg-marigold" : "bg-line-2")} title={t(`sh_${st}` as const)} />)}</div>
+                      <div className="flex items-center gap-1.5">{SHIPMENT_ORDER.map((st, i) => <span key={st} className={cn("h-2 flex-1 rounded-full", i < idx ? "bg-ink" : i === idx ? "bg-accent" : "bg-line-2")} title={t(`sh_${st}` as const)} />)}</div>
                       <div className="mt-2 flex flex-wrap items-center gap-2 text-[12.5px] text-ink-3"><Chip tone="marigold">{t(`sh_${sh.status}` as const)}</Chip><span>{sh.courier} · <span className="tabular">{sh.trackingNumber}</span> · {relative(sh.updatedAt)}</span></div>
                     </div>
                     <div className="md:col-span-3 md:text-end">

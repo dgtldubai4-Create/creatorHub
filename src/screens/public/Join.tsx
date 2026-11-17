@@ -105,11 +105,11 @@ export function Join() {
                 <p className="mt-3 text-ink-2">{t("joinSub")}</p>
                 <div className="mt-5 flex flex-wrap gap-2"><Chip tone="leaf">{t("noMinimum")}</Chip><Chip>{t("sixMarkets")}</Chip><Chip>{t("twoLanguages")}</Chip></div>
                 <p className="mt-4 text-[13px] text-ink-3">{t("eligibility")}</p>
-                <div className="mt-6 flex items-start gap-2 rounded-[8px] bg-marigold-soft p-4 text-[13px] text-marigold-ink"><ShieldWarning size={18} weight="fill" className="mt-0.5 shrink-0" />{t("scamWarning")}</div>
+                <div className="mt-6 flex items-start gap-2 rounded-[8px] bg-accent-soft p-4 text-[13px] text-accent-text"><ShieldWarning size={18} weight="fill" className="mt-0.5 shrink-0" />{t("scamWarning")}</div>
                 <ol className="mt-8 grid gap-2">
                   {steps.map((label, i) => (
                     <li key={label} className="flex items-center gap-3">
-                      <span className={cn("flex h-7 w-7 items-center justify-center rounded-full text-[12.5px] font-semibold", i < step ? "bg-leaf text-white" : i === step ? "bg-ink text-canvas" : "bg-surface-2 text-ink-3")}>{i < step ? <Check size={14} weight="bold" /> : i + 1}</span>
+                      <span className={cn("flex h-7 w-7 items-center justify-center rounded-full text-[12.5px] font-semibold", i < step ? "bg-surface-2 text-ink" : i === step ? "inverse-fill" : "bg-surface-2 text-ink-3")}>{i < step ? <Check size={14} weight="bold" /> : i + 1}</span>
                       <span className={cn("text-[14px] font-medium", i === step ? "text-ink" : "text-ink-3")}>{label}</span>
                     </li>
                   ))}
@@ -156,7 +156,7 @@ export function Join() {
                           const acc = connected[pl];
                           return (
                             <div key={pl} className="flex flex-wrap items-center gap-3 rounded-[8px] bg-surface-2 p-3">
-                              <Icon size={24} weight="duotone" />
+                              <Icon size={24} />
                               {acc ? (
                                 <div className="min-w-0 flex-1 text-[13.5px]"><div className="font-medium">{t("connectedAs", { handle: acc.handle })}</div><div className="text-[12px] text-ink-3">{num(acc.followers)} {t("followers")} · {acc.engagementRate}% {t("engagement")}</div></div>
                               ) : (
@@ -189,7 +189,7 @@ export function Join() {
                       <>
                         <div><h2 className="text-2xl">{t("charterTitle")}</h2><p className="mt-1 text-[14px] text-ink-2">{t("charterSub")}</p></div>
                         <CharterList />
-                        <label className="flex items-start gap-2 rounded-[14px] border-2 border-outline bg-lime-soft p-3 text-[14px] font-bold"><input type="checkbox" className="mt-1 h-4 w-4 accent-[var(--grape)]" checked={f.charter} onChange={(e) => set("charter")(e.target.checked)} />{t("charterAccept")}{touched && errors.charter && <span className="text-rose"> · {errors.charter}</span>}</label>
+                        <label className="flex items-start gap-2 rounded-[14px] border border-line bg-accent-soft p-3 text-[14px] font-medium"><input type="checkbox" className="mt-1 h-4 w-4 accent-[var(--grape)]" checked={f.charter} onChange={(e) => set("charter")(e.target.checked)} />{t("charterAccept")}{touched && errors.charter && <span className="text-rose"> · {errors.charter}</span>}</label>
                       </>
                     )}
                   </motion.div>
