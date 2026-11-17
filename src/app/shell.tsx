@@ -17,7 +17,7 @@ export function Logo({ className, compact }: { className?: string; compact?: boo
   const t = useT();
   return (
     <span className={cn("inline-flex items-center gap-2 whitespace-nowrap font-semibold tracking-tight", className)}>
-      <span className="accent-fill flex h-9 w-9 items-center justify-center rounded-[11px]">
+      <span className="brand-fill flex h-9 w-9 items-center justify-center rounded-[11px] shadow-[0_8px_18px_-10px_var(--brand)]">
         <Leaf size={17} weight="fill" />
       </span>
       {!compact && <span className="text-[16.5px] font-medium tracking-tight">{t("appName")}</span>}
@@ -52,7 +52,7 @@ function RoleSwitch() {
   return (
     <label className="relative inline-flex items-center">
       <span className="sr-only">{t("role")}</span>
-      <select value={session.role} onChange={(e) => dispatch({ type: "setRole", role: e.target.value as Role })} className="h-10 cursor-pointer appearance-none rounded-full border border-line-2 bg-surface pe-8 ps-3.5 text-[13px] font-medium">
+      <select value={session.role} onChange={(e) => dispatch({ type: "setRole", role: e.target.value as Role })} className="h-10 max-w-[7.25rem] cursor-pointer appearance-none truncate rounded-full border border-line-2 bg-surface pe-8 ps-3.5 text-[13px] font-medium sm:max-w-none">
         {ROLES.map((r) => (
           <option key={r} value={r}>{t(`role_${r}` as const)}</option>
         ))}
@@ -91,7 +91,7 @@ function Bellicon({ audience, to }: { audience: string; to: string }) {
   return (
     <NavLink to={to} className={({ isActive }) => cn("relative inline-flex h-10 w-10 items-center justify-center rounded-full text-ink-2 hover:bg-surface-2 hover:text-ink", isActive && "bg-surface-2 text-ink")} aria-label={t("notifications")}>
       <Bell size={20} weight={n ? "fill" : "regular"} />
-      {n > 0 && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={spring} className="accent-fill absolute -top-0.5 -end-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10.5px] font-semibold ring-2 ring-canvas">{n}</motion.span>}
+      {n > 0 && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={spring} className="hot-fill absolute -top-0.5 -end-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10.5px] font-semibold ring-2 ring-canvas">{n}</motion.span>}
     </NavLink>
   );
 }
@@ -150,10 +150,10 @@ function TopNav({ items, compact }: { items: NavItem[]; compact?: boolean }) {
   return (
     <nav className="hide-scrollbar flex items-center gap-0.5 overflow-x-auto" aria-label="Primary">
       {items.map((it) => (
-        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative isolate flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[13.5px] font-medium transition-colors", isActive ? "text-ink" : "text-ink-3 hover:text-ink")}>
+        <NavLink key={it.to} to={it.to} end={it.end} title={it.label} className={({ isActive }) => cn("relative isolate flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[13.5px] font-medium transition-colors", isActive ? "text-brand-text" : "text-ink-3 hover:text-ink")}>
           {({ isActive }) => (
             <>
-              {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-surface-2" transition={springSnappy} />}
+              {isActive && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-brand-soft" transition={springSnappy} />}
               {it.icon}
               <span className={cn(compact && "hidden 2xl:inline")}>{it.label}</span>
             </>
@@ -169,7 +169,7 @@ function BottomTabs({ items }: { items: NavItem[] }) {
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)] md:hidden" aria-label="Primary">
       <div className="flex justify-around">
         {items.map((it) => (
-          <NavLink key={it.to} to={it.to} end={it.end} className={({ isActive }) => cn("flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-medium", isActive ? "text-ink" : "text-ink-3")}>
+          <NavLink key={it.to} to={it.to} end={it.end} className={({ isActive }) => cn("flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-medium", isActive ? "text-brand-text" : "text-ink-3")}>
             {it.icon}
             {it.label}
           </NavLink>
@@ -184,7 +184,7 @@ function Frame({ children, nav, bottom }: { children: ReactNode; nav: ReactNode;
   return (
     <div className="min-h-[100dvh] bg-canvas">
       <header className="sticky top-0 z-40 border-b border-line bg-canvas/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 md:px-6">{nav}</div>
+        <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-2 px-4 md:gap-4 md:px-6">{nav}</div>
       </header>
       <main className="mx-auto max-w-[1400px] px-4 pb-28 pt-6 md:px-6 md:pb-16 md:pt-8">
         {/* Enter-only transition keyed by section. An exit animation around an Outlet would
@@ -216,7 +216,7 @@ export function CreatorShell() {
         <>
           <NavLink to="/creator" className="shrink-0"><Logo compact /></NavLink>
           <div className="hidden md:block"><TopNav items={items} /></div>
-          <div className="ms-auto flex items-center gap-2">
+          <div className="ms-auto flex min-w-0 items-center gap-1 sm:gap-2">
             <div className="hidden sm:block"><SeatSwitch /></div>
             <LangToggle />
             <ThemeToggle className="hidden sm:inline-flex" />
@@ -257,7 +257,7 @@ export function AdminShell() {
         <>
           <NavLink to="/admin" className="shrink-0"><Logo compact /></NavLink>
           <div className="hidden lg:block"><TopNav items={items} compact /></div>
-          <div className="ms-auto flex items-center gap-2">
+          <div className="ms-auto flex min-w-0 items-center gap-1 sm:gap-2">
             <div className="hidden sm:block"><SeatSwitch /></div>
             <RoleSwitch />
             <div className="hidden md:block"><LangToggle /></div>

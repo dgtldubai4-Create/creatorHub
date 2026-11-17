@@ -9,6 +9,7 @@ import { Chip, type Tone } from "../../ui/primitives";
 import { ProductArt } from "../../ui/ProductArt";
 import { cn } from "../../ui/cn";
 import { BrandGlyph } from "../../ui/kit";
+import { vivid } from "../../ui/brandColor";
 
 export function useCurrentCreator(): Creator {
   const s = useStore();
@@ -56,7 +57,7 @@ export function BrandMark({ brand, className, size = "md" }: { brand: Brand; cla
   const L = useL();
   return (
     <span className={cn("inline-flex items-center gap-1.5 whitespace-nowrap font-medium tracking-tight text-ink", size === "sm" ? "text-[12.5px]" : size === "lg" ? "text-[17px]" : "text-[14px]", className)}>
-      <span className="inline-flex" style={{ color: brand.hue }}><BrandGlyph brandId={brand.id} size={size === "lg" ? 18 : size === "sm" ? 13 : 15} weight="fill" /></span>
+      <span className="inline-flex" style={{ color: vivid(brand.id).solid }}><BrandGlyph brandId={brand.id} size={size === "lg" ? 18 : size === "sm" ? 13 : 15} weight="fill" /></span>
       {L(brand.localisedName)}
     </span>
   );
@@ -80,7 +81,7 @@ export function KitList({ campaign, compact }: { campaign: Campaign; compact?: b
     );
   }
   return (
-    <ul className="grid gap-2 sm:grid-cols-2">
+    <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
       {items.map((k) => (
         <li key={k.productId} className="flex items-center gap-3 rounded-2xl bg-surface-2 p-2 pe-4">
           <ProductArt product={k.product} brand={s.brands.find((b) => b.id === k.product.brandId)} size="sm" />
@@ -119,7 +120,7 @@ import type { EntryState, Level, MissionType } from "../../domain/types";
 import { LevelSeal } from "../../ui/kit";
 import { Leaf, Plant, Flower, Tree } from "@phosphor-icons/react";
 
-const LEVEL_TONE: Record<Level, Tone> = { member: "neutral", insider: "marigold", pro: "ink", ambassador: "lime" };
+const LEVEL_TONE: Record<Level, Tone> = { member: "neutral", insider: "leaf", pro: "ink", ambassador: "lime" };
 export function LevelChip({ level, className }: { level: Level; className?: string }) {
   const t = useT();
   const Icon = { member: Leaf, insider: Plant, pro: Flower, ambassador: Tree }[level];

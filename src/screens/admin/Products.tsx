@@ -54,12 +54,12 @@ export function AdminProducts() {
 
       <Sheet open={!!open} onClose={() => nav("/admin/products")} wide title={open ? L(open.names) : ""}>
         {open && (
-          <div className="grid gap-6 md:grid-cols-5">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
             <div className="md:col-span-2">
               <ProductArt product={open} brand={s.brands.find((b) => b.id === open.brandId)} size="lg" />
               {!open.image && <p className="mt-2 text-[12px] text-ink-3">{t("imagePending")}</p>}
             </div>
-            <div className="grid content-start gap-4 md:col-span-3">
+            <div className="grid grid-cols-1 content-start gap-4 md:col-span-3">
               <div className="flex flex-wrap items-center gap-2">
                 <BrandMark brand={s.brands.find((b) => b.id === open.brandId)!} />
                 <Chip>{open.type}</Chip>
@@ -74,11 +74,11 @@ export function AdminProducts() {
               </div>
               <div>
                 <h3 className="text-[13px] font-semibold text-ink-2">{t("benefits")}</h3>
-                <ul className="mt-1.5 grid gap-1 text-[14px]">{open.benefits.map((b, i) => <li key={i}>{L(b)}</li>)}</ul>
+                <ul className="mt-1.5 grid grid-cols-1 gap-1 text-[14px]">{open.benefits.map((b, i) => <li key={i}>{L(b)}</li>)}</ul>
               </div>
               <div>
                 <h3 className="text-[13px] font-semibold text-ink-2">{t("howToUse")}</h3>
-                <ol className="mt-1.5 grid gap-1 text-[14px]">{open.usageSteps.map((b, i) => <li key={i} className="flex gap-2"><span className="w-4 shrink-0 font-semibold text-ink-3">{i + 1}</span>{L(b)}</li>)}</ol>
+                <ol className="mt-1.5 grid grid-cols-1 gap-1 text-[14px]">{open.usageSteps.map((b, i) => <li key={i} className="flex gap-2"><span className="w-4 shrink-0 font-semibold text-ink-3">{i + 1}</span>{L(b)}</li>)}</ol>
               </div>
               <div>
                 <h3 className="text-[13px] font-semibold text-ink-2">{t("usedIn")}</h3>

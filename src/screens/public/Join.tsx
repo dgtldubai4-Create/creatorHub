@@ -89,7 +89,7 @@ export function Join() {
       <main className="mx-auto max-w-5xl px-4 pb-24 pt-8 md:px-6 md:pt-12">
         <AnimatePresence mode="wait">
           {done ? (
-            <motion.div key="done" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={spring} className="label-card grid overflow-hidden md:grid-cols-2">
+            <motion.div key="done" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={spring} className="label-card grid grid-cols-1 overflow-hidden md:grid-cols-2">
               <div className="flex items-center justify-center p-6"><KitBox className="max-w-[360px]">{s.products.slice(0, 3).map((p) => <ProductArt key={p.id} product={p} brand={s.brands.find((b) => b.id === p.brandId)} size="lg" className="shadow-float" />)}</KitBox></div>
               <div className="flex flex-col items-start gap-4 p-8">
                 <Stamp pressed size={72} tone="leaf"><span className="text-[10px]">RECEIVED</span></Stamp>
@@ -99,17 +99,17 @@ export function Join() {
               </div>
             </motion.div>
           ) : (
-            <motion.div key="form" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring} className="grid gap-8 lg:grid-cols-5">
+            <motion.div key="form" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring} className="grid grid-cols-1 gap-8 lg:grid-cols-5">
               <div className="lg:col-span-2">
                 <h1 className="text-4xl md:text-5xl">{t("joinTitle")}</h1>
                 <p className="mt-3 text-ink-2">{t("joinSub")}</p>
                 <div className="mt-5 flex flex-wrap gap-2"><Chip tone="leaf">{t("noMinimum")}</Chip><Chip>{t("sixMarkets")}</Chip><Chip>{t("twoLanguages")}</Chip></div>
                 <p className="mt-4 text-[13px] text-ink-3">{t("eligibility")}</p>
                 <div className="mt-6 flex items-start gap-2 rounded-[8px] bg-accent-soft p-4 text-[13px] text-accent-text"><ShieldWarning size={18} weight="fill" className="mt-0.5 shrink-0" />{t("scamWarning")}</div>
-                <ol className="mt-8 grid gap-2">
+                <ol className="mt-8 grid grid-cols-1 gap-2">
                   {steps.map((label, i) => (
                     <li key={label} className="flex items-center gap-3">
-                      <span className={cn("flex h-7 w-7 items-center justify-center rounded-full text-[12.5px] font-semibold", i < step ? "bg-surface-2 text-ink" : i === step ? "inverse-fill" : "bg-surface-2 text-ink-3")}>{i < step ? <Check size={14} weight="bold" /> : i + 1}</span>
+                      <span className={cn("flex h-7 w-7 items-center justify-center rounded-full text-[12.5px] font-semibold", i < step ? "bg-brand-soft text-brand-text" : i === step ? "brand-fill" : "bg-surface-2 text-ink-3")}>{i < step ? <Check size={14} weight="bold" /> : i + 1}</span>
                       <span className={cn("text-[14px] font-medium", i === step ? "text-ink" : "text-ink-3")}>{label}</span>
                     </li>
                   ))}
@@ -117,10 +117,10 @@ export function Join() {
               </div>
               <div className="label-card p-6 md:p-8 lg:col-span-3">
                 <AnimatePresence mode="wait">
-                  <motion.div key={step} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={spring} className="grid gap-5">
+                  <motion.div key={step} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={spring} className="grid grid-cols-1 gap-5">
                     {step === 0 && (
                       <>
-                        <div className="grid gap-5 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                           <Field label={t("fullName")} required error={touched ? errors.name : ""}><Input value={f.name} onChange={(e) => set("name")(e.target.value)} autoFocus autoComplete="name" /></Field>
                           <Field label={t("handle")} required error={touched ? errors.handle : ""}><Input value={f.handle} onChange={(e) => set("handle")(e.target.value)} placeholder="@yourname" /></Field>
                           <Field label={t("email")} required error={touched ? errors.email : ""}><Input type="email" value={f.email} onChange={(e) => set("email")(e.target.value)} autoComplete="email" dir="ltr" /></Field>
@@ -176,7 +176,7 @@ export function Join() {
                       <>
                         <Field label={t("vibe")} required error={touched ? errors.vibe : ""}><Input value={f.vibe} onChange={(e) => set("vibe")(e.target.value)} maxLength={80} autoFocus placeholder={t("nba_rest_body")} /></Field>
                         <Field label={t("niche")} required><div className="flex flex-wrap gap-2">{NICHES.map((n) => <ChipButton key={n} type="button" selected={f.niche === n} onClick={() => set("niche")(n)}>{t(`niche_${n}` as const)}</ChipButton>)}</div></Field>
-                        <div className="grid gap-5 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                           <Field label={t("tier")}><div className="flex flex-wrap gap-2">{TIERS.map((n) => <ChipButton key={n} type="button" selected={f.tier === n} onClick={() => set("tier")(n)}>{t(`tier_${n}` as const)}</ChipButton>)}</div></Field>
                           <Field label={t("languages")}><div className="flex gap-2">{(["ar", "en"] as Language[]).map((l) => <ChipButton key={l} type="button" selected={f.languages.includes(l)} onClick={() => set("languages")(f.languages.includes(l) ? f.languages.filter((x) => x !== l) : [...f.languages, l])}>{t(`lang_${l}` as const)}</ChipButton>)}</div></Field>
                         </div>

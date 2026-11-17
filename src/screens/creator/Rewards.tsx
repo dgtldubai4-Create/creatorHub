@@ -47,7 +47,7 @@ export function Rewards() {
   return (
     <div className="flex flex-col gap-10">
       <PageHeader title={t("rewards")} sub={t("rewardsSub")} />
-      <div className="grid gap-4 lg:grid-cols-12 lg:items-stretch">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-stretch">
         <div className="lg:col-span-5"><MembershipCard id={me.id} name={me.name} handle={me.handle} level={lv.level} since={date(me.joinedAt, { month: "short", year: "numeric" })} sparks={bal} /></div>
         <Label className="flex flex-col justify-center gap-2 p-6 lg:col-span-7" watermark={false}>
           <div className="meta">{t("balance")}</div>
@@ -59,7 +59,7 @@ export function Rewards() {
       </div>
 
       <Section action={<Segmented value={k} onChange={setK} options={[{ value: "all", label: t("all") }, { value: "product", label: t("rk_product") }, { value: "experience", label: t("rk_experience") }, { value: "voucher", label: t("rk_voucher") }, { value: "boost", label: t("rk_boost") }]} />}>
-        <Stagger className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" gap={0.04}>
+        <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" gap={0.04}>
           {list.map((r) => {
             const b = s.brands.find((x) => x.id === r.brandId);
             const can = bal >= r.cost && r.stock > 0;
@@ -88,7 +88,7 @@ export function Rewards() {
         </Stagger>
       </Section>
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <Section title={t("myRedemptions")}>
           {mine.length === 0 ? <p className="text-[14px] text-ink-3">{t("nothingHere")}</p> : (
             <ul className="label-card divide-y divide-line">

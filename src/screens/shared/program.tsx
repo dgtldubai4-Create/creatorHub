@@ -68,7 +68,7 @@ function TaskRow({ task }: { task: LevelTask }) {
   const numeric = task.target !== undefined && task.current !== undefined;
   const body = (
     <div className={cn("flex items-center gap-3 px-4 py-3", !task.done && "transition-colors hover:bg-surface-2")}>
-      <span className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line", task.done ? "inverse-fill border-transparent" : "bg-surface")}>{task.done && <Check size={14} weight="bold" />}</span>
+      <span className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line", task.done ? "brand-fill border-transparent" : "bg-surface")}>{task.done && <Check size={14} weight="bold" />}</span>
       <div className="min-w-0 flex-1">
         <div className={cn("text-[14.5px] font-medium", task.done && "text-ink-3 line-through decoration-2")}>{t(`task_${task.key}` as const, { target: num(task.target ?? 0) })}</div>
         {!task.done && named && <div className="truncate text-[12.5px] font-medium text-accent-text">{named}</div>}
@@ -158,7 +158,7 @@ export function LevelKitCard({ level: lvl, kit, creatorId, hero }: { level: KitL
   if (!sh) {
     return (
       <div className={cn("slab relative overflow-hidden p-5", !hero && "!shadow-card")}>
-        <div className={cn("relative grid items-center gap-4", hero && "sm:grid-cols-2")}>
+        <div className={cn("relative grid grid-cols-1 items-center gap-4", hero && "sm:grid-cols-2")}>
           {hero && <KitBox className="max-w-[300px]">{LEVEL_KITS[lvl].items.slice(0, 3).map((it) => { const p = s.products.find((x) => x.id === it.productId)!; return <ProductArt key={p.id} product={p} brand={s.brands.find((b) => b.id === p.brandId)} size="lg" className="rounded-[12px] shadow-card" />; })}</KitBox>}
           <div>
             <div className="meta">{t("kitItems", { n: count })}</div>
@@ -186,7 +186,7 @@ export function LevelKitCard({ level: lvl, kit, creatorId, hero }: { level: KitL
       <KitProducts level={lvl} />
       {!delivered && (
         <>
-          <div className="flex items-center gap-1.5" dir="ltr">{SHIPMENT_ORDER.map((st, i) => <span key={st} className={cn("h-2.5 flex-1 rounded-full border border-line", i < idx ? "bg-ink" : i === idx ? "bg-accent" : "bg-surface-2")} title={t(`sh_${st}` as const)} />)}</div>
+          <div className="flex items-center gap-1.5" dir="ltr">{SHIPMENT_ORDER.map((st, i) => <span key={st} className={cn("h-2.5 flex-1 rounded-full border border-line", i < idx ? "bg-brand" : i === idx ? "bg-accent" : "bg-surface-2")} title={t(`sh_${st}` as const)} />)}</div>
           <div className="flex flex-wrap items-center gap-2 text-[12.5px] font-medium text-ink-2"><span dir="ltr">{sh.courier} · {sh.trackingNumber}</span><SimulatedTag /></div>
         </>
       )}
@@ -199,7 +199,7 @@ export function LevelKitCard({ level: lvl, kit, creatorId, hero }: { level: KitL
 export function LevelKitShelf({ creatorId, className }: { creatorId: string; className?: string }) {
   const s = useStore();
   const mine = kitsFor(s, creatorId);
-  return <div className={cn("grid gap-4 md:grid-cols-3", className)}>{KIT_LEVELS.map((l) => <LevelKitCard key={l} level={l} kit={mine.find((k) => k.level === l)} creatorId={creatorId} />)}</div>;
+  return <div className={cn("grid grid-cols-1 gap-4 md:grid-cols-3", className)}>{KIT_LEVELS.map((l) => <LevelKitCard key={l} level={l} kit={mine.find((k) => k.level === l)} creatorId={creatorId} />)}</div>;
 }
 
 // ---------- Charter ----------
@@ -207,7 +207,7 @@ export function LevelKitShelf({ creatorId, className }: { creatorId: string; cla
 export function CharterList({ className }: { className?: string }) {
   const L = useL();
   return (
-    <ol className={cn("grid gap-3", className)}>
+    <ol className={cn("grid grid-cols-1 gap-3", className)}>
       {CHARTER.map((c, i) => (
         <li key={c.key} className="flex gap-3">
           <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line bg-accent-soft text-[12.5px] font-semibold text-on">{i + 1}</span>

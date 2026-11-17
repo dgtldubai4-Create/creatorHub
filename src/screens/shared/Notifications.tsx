@@ -23,7 +23,7 @@ export function Notifications({ audience }: { audience: "creator" | "brand" }) {
       {list.length === 0 ? (
         <EmptyState icon={<BellSlash size={24} />} title={t("noNotifications")} body={t("noNotificationsBody")} />
       ) : (
-        <Stagger className="grid gap-2" gap={0.03}>
+        <Stagger className="grid grid-cols-1 gap-2" gap={0.03}>
           {list.map((n) => {
             const body = (
               <div className={cn("label-card flex items-start gap-4 p-4", !n.read && "bg-surface-2", n.link && "press hover:border-line-2")}>

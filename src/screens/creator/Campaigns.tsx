@@ -26,7 +26,7 @@ export function CreatorCampaigns() {
       {list.length === 0 ? (
         <EmptyState icon={<Path size={24} />} title={t("noCampaigns")} body={t("noCampaignsBody")} action={<Button variant="secondary" to="/creator/invitations">{t("invitations")}</Button>} />
       ) : (
-        <Stagger className="grid gap-4 md:grid-cols-2">
+        <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {list.map((p) => {
             const c = campaignById(s, p.campaignId)!;
             const b = s.brands.find((x) => x.id === c.brandId)!;

@@ -194,31 +194,51 @@ with `HF_MODEL`) handles photographic hero and season imagery. Output lands in
 runtime, and the sandbox this was built in could not reach either, so the files are
 not committed yet.
 
+## Social assets
+
+`npm run social` pulls posts from Dabur's own accounts into `src/art/social` (images plus
+`posts.json`). The app reads that folder at build time and never calls a network at
+runtime. With the folder empty, the feed sections simply do not render.
+
+```bash
+# From a folder: an Instagram or TikTok data export, or any folder of saved post images
+npm run social -- --from ./exports/instagram --platform instagram --handle <handle>
+
+# From the Instagram Graph API or the TikTok Display API, for accounts you manage
+IG_ACCESS_TOKEN=... npm run social -- --instagram
+TIKTOK_ACCESS_TOKEN=... npm run social -- --tiktok --handle <handle>
+```
+
+Options: `--max 12`, `--brand vatika` (tag posts with a brand), `--clear`, `--dry-run`.
+Tokens belong in the environment, never in the repository. The API modes need network
+access to the two APIs and to the image hosts they return. Keep images around 1080px:
+they are inlined into the single-file build.
+
 ## Design notes
 
-Quiet, monochrome, personal. The interface is built on three things:
+Neutral surfaces, Dabur colour, real motion. The interface is built on four things:
 
-- **One accent on neutral** (`src/index.css`): zinc surfaces in light and dark, a single
-  saffron accent for the primary moment (Sparks, the active step, the one thing to do
-  next), green and red only for outcomes. Cards are a surface, a hairline and a soft
-  shadow; there are no outlines, hard shadows or colour blocks. Product packs and the
-  membership cards are the only saturated things on a screen.
+- **Brand colour on neutral** (`src/index.css`, `src/ui/brandColor.ts`): zinc surfaces in
+  light and dark carry the layout. Dabur green is the primary action and anything the
+  Squad owns; saffron is Sparks and the active state; each product brand has a vivid
+  screen colour used on its missions, campaigns, packs and tiles. Cards are a surface,
+  a hairline and a soft shadow; colour arrives as lit gradients, never outlines or flat
+  blocks.
 - **Monogram portraits** (`src/ui/Face.tsx`): until a creator uploads a photo they get a
-  tonal disc with their initials, one of eight muted tones picked from their name.
-  `Avatar` renders a `Face`, so a person appears everywhere their name does.
-- **Motivated motion** (`src/ui/motion.tsx`): content rises into place once, counters
-  tick, the membership card tilts under the pointer, the headline word rotates, the
-  ticker scrolls. Nothing wobbles or bobs. Everything collapses under
-  `prefers-reduced-motion`.
+  lit disc with their initials in one of eight colours from the Dabur family, picked
+  from their name. `Avatar` renders a `Face`, so a person appears everywhere their name
+  does.
+- **Motion** (`src/ui/motion.tsx`): headlines arrive word by word, the hero ledger ticks
+  through live awards, the membership card floats and tilts under the pointer, brand
+  gradients drift, buttons catch a sweep of light on hover, cards lift with a brand
+  glow, counters tick, stamps land in sequence, a progress bar tracks the scroll, and
+  page changes rise into place. Everything collapses under `prefers-reduced-motion`.
+- **Social assets** (`src/ui/Social.tsx`, `scripts/import-social.ts`): posts from Dabur's
+  own Instagram and TikTok are bundled at build time and shown as a feed wall on the
+  landing page and the creator home. See "Social assets" below.
 
 Light and dark are both designed. The app follows the device by default and the moon or
 sun button in the header overrides it (stored per browser, outside the app state).
-
-The landing page opens with the promise beside a real membership card and the live
-Sparks ledger, then the ticker, a creator spotlight in their own words, how it works,
-missions, the public Sparks maths, levels, the season board, the Academy and the brands.
-The creator home greets you by name with a note from a named team member, the creators
-nearest you on the board, and a feed of what the Squad is doing.
 
 - Type: Geist for Latin, Readex Pro for Arabic, both self-hosted variable fonts.
 - Icons: Phosphor, named imports only.

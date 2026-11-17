@@ -27,7 +27,7 @@ export function AdminLogistics() {
       {queue.length === 0 ? (
         <EmptyState icon={<Package size={24} />} title={t("deliveredAll")} body={t("deliveredAllBody")} />
       ) : (
-        <Stagger className="grid gap-3">
+        <Stagger className="grid grid-cols-1 gap-3">
           {queue.map((p) => {
             const cr = s.creators.find((x) => x.id === p.creatorId)!;
             const c = s.campaigns.find((x) => x.id === p.campaignId)!;
@@ -36,7 +36,7 @@ export function AdminLogistics() {
             const next = nextShipmentStatus(sh.status)!;
             return (
               <Item key={p.id}>
-                <div className="label-card grid gap-4 p-4 md:grid-cols-12 md:items-center">
+                <div className="label-card grid grid-cols-1 gap-4 p-4 md:grid-cols-12 md:items-center">
                   <div className="flex items-center gap-3 md:col-span-4">
                     <Avatar name={cr.name} hue={cr.hue} size={40} />
                     <div className="min-w-0">
@@ -47,7 +47,7 @@ export function AdminLogistics() {
                   </div>
                   <div className="md:col-span-5">
                     <div className="flex items-center gap-1.5">
-                      {SHIPMENT_ORDER.map((st, i) => <span key={st} className={cn("h-2 flex-1 rounded-full", i < idx ? "bg-ink" : i === idx ? "bg-accent" : "bg-line-2")} title={t(`sh_${st}` as const)} />)}
+                      {SHIPMENT_ORDER.map((st, i) => <span key={st} className={cn("h-2 flex-1 rounded-full", i < idx ? "bg-brand" : i === idx ? "bg-accent" : "bg-line-2")} title={t(`sh_${st}` as const)} />)}
                     </div>
                     <div className="mt-2 flex flex-wrap items-center gap-2 text-[12.5px] text-ink-3">
                       <Chip tone="marigold">{t(`sh_${sh.status}` as const)}</Chip>
@@ -68,7 +68,7 @@ export function AdminLogistics() {
         {kits.length === 0 ? (
           <EmptyState icon={<Package size={24} />} title={t("deliveredAll")} />
         ) : (
-          <Stagger className="grid gap-3">
+          <Stagger className="grid grid-cols-1 gap-3">
             {kits.map((k) => {
               const cr = s.creators.find((x) => x.id === k.creatorId)!;
               const sh = k.shipment!;
@@ -76,7 +76,7 @@ export function AdminLogistics() {
               const next = nextShipmentStatus(sh.status)!;
               return (
                 <Item key={k.id}>
-                  <div className="label-card grid gap-4 p-4 md:grid-cols-12 md:items-center">
+                  <div className="label-card grid grid-cols-1 gap-4 p-4 md:grid-cols-12 md:items-center">
                     <div className="flex items-center gap-3 md:col-span-4">
                       <Avatar name={cr.name} hue={cr.hue} size={40} />
                       <div className="min-w-0">
@@ -86,7 +86,7 @@ export function AdminLogistics() {
                       </div>
                     </div>
                     <div className="md:col-span-5">
-                      <div className="flex items-center gap-1.5">{SHIPMENT_ORDER.map((st, i) => <span key={st} className={cn("h-2 flex-1 rounded-full", i < idx ? "bg-ink" : i === idx ? "bg-accent" : "bg-line-2")} title={t(`sh_${st}` as const)} />)}</div>
+                      <div className="flex items-center gap-1.5">{SHIPMENT_ORDER.map((st, i) => <span key={st} className={cn("h-2 flex-1 rounded-full", i < idx ? "bg-brand" : i === idx ? "bg-accent" : "bg-line-2")} title={t(`sh_${st}` as const)} />)}</div>
                       <div className="mt-2 flex flex-wrap items-center gap-2 text-[12.5px] text-ink-3"><Chip tone="marigold">{t(`sh_${sh.status}` as const)}</Chip><span>{sh.courier} · <span className="tabular">{sh.trackingNumber}</span> · {relative(sh.updatedAt)}</span></div>
                     </div>
                     <div className="md:col-span-3 md:text-end">

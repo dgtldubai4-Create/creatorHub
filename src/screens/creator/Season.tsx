@@ -41,7 +41,7 @@ export function SeasonPage() {
     <div className="flex flex-col gap-10">
       <PageHeader title={L(season.name)} sub={L(season.theme)} actions={<><Chip tone="marigold">{t("seasonEndsIn", { n: daysLeftInSeason(s, season) })}</Chip><Chip>{date(season.start)} - {date(season.end)}</Chip></>} />
 
-      <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start">
         <div className="lg:col-span-5">
           <StampCard total={8} filled={Math.min(8, stamps)} size={52} label={<><span className="font-semibold">{t("stampCard")}</span><span className="meta">{num(lv.seasonSparks)} {t("sparks")}</span></>} />
           <p className="mt-2 text-[12.5px] text-ink-3">{t("stampCardHint")}</p>
@@ -58,7 +58,7 @@ export function SeasonPage() {
         </Label>
       </div>
 
-      <div className="grid gap-10 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-5">
         <Section title={t("leaderboardTitle")} className="lg:col-span-3" action={board.length > 10 && <Button size="sm" variant="ghost" onClick={() => setShowAll((v) => !v)}>{showAll ? t("close") : t("viewAll")}</Button>}>
           <Stagger className="label-card divide-y divide-line" gap={0.02}>
             {(showAll ? board : board.slice(0, 10)).map((row, i) => (
@@ -68,7 +68,7 @@ export function SeasonPage() {
                   <Avatar name={row.creator.name} hue={row.creator.hue} size={34} />
                   <div className="min-w-0 flex-1"><div className="truncate text-[14px] font-medium">{row.creator.name}</div><div className="text-[12px] text-ink-3">{row.creator.city} · {t(`market_${row.creator.market}` as const)}</div></div>
                   <LevelChip level={row.level} className="hidden sm:inline-flex" />
-                  <span className="hidden h-1.5 w-28 overflow-hidden rounded-full bg-surface-3 md:block"><motion.span className="block h-full rounded-full bg-ink" initial={{ width: 0 }} animate={{ width: `${(row.sparks / Math.max(1, board[0].sparks)) * 100}%` }} transition={{ duration: 0.9, delay: 0.1 + i * 0.04, ease: [0.22, 1, 0.36, 1] }} /></span>
+                  <span className="hidden h-1.5 w-28 overflow-hidden rounded-full bg-surface-3 md:block"><motion.span className="block h-full rounded-full bg-brand" initial={{ width: 0 }} animate={{ width: `${(row.sparks / Math.max(1, board[0].sparks)) * 100}%` }} transition={{ duration: 0.9, delay: 0.1 + i * 0.04, ease: [0.22, 1, 0.36, 1] }} /></span>
                   <span className="w-14 text-end font-semibold tabular">{num(row.sparks)}</span>
                 </div>
               </Item>
@@ -77,7 +77,7 @@ export function SeasonPage() {
         </Section>
 
         <Section title={t("level")} sub={t("levelsReset")} className="lg:col-span-2">
-          <ol className="grid gap-2">
+          <ol className="grid grid-cols-1 gap-2">
             {LEVEL_ORDER.map((l) => {
               const reached = LEVEL_ORDER.indexOf(l) <= LEVEL_ORDER.indexOf(lv.level);
               const how = l === "insider" ? t("lvHow_insider", { sparks: LEVEL_RULES.insider.sparks, quality: LEVEL_RULES.insider.quality }) : l === "pro" ? t("lvHow_pro", { sparks: LEVEL_RULES.pro.sparks, quality: LEVEL_RULES.pro.quality }) : t(`lvHow_${l}` as const);
@@ -101,13 +101,13 @@ export function SeasonPage() {
 
       <Section title={t("ambassadorRound")} sub={t(`ap_${amb.phase}` as const)} action={<SimulatedTag />}>
         {amb.phase === "selected" ? (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {amb.cohort.map((id) => { const c = s.creators.find((x) => x.id === id)!; return <Label key={id} className="flex items-center gap-3 p-4" watermark={false}><Avatar name={c.name} hue={c.hue} size={44} /><div><div className="flex items-center gap-1 text-[15px] font-semibold"><Crown size={16} weight="fill" className="text-accent-text" />{c.name}</div><div className="text-[12.5px] text-ink-3">{c.city}</div></div></Label>; })}
           </div>
         ) : amb.phase === "upcoming" ? (
           <Label className="p-6 text-[14.5px] text-ink-2" watermark={false}>{t("ap_upcoming")}</Label>
         ) : (
-          <div className="grid gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <Label className="flex flex-col gap-3 p-5" watermark={false}>
               <div className="meta">{t("ballot")}</div>
               <h3 className="text-[17px] font-semibold">{inRunning ? t("youAreIn") : amb.phase === "wildcard_open" ? t("enterWildcard") : t("vote")}</h3>
@@ -137,7 +137,7 @@ export function SeasonPage() {
         )}
       </Section>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Label className="flex gap-5 p-6 lg:col-span-2" watermark={false}>
           <Stamp pressed size={72} tone="ink" animate={false}><Tent size={28} /></Stamp>
           <div>
@@ -147,7 +147,7 @@ export function SeasonPage() {
           </div>
         </Label>
         <Section title={t("pastSeasons")}>
-          <ul className="grid gap-2">
+          <ul className="grid grid-cols-1 gap-2">
             {past.map((ps) => (
               <li key={ps.id}><Label className="p-4" watermark={false}><div className="text-[14.5px] font-semibold">{L(ps.name)}</div><div className="text-[12px] text-ink-3">{date(ps.start)} - {date(ps.end)}</div><div className="mt-2 flex -space-x-2 rtl:space-x-reverse">{ps.ambassadors.cohort.map((id) => { const c = s.creators.find((x) => x.id === id); return c ? <Avatar key={id} name={c.name} hue={c.hue} size={28} ring /> : null; })}</div></Label></li>
             ))}

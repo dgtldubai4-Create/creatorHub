@@ -88,7 +88,7 @@ export function JourneyTrail({ participation, className }: { participation: Part
                     className={cn(
                       "flex items-center justify-center rounded-full border transition-colors",
                       loop ? "h-3.5 w-3.5" : "h-5 w-5",
-                      isDone || (loop && visited) ? "border-ink inverse-fill" : isCurrent ? "border-accent bg-surface" : "border-line-2 bg-surface",
+                      isDone || (loop && visited) ? "border-brand brand-fill" : isCurrent ? "border-accent bg-surface" : "border-line-2 bg-surface",
                     )}
                   >
                     {isDone && !loop && <Check size={11} weight="bold" />}
@@ -133,7 +133,7 @@ export function PhaseTrail({ stage, className, size = "md" }: { stage: Stage; cl
         const active = i === cur && !completed;
         return (
           <div key={ph} className="flex items-center gap-1">
-            <span className={cn("rounded-full transition-colors", size === "sm" ? "h-1.5" : "h-2", active ? "w-6 bg-accent" : done ? "w-3 bg-ink" : "w-3 bg-line-2", stage === "declined" && "bg-rose-soft")} />
+            <span className={cn("rounded-full transition-colors", size === "sm" ? "h-1.5" : "h-2", active ? "w-6 bg-accent" : done ? "w-3 bg-brand" : "w-3 bg-line-2", stage === "declined" && "bg-rose-soft")} />
           </div>
         );
       })}

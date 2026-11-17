@@ -80,8 +80,8 @@ export function CampaignEditor({ open, onClose, campaign }: { open: boolean; onC
 
   return (
     <Sheet open={open} onClose={onClose} title={campaign ? t("editCampaign") : t("newCampaign")} wide>
-      <div className="grid gap-5">
-        <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label={t("brand")}><Select value={f.brandId} onChange={(e) => { set("brandId", e.target.value); set("kit", {}); }}>{s.brands.map((b) => <option key={b.id} value={b.id}>{L(b.localisedName)}</option>)}</Select></Field>
           <Field label={t("pointsValue")} required><Input inputMode="numeric" value={f.points} onChange={(e) => set("points", e.target.value.replace(/\D/g, ""))} /></Field>
           <Field label={`${t("campaignTitle")} (EN)`} required><Input value={f.titleEn} onChange={(e) => set("titleEn", e.target.value)} /></Field>
@@ -90,23 +90,23 @@ export function CampaignEditor({ open, onClose, campaign }: { open: boolean; onC
           <Field label={`${t("campaignHook")} (AR)`}><Textarea dir="rtl" value={f.hookAr} onChange={(e) => set("hookAr", e.target.value)} className="min-h-16" /></Field>
         </div>
         <Field label={t("deliverable")} required><Input value={f.deliverable} onChange={(e) => set("deliverable", e.target.value)} placeholder="One vertical video, 25 to 45 seconds." /></Field>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Field label={t("shotList")} hint="One per line"><Textarea value={f.shots} onChange={(e) => set("shots", e.target.value)} /></Field>
           <Field label={t("dos")} hint="One per line"><Textarea value={f.dos} onChange={(e) => set("dos", e.target.value)} /></Field>
           <Field label={t("donts")} hint="One per line"><Textarea value={f.donts} onChange={(e) => set("donts", e.target.value)} /></Field>
         </div>
-        <div className="grid gap-4 sm:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
           <Field label={`${t("duration")} min`}><Input inputMode="numeric" value={f.min} onChange={(e) => set("min", e.target.value.replace(/\D/g, ""))} /></Field>
           <Field label={`${t("duration")} max`}><Input inputMode="numeric" value={f.max} onChange={(e) => set("max", e.target.value.replace(/\D/g, ""))} /></Field>
           <Field label={t("windowStart")}><Input type="date" value={f.start} onChange={(e) => set("start", e.target.value)} /></Field>
           <Field label={t("windowEnd")}><Input type="date" value={f.end} onChange={(e) => set("end", e.target.value)} /></Field>
         </div>
         <Field label={t("kit")} required>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {products.map((p) => {
               const qty = f.kit[p.id] ?? 0;
               return (
-                <div key={p.id} className={cn("flex items-center gap-3 rounded-2xl border p-2 pe-3", qty > 0 ? "border-ink bg-surface-2" : "border-line")}>
+                <div key={p.id} className={cn("flex items-center gap-3 rounded-2xl border p-2 pe-3", qty > 0 ? "border-brand bg-brand-soft" : "border-line")}>
                   <ProductArt product={p} brand={s.brands.find((b) => b.id === p.brandId)} size="sm" className="h-12 w-12" />
                   <span className="min-w-0 flex-1 truncate text-[13.5px] font-medium">{L(p.names)}</span>
                   <div className="flex items-center gap-1">
@@ -120,7 +120,7 @@ export function CampaignEditor({ open, onClose, campaign }: { open: boolean; onC
           </div>
         </Field>
         <Field label={t("targets")}>
-          <div className="grid gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <div className="flex flex-wrap gap-2">{NICHES.map((n) => <ChipButton key={n} type="button" selected={f.niches.includes(n)} onClick={() => toggle("niches", n)}>{t(`niche_${n}` as const)}</ChipButton>)}</div>
             <div className="flex flex-wrap gap-2">{MARKETS.map((n) => <ChipButton key={n} type="button" selected={f.markets.includes(n)} onClick={() => toggle("markets", n)}>{t(`market_${n}` as const)}</ChipButton>)}{TIERS.map((n) => <ChipButton key={n} type="button" selected={f.tiers.includes(n)} onClick={() => toggle("tiers", n)}>{t(`tier_${n}` as const)}</ChipButton>)}</div>
           </div>

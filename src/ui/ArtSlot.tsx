@@ -15,13 +15,13 @@ export function hasArt(id: string): boolean {
 }
 
 /** A generated asset when one exists for the slot; otherwise the printed Kit artwork. */
-export function ArtSlot({ id, className, alt, cover = true, compact, tone }: { id: string; className?: string; alt?: string; cover?: boolean; compact?: boolean; tone?: "paper" | "forest" | "marigold" }) {
+export function ArtSlot({ id, className, alt, cover = true, compact, tone, brandId }: { id: string; className?: string; alt?: string; cover?: boolean; compact?: boolean; tone?: "paper" | "forest" | "marigold"; brandId?: string | null }) {
   const slot = slotById(id);
   const src = fileFor(id);
   if (src) return <img src={src} alt={alt ?? slot?.label ?? ""} className={cn(cover ? "object-cover" : "object-contain", "h-full w-full", className)} loading="lazy" />;
   return (
     <div role="img" aria-label={alt ?? slot?.label ?? id} className={cn("h-full w-full", className)}>
-      <Graphic id={id} compact={compact} tone={tone} />
+      <Graphic id={id} compact={compact} tone={tone} brandId={brandId} />
     </div>
   );
 }

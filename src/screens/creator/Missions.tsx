@@ -46,7 +46,7 @@ function MissionCard({ m, creatorId }: { m: Mission; creatorId: string }) {
   return (
     <Link to={`/creator/missions/${m.id}`} className="block h-full">
       <Label brandId={m.brandId} className={cn("lift flex h-full gap-4 p-4", locked && "opacity-70")}>
-        <div className="h-28 w-24 shrink-0 overflow-hidden rounded-[6px]"><ArtSlot id={`mission-${m.type}`} compact /></div>
+        <div className="h-28 w-24 shrink-0 overflow-hidden rounded-[14px]"><ArtSlot id={`mission-${m.type}`} brandId={m.brandId} compact /></div>
         <div className="flex min-w-0 flex-1 flex-col">
           <div className="flex flex-wrap items-center gap-1.5">
             <MissionTypeChip type={m.type} />
@@ -85,7 +85,7 @@ function MissionBoard() {
 
       {(now.length > 0 || routines.length > 0) && (
         <Section title={t("now")}>
-          <Stagger className="grid gap-4 md:grid-cols-2">
+          <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {now.map((m) => {
               const e = m.entries[me.id];
               const b = s.brands.find((x) => x.id === m.brandId);
@@ -128,7 +128,7 @@ function MissionBoard() {
         {open.length === 0 ? (
           <EmptyState icon={<Lightning size={24} />} title={t("noMissions")} body={t("noMissionsBody")} action={<Button variant="secondary" to="/creator/academy">{t("academy")}</Button>} />
         ) : (
-          <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             {open.map((m) => <Item key={m.id}><MissionCard m={m} creatorId={me.id} /></Item>)}
           </Stagger>
         )}
@@ -191,7 +191,7 @@ function MissionDetail({ id }: { id: string }) {
   return (
     <div className="flex flex-col gap-8">
       <Link to="/creator/missions" className="inline-flex items-center gap-1.5 text-[13.5px] font-medium text-ink-2 hover:text-ink"><ArrowLeft size={16} weight="bold" className="rtl:rotate-180" />{t("missions")}</Link>
-      <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start">
         <div className="lg:col-span-8">
           <Ticket
             torn={e?.state === "completed"}
@@ -208,7 +208,7 @@ function MissionDetail({ id }: { id: string }) {
             }
           >
             <div className="flex gap-5">
-              <div className="hidden h-36 w-28 shrink-0 overflow-hidden rounded-[6px] sm:block"><ArtSlot id={`mission-${m.type}`} compact /></div>
+              <div className="hidden h-36 w-28 shrink-0 overflow-hidden rounded-[6px] sm:block"><ArtSlot id={`mission-${m.type}`} brandId={m.brandId} compact /></div>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <MissionTypeChip type={m.type} />
@@ -274,7 +274,7 @@ function MissionDetail({ id }: { id: string }) {
 
       {m.type === "team" && (
         <Section title={t("squads")} sub={t("squadBonus")}>
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             {totals.map(({ squad, sparks, submitted }, i) => {
               const mine = squad.id === e?.squadId;
               return (
@@ -293,7 +293,7 @@ function MissionDetail({ id }: { id: string }) {
       )}
 
       {m.type === "referral" && (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Label className="flex flex-col gap-4 p-6">
             <h2 className="text-xl">{t("referSomeone")}</h2>
             <Field label={t("handle")} hint={t("referHint")}><Input value={handle} onChange={(ev) => setHandle(ev.target.value)} placeholder="@creator" /></Field>
@@ -318,7 +318,7 @@ function MissionDetail({ id }: { id: string }) {
       )}
 
       <Sheet open={open} onClose={() => setOpen(false)} title={t("submitPost")}>
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <Field label={t("postUrl")} hint="https://"><Input value={url} onChange={(ev) => setUrl(ev.target.value)} placeholder="https://www.instagram.com/reel/..." inputMode="url" autoFocus /></Field>
           <Field label={t("caption")} hint={t("captionHint", { tags: m.requiredHashtags.join(" ") || "#DaburSquad" })}><Textarea value={caption} onChange={(ev) => setCaption(ev.target.value)} placeholder={`${m.requiredHashtags.join(" ")} #ad`} /></Field>
           {!flat && (

@@ -42,7 +42,7 @@ export function AdminCreators() {
         <ChipButton selected={niche === "all"} onClick={() => setNiche("all")}>{t("all")}</ChipButton>
         {NICHES.map((n) => <ChipButton key={n} selected={niche === n} onClick={() => setNiche(n)}>{t(`niche_${n}` as const)}</ChipButton>)}
       </div>
-      <Stagger className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3" gap={0.02}>
+      <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3" gap={0.02}>
         {list.map(({ cr, m }) => {
           const lv = level(s, cr.id);
           return (
@@ -63,7 +63,7 @@ export function AdminCreators() {
 
       <Sheet open={!!open} onClose={() => nav("/admin/creators")} wide title={open ? open.name : ""}>
         {open && (
-          <div className="grid gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <div className="flex flex-wrap items-center gap-4">
               <Avatar name={open.name} hue={open.hue} size={64} />
               <div className="min-w-0 flex-1">
@@ -74,7 +74,7 @@ export function AdminCreators() {
             </div>
             <div>
               <div className="mb-2 flex items-center justify-between"><h3 className="text-[14px] font-semibold">{t("verification")}</h3><span className="text-[12px] text-ink-3">{t("setVerification")}</span></div>
-              <div className="grid gap-2 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                 {(["identity", "instagram", "tiktok"] as const).map((k) => (
                   <div key={k} className="flex flex-col gap-2 rounded-[8px] bg-surface-2 p-3">
                     <VerificationChip state={open.verification[k]} label={t(`ver_${k}` as const)} />
@@ -97,7 +97,7 @@ export function AdminCreators() {
             </div>
             <div>
               <h3 className="mb-2 text-[14px] font-semibold">{t("history")} · {completedFor(s, open.id).length} {t("done").toLowerCase()}</h3>
-              <ul className="grid gap-1.5">
+              <ul className="grid grid-cols-1 gap-1.5">
                 {participationsFor(s, open.id).map((p) => {
                   const c = s.campaigns.find((x) => x.id === p.campaignId)!;
                   return (

@@ -12,6 +12,8 @@ export const STRINGS = {
   signIn: ["Sign in", "تسجيل الدخول"],
   joinSquad: ["Join the Squad", "انضم إلى السكواد"],
   language: ["العربية", "English"],
+  socialTitle: ["Fresh from our feed", "جديد من حساباتنا"],
+  socialSub: ["What Dabur is posting on Instagram and TikTok right now.", "ما تنشره دابر على إنستغرام وتيك توك الآن."],
   themeLight: ["Switch to light", "الوضع الفاتح"],
   themeDark: ["Switch to dark", "الوضع الداكن"],
   home: ["Home", "الرئيسية"],

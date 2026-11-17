@@ -111,7 +111,7 @@ export function useCelebrate() {
   const reduce = useReducedMotion();
   return (origin?: { x: number; y: number }) => {
     if (reduce) return;
-    confetti({ particleCount: 60, spread: 62, startVelocity: 34, gravity: 1.1, scalar: 0.9, ticks: 180, origin: origin ?? { y: 0.6 }, colors: ["#f0a92d", "#f6c667", "#fbefd6", "#a1a1aa", "#3f3f46"], disableForReducedMotion: true });
+    confetti({ particleCount: 110, spread: 76, startVelocity: 40, gravity: 1.1, scalar: 0.9, ticks: 180, origin: origin ?? { y: 0.6 }, colors: ["#14b85f", "#00873f", "#ffa81f", "#ffc94f", "#e8452c", "#ffffff"], disableForReducedMotion: true });
   };
 }
 
@@ -139,18 +139,18 @@ export function Marquee({ children, className, duration = 40, reverse }: { child
 }
 
 /** One soft light drifting behind a section. */
-export function Blobs({ colors = ["var(--accent)"], className }: { colors?: string[]; className?: string }) {
+export function Blobs({ colors = ["var(--brand-bright)", "var(--accent)"], className }: { colors?: string[]; className?: string }) {
   return (
     <div className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)} aria-hidden>
       {colors.map((c, i) => (
-        <span key={i} className="blob" style={{ background: c, width: `${42 + i * 8}%`, paddingBottom: `${42 + i * 8}%`, left: `${[-8, 55, 25][i % 3]}%`, top: `${[-20, 10, 55][i % 3]}%`, animationDelay: `${i * -5}s`, animationDuration: `${16 + i * 4}s` }} />
+        <span key={i} className="blob" style={{ background: c, width: `${42 + i * 8}%`, paddingBottom: `${42 + i * 8}%`, left: `${[-10, 62, 25][i % 3]}%`, top: `${[-24, 8, 55][i % 3]}%`, animationDelay: `${i * -5}s`, animationDuration: `${16 + i * 4}s` }} />
       ))}
     </div>
   );
 }
 
 /** Follows the cursor with a faint warm light. Mount once inside a `relative` section. */
-export function CursorGlow({ color = "var(--accent)", size = 520 }: { color?: string; size?: number }) {
+export function CursorGlow({ color = "var(--brand-bright)", size = 520 }: { color?: string; size?: number }) {
   const reduce = useReducedMotion();
   const x = useSpring(useMotionValue(-1000), { stiffness: 120, damping: 20 });
   const y = useSpring(useMotionValue(-1000), { stiffness: 120, damping: 20 });
@@ -161,7 +161,7 @@ export function CursorGlow({ color = "var(--accent)", size = 520 }: { color?: st
     return () => window.removeEventListener("pointermove", move);
   }, [x, y, size, reduce]);
   if (reduce) return null;
-  return <motion.span aria-hidden className="pointer-events-none fixed left-0 top-0 z-0 rounded-full opacity-[0.12]" style={{ x, y, width: size, height: size, background: `radial-gradient(circle, ${color} 0%, transparent 65%)` }} />;
+  return <motion.span aria-hidden className="pointer-events-none fixed left-0 top-0 z-0 rounded-full opacity-[0.16]" style={{ x, y, width: size, height: size, background: `radial-gradient(circle, ${color} 0%, transparent 65%)` }} />;
 }
 
 /** Scroll-linked vertical drift for decorative layers. */
@@ -200,4 +200,40 @@ export function RotatingWord({ words, className, interval = 2200 }: { words: str
       </AnimatePresence>
     </span>
   );
+}
+
+/** A headline that arrives word by word. Pass plain text; children render after the words. */
+export function Words({ text, className, delay = 0, children }: { text: string; className?: string; delay?: number; children?: ReactNode }) {
+  const reduce = useReducedMotion();
+  const words = text.split(" ").filter(Boolean);
+  if (reduce) return <span className={className}>{text}{children}</span>;
+  return (
+    <span className={className}>
+      {words.map((w, i) => (
+        <span key={i} className="inline-block overflow-hidden pb-[0.12em] align-bottom">
+          <motion.span className="inline-block" initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: delay + i * 0.07 }}>{w}{i < words.length - 1 ? "\u00a0" : ""}</motion.span>
+        </span>
+      ))}
+      {children}
+    </span>
+  );
+}
+
+/** A thin bar across the top of the page that fills as you scroll. */
+export function ScrollProgress({ className }: { className?: string }) {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 140, damping: 26, mass: 0.4 });
+  return <motion.div aria-hidden className={cn("fixed inset-x-0 top-0 z-[60] h-[3px] origin-left rtl:origin-right", className)} style={{ scaleX, backgroundImage: "linear-gradient(90deg, var(--brand-bright), var(--accent), var(--hot))" }} />;
+}
+
+/** Steps through a list on a timer, returning the window that should be on screen. */
+export function useTicker<T>(items: T[], size: number, interval = 2600): T[] {
+  const reduce = useReducedMotion();
+  const [start, setStart] = useState(0);
+  useEffect(() => {
+    if (reduce || items.length <= size) return;
+    const id = window.setInterval(() => setStart((n) => (n + 1) % items.length), interval);
+    return () => window.clearInterval(id);
+  }, [items.length, size, interval, reduce]);
+  return Array.from({ length: Math.min(size, items.length) }, (_, i) => items[(start + i) % items.length]);
 }

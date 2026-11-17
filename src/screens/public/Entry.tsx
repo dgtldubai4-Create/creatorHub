@@ -5,10 +5,13 @@ import { ArrowRight, ArrowUpRight, Translate, Crown, GraduationCap, VideoCamera,
 import { useStore } from "../../app/store";
 import { useFormat, useL, useT, useToggleLang } from "../../i18n";
 import { Button, Chip } from "../../ui/primitives";
-import { Blobs, Counter, Item, Marquee, Reveal, RotatingWord, Stagger, Tilt } from "../../ui/motion";
+import { Blobs, Counter, CursorGlow, Item, Marquee, Reveal, RotatingWord, ScrollProgress, Stagger, Tilt, Words, useTicker } from "../../ui/motion";
+import { vivid, vividGradient } from "../../ui/brandColor";
 import { Face, FacePile } from "../../ui/Face";
 import { ProductArt } from "../../ui/ProductArt";
 import { Certificate, MembershipCard, StampCard, Ticket } from "../../ui/kit";
+import { Graphic } from "../../ui/Graphic";
+import { SocialWall, hasSocial } from "../../ui/Social";
 import { Logo, ThemeToggle } from "../../app/shell";
 import { BrandMark, LevelChip, MissionTypeChip } from "../shared/bits";
 import { LEVEL_ORDER, LEVEL_RULES, currentSeason, leaderboard } from "../../domain/selectors";
@@ -68,10 +71,13 @@ export function Entry() {
     { title: t("lpHow3"), body: t("lpHow3Body"), faces: ["cr_saraalsheikh", "cr_yousefeats"] },
   ];
   const reason = (l: (typeof ticker)[number]["l"]) => L(l.reason).replace(/^Mission: |^مهمة: /, "");
-  const arrow = <ArrowRight size={18} className="rtl:rotate-180" />;
+  const arrow = <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />;
+  const live = useTicker(ticker, 4);
 
   return (
     <div className="relative min-h-[100dvh] overflow-x-clip bg-canvas">
+      <ScrollProgress />
+      <CursorGlow />
       <header className="sticky top-0 z-40 border-b border-line bg-canvas/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-4 md:px-6">
           <Logo />
@@ -85,44 +91,44 @@ export function Entry() {
 
       {/* ---------- Hero: the promise on one side, the real card and ledger on the other ---------- */}
       <section className="relative">
-        <Blobs className="opacity-70" />
-        <div className="relative mx-auto grid min-h-[calc(100dvh-4rem)] max-w-[1400px] items-center gap-12 px-4 py-12 md:px-6 lg:grid-cols-12 lg:gap-8">
+        <Blobs />
+        <div className="relative mx-auto grid grid-cols-1 min-h-[calc(100dvh-4rem)] max-w-[1400px] items-center gap-12 px-4 py-12 md:px-6 lg:grid-cols-12 lg:gap-8">
           <div className="relative z-10 lg:col-span-6">
-            <Reveal inView={false}>
-              <h1 className="text-[2.75rem] leading-[1.02] sm:text-6xl lg:text-[5rem] rtl:leading-[1.3]">
-                {t("heroLine1")}{" "}
-                <RotatingWord words={words} className="rounded-[0.18em] bg-accent px-[0.14em] text-accent-ink" />
-                <br />
-                {t("heroLine2")}
-              </h1>
-            </Reveal>
+            <h1 className="text-[2.75rem] leading-[1.02] sm:text-6xl lg:text-[5rem] rtl:leading-[1.3]">
+              <Words text={t("heroLine1")} />{" "}
+              <motion.span className="inline-block" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 18, delay: 0.25 }}><RotatingWord words={words} className="rounded-[0.18em] bg-accent px-[0.14em] text-accent-ink" /></motion.span>
+              <br />
+              <Words text={t("heroLine2")} delay={0.3} />
+            </h1>
             <Reveal inView={false} delay={0.08}>
               <p className="mt-6 max-w-[44ch] text-lg text-ink-2 md:text-xl">{t("lpTagline")}</p>
             </Reveal>
             <Reveal inView={false} delay={0.16}>
               <div className="mt-9 flex flex-wrap items-center gap-3">
-                <Button size="lg" to="/join" iconEnd={arrow}>{t("heroCta")}</Button>
+                <Button size="lg" to="/join" className="group" iconEnd={arrow}>{t("heroCta")}</Button>
                 <Button size="lg" variant="ghost" to="/login">{t("heroSecondary")}</Button>
               </div>
             </Reveal>
           </div>
           <div className="relative lg:col-span-6">
             <div className="relative mx-auto w-full max-w-[560px] lg:ms-auto lg:me-0">
-              <motion.div className="me-8 sm:me-20" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}>
-                <Tilt max={5}>
+              <motion.div className="me-8 sm:me-20" initial={{ opacity: 0, y: 28, rotate: -4 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ type: "spring", stiffness: 120, damping: 16, delay: 0.1 }}>
+                <Tilt max={7} className="float-y">
                   <MembershipCard id={hero.id} hue={hero.hue} name={hero.name} handle={hero.handle} level={levelFor(hero.id)} since={date(hero.joinedAt, { month: "short", year: "numeric" })} sparks={sparksFor(hero.id)} className="!max-w-none" />
                 </Tilt>
               </motion.div>
               <motion.div className="card relative z-10 mt-4 ms-8 overflow-hidden sm:ms-20" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.28 }}>
-                <div className="flex items-center justify-between border-b border-line px-4 py-2.5"><span className="meta">{t("lpSeasonNow")}</span><span className="hidden text-[12px] text-ink-3 sm:inline">{L(season.name)}</span></div>
-                <ul>
-                  {ticker.slice(0, 4).map(({ l, c }, i) => (
-                    <motion.li key={l.id} className="flex items-center gap-3 border-b border-line px-4 py-2.5 last:border-b-0" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.5 + i * 0.09 }}>
-                      <Face name={c!.name} hue={c!.hue} size={32} />
-                      <div className="min-w-0 flex-1"><div className="truncate text-[13.5px] font-medium">{c!.name}</div><div className="truncate text-[12.5px] text-ink-3">{reason(l)}</div></div>
-                      <span className="shrink-0 text-[13.5px] font-medium tabular text-accent-text" dir="ltr">+{num(l.delta)}</span>
-                    </motion.li>
-                  ))}
+                <div className="flex items-center justify-between border-b border-line px-4 py-2.5"><span className="meta flex items-center gap-2"><span className="ping inline-block h-2 w-2 rounded-full bg-hot text-hot" />{t("lpSeasonNow")}</span><span className="hidden text-[12px] text-ink-3 sm:inline">{L(season.name)}</span></div>
+                <ul className="relative overflow-hidden">
+                  <AnimatePresence initial={false} mode="popLayout">
+                    {live.map(({ l, c }) => (
+                      <motion.li layout key={l.id} className="flex items-center gap-3 border-b border-line bg-surface px-4 py-2.5 last:border-b-0" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -28 }} transition={{ type: "spring", stiffness: 260, damping: 28 }}>
+                        <Face name={c!.name} hue={c!.hue} size={32} />
+                        <div className="min-w-0 flex-1"><div className="truncate text-[13.5px] font-medium">{c!.name}</div><div className="truncate text-[12.5px] text-ink-3">{reason(l)}</div></div>
+                        <span className="shrink-0 rounded-full bg-accent-soft px-2 py-0.5 text-[13px] font-medium tabular text-accent-text" dir="ltr">+{num(l.delta)}</span>
+                      </motion.li>
+                    ))}
+                  </AnimatePresence>
                 </ul>
               </motion.div>
             </div>
@@ -144,7 +150,7 @@ export function Entry() {
 
       {/* ---------- Meet the Squad ---------- */}
       <section className="mx-auto max-w-[1400px] px-4 py-20 md:px-6 lg:py-28">
-        <div className="grid gap-10 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
           <Reveal className="lg:col-span-4">
             <h2 className="text-4xl md:text-5xl">{t("lpMeet")}</h2>
             <p className="mt-4 max-w-[36ch] text-lg text-ink-2">{t("lpMeetSub")}</p>
@@ -155,7 +161,7 @@ export function Entry() {
                     <Face name={c.name} hue={c.hue} size={32} className={cn("transition-opacity", i !== pick && "opacity-60 group-hover:opacity-100")} />
                     <span className="min-w-0 flex-1 truncate text-[15px] font-medium">{c.name}</span>
                     <span className="text-[13px] text-ink-3">{c.city}</span>
-                    {i === pick && <motion.span layoutId="meet-pick" className="h-1.5 w-1.5 rounded-full bg-accent" />}
+                    {i === pick && <motion.span layoutId="meet-pick" className="h-2 w-2 rounded-full bg-brand" />}
                   </button>
                 </li>
               ))}
@@ -186,16 +192,27 @@ export function Entry() {
         </div>
       </section>
 
+      {/* ---------- From Dabur's own feed: renders only when posts have been imported ---------- */}
+      {hasSocial() && (
+        <section className="mx-auto max-w-[1400px] px-4 pb-20 md:px-6 lg:pb-28">
+          <Reveal>
+            <h2 className="text-4xl md:text-5xl">{t("socialTitle")}</h2>
+            <p className="mt-4 max-w-[60ch] text-lg text-ink-2">{t("socialSub")}</p>
+          </Reveal>
+          <SocialWall className="mt-10" />
+        </section>
+      )}
+
       {/* ---------- How it works ---------- */}
       <section className="border-y border-line bg-surface py-20 lg:py-28">
-        <div className="mx-auto grid max-w-[1400px] gap-10 px-4 md:px-6 lg:grid-cols-12">
+        <div className="mx-auto grid grid-cols-1 max-w-[1400px] gap-10 px-4 md:px-6 lg:grid-cols-12">
           <Reveal className="lg:col-span-4"><h2 className="text-4xl md:text-5xl lg:sticky lg:top-28">{t("lpHow")}</h2></Reveal>
           <div className="lg:col-span-8">
             <Stagger className="border-t border-line">
               {steps.map((step, i) => (
                 <Item key={step.title}>
-                  <div className="grid gap-4 border-b border-line py-8 md:grid-cols-[5rem_1fr_auto] md:items-start md:gap-8">
-                    <span className="text-[15px] font-medium tabular text-ink-3" dir="ltr">0{i + 1}</span>
+                  <div className="grid grid-cols-1 gap-4 border-b border-line py-8 md:grid-cols-[5rem_1fr_auto] md:items-start md:gap-8">
+                    <span className="brand-fill flex h-10 w-10 items-center justify-center rounded-full text-[14px] font-medium tabular" dir="ltr">{i + 1}</span>
                     <div><h3 className="text-2xl md:text-3xl">{step.title}</h3><p className="mt-3 max-w-[52ch] text-[16px] text-ink-2">{step.body}</p></div>
                     <div className="flex items-center gap-3 md:flex-col md:items-end md:gap-2">
                       <FacePile people={step.faces.map((id) => s.creators.find((c) => c.id === id)!).filter(Boolean)} size={36} />
@@ -213,7 +230,7 @@ export function Entry() {
                 { v: 6, l: t("lpStatMarkets") },
               ].map((st) => (
                 <div key={st.l}>
-                  <div className="text-4xl font-medium tabular tracking-tight md:text-5xl"><Counter value={st.v} /></div>
+                  <div className="text-4xl font-medium tabular tracking-tight text-brand-text md:text-5xl"><Counter value={st.v} /></div>
                   <div className="mt-2 text-[14px] text-ink-3">{st.l}</div>
                 </div>
               ))}
@@ -228,14 +245,15 @@ export function Entry() {
           <h2 className="text-4xl md:text-5xl">{t("lpMissionsTitle")}</h2>
           <p className="mt-4 max-w-[60ch] text-lg text-ink-2">{t("lpMissionsSub")}</p>
         </Reveal>
-        <Stagger className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <Stagger className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
           {missions.map((m) => {
             const joined = Object.keys(m.entries).slice(0, 4).map((id) => s.creators.find((c) => c.id === id)!).filter(Boolean);
             return (
               <Item key={m.id}>
-                <Ticket to="#/join" className="h-full" stub={<div className="flex items-center justify-between gap-2 text-[13px]"><FacePile people={joined} size={26} max={4} /><span className="font-medium tabular text-accent-text" dir="ltr">+{m.sparks} {t("sparks")}</span></div>}>
+                <Ticket to="#/join" className="group h-full" stub={<div className="flex items-center justify-between gap-2 text-[13px]"><FacePile people={joined} size={26} max={4} /><span className="font-medium tabular text-accent-text" dir="ltr">+{m.sparks} {t("sparks")}</span></div>}>
+                  <div className="-mx-5 -mt-5 mb-5 h-28 overflow-hidden rounded-t-[19px]"><Graphic id={`mission-${m.type}`} brandId={m.brandId} compact /></div>
                   <div className="flex items-center justify-between gap-2"><MissionTypeChip type={m.type} />{m.brandId && brandOf(m.brandId) && <BrandMark brand={brandOf(m.brandId)!} size="sm" />}</div>
-                  <div className="mt-6 text-xl font-medium leading-tight tracking-tight">{L(m.title)}</div>
+                  <div className="mt-4 text-xl font-medium leading-tight tracking-tight">{L(m.title)}</div>
                   <p className="mt-2 line-clamp-3 text-[14px] text-ink-2">{L(m.prompt)}</p>
                   <div className="mt-4 text-[12.5px] text-ink-3">{date(m.window.start)} to {date(m.window.end)}</div>
                 </Ticket>
@@ -247,7 +265,7 @@ export function Entry() {
 
       {/* ---------- The Sparks table, in public ---------- */}
       <section className="border-y border-line bg-surface py-20 lg:py-28">
-        <div className="mx-auto grid max-w-[1400px] items-start gap-10 px-4 md:px-6 lg:grid-cols-12">
+        <div className="mx-auto grid grid-cols-1 max-w-[1400px] items-start gap-10 px-4 md:px-6 lg:grid-cols-12">
           <Reveal className="lg:col-span-5">
             <h2 className="text-4xl md:text-5xl">{t("lpMathsTitle")}</h2>
             <p className="mt-4 text-lg text-ink-2">{t("lpMathsSub")}</p>
@@ -280,7 +298,7 @@ export function Entry() {
           <h2 className="text-4xl md:text-5xl">{t("levelsTitle")}</h2>
           <p className="mt-4 max-w-[60ch] text-lg text-ink-2">{t("lpLevelsSub")}</p>
         </Reveal>
-        <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <Stagger className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {LEVEL_ORDER.map((l, i) => {
             const c = s.creators.find((x) => x.id === sample[l])!;
             const how = l === "insider" ? t("lvHow_insider", { sparks: LEVEL_RULES.insider.sparks, quality: LEVEL_RULES.insider.quality }) : l === "pro" ? t("lvHow_pro", { sparks: LEVEL_RULES.pro.sparks, quality: LEVEL_RULES.pro.quality }) : t(`lvHow_${l}` as const);
@@ -303,7 +321,7 @@ export function Entry() {
 
       {/* ---------- Season leaderboard ---------- */}
       <section className="border-y border-line bg-surface py-20 lg:py-28">
-        <div className="mx-auto grid max-w-[1400px] items-start gap-10 px-4 md:px-6 lg:grid-cols-12">
+        <div className="mx-auto grid grid-cols-1 max-w-[1400px] items-start gap-10 px-4 md:px-6 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <div className="meta flex items-center gap-2"><Crown size={14} weight="fill" className="text-accent-text" />{t("ambassadorRound")}: {t("ap_voting")}</div>
             <h2 className="mt-4 text-4xl md:text-5xl">{t("seasonTitle")}</h2>
@@ -315,7 +333,7 @@ export function Entry() {
                   <Face name={row.creator.name} hue={row.creator.hue} size={40} />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2"><span className="truncate font-medium">{row.creator.name}</span><LevelChip level={row.level} /></div>
-                    <div className="mt-2 h-1 overflow-hidden rounded-full bg-surface-3"><motion.div className={cn("h-full rounded-full", i === 0 ? "bg-accent" : "bg-ink")} initial={{ width: 0 }} whileInView={{ width: `${Math.max(8, (row.sparks / (topFive[0]?.sparks || 1)) * 100)}%` }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }} /></div>
+                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-3"><motion.div className={cn("h-full rounded-full", i === 0 ? "bg-accent" : "bg-brand")} initial={{ width: 0 }} whileInView={{ width: `${Math.max(8, (row.sparks / (topFive[0]?.sparks || 1)) * 100)}%` }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }} /></div>
                   </div>
                   <span className="text-lg font-medium tabular tracking-tight"><Counter value={row.sparks} /></span>
                 </li>
@@ -324,10 +342,10 @@ export function Entry() {
           </Reveal>
           <Reveal delay={0.1} className="flex flex-col gap-5 lg:col-span-5">
             <StampCard total={8} filled={5} size={52} label={<><span className="font-medium">{L(season.name)}</span><span className="text-ink-3">{t("stampCard")}</span></>} />
-            <div className="inverse-fill rounded-card p-6 md:p-8">
+            <div className="brand-fill shine rounded-card p-6 md:p-8">
               <div className="text-2xl font-medium tracking-tight">{t("circleCamp")}</div>
               <p className="mt-3 text-[15px] opacity-75">{t("circleCampBody")}</p>
-              <div className="mt-6 flex items-center gap-3"><FacePile people={(season.ambassadors.cohort.length ? season.ambassadors.cohort : season.ambassadors.shortlist).map((id) => s.creators.find((c) => c.id === id)!).filter(Boolean)} size={36} max={6} className="[&_.ring-surface]:ring-inverse" /><span className="text-[13px] opacity-75">{t("lv_ambassador")}</span></div>
+              <div className="mt-6 flex items-center gap-3"><FacePile people={(season.ambassadors.cohort.length ? season.ambassadors.cohort : season.ambassadors.shortlist).map((id) => s.creators.find((c) => c.id === id)!).filter(Boolean)} size={36} max={6} className="[&_.ring-surface]:ring-brand" /><span className="text-[13px] opacity-75">{t("lv_ambassador")}</span></div>
             </div>
           </Reveal>
         </div>
@@ -335,7 +353,7 @@ export function Entry() {
 
       {/* ---------- Academy ---------- */}
       <section className="mx-auto max-w-[1400px] px-4 py-20 md:px-6 lg:py-28">
-        <div className="grid items-start gap-10 lg:grid-cols-12">
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12">
           <Reveal className="lg:col-span-5">
             <h2 className="text-4xl md:text-5xl">{t("lpAcademyTitle")}</h2>
             <p className="mt-4 text-lg text-ink-2">{t("lpAcademySub")}</p>
@@ -345,12 +363,12 @@ export function Entry() {
             <div className="mt-6 flex items-center gap-3"><FacePile people={Array.from(new Set(s.mentorSessions.flatMap((m) => m.mentor.split(" and ")))).map((name) => ({ name, hue: 0 })).slice(0, 5)} size={36} /><span className="text-[14px] text-ink-2">{t("mentoringSub")}</span></div>
           </Reveal>
           <Reveal delay={0.1} className="lg:col-span-7">
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <Certificate title={L(track.title)} name="Layla Al Mansoori" date={date("2026-09-26")} meta={`${track.modules.length} ${t("modules")}`} sealed />
               <div className="label-card flex flex-col gap-3 p-5">
                 <div className="flex items-center gap-3"><Face name="Karim Nasser" hue={0} size={44} /><div><div className="font-medium">Karim Nasser</div><div className="text-[12.5px] text-ink-3">{t("role_content_reviewer")}</div></div></div>
                 <div className="rounded-[18px] rounded-ss-[6px] bg-surface-2 p-4 text-[15px]"><p>{L(s.academy.tracks[0].modules[0].title)}: {L(s.academy.tracks[0].modules[0].summary)}</p></div>
-                <div className="inverse-fill self-end rounded-[18px] rounded-se-[6px] p-4 text-[15px]"><p>{L(s.creators[0].vibe)}</p></div>
+                <div className="brand-fill self-end rounded-[18px] rounded-se-[6px] p-4 text-[15px]"><p>{L(s.creators[0].vibe)}</p></div>
               </div>
             </div>
           </Reveal>
@@ -364,27 +382,32 @@ export function Entry() {
             <h2 className="text-4xl md:text-5xl">{t("brandsTitle")}</h2>
             <p className="mt-4 max-w-[60ch] text-lg text-ink-2">{t("brandsSub")}</p>
           </Reveal>
-          <Reveal delay={0.08} className="mt-12 grid grid-cols-2 border-s border-t border-line sm:grid-cols-3 lg:grid-cols-6">
-            {s.brands.map((b) => <div key={b.id} className="flex h-20 items-center justify-center border-b border-e border-line px-4"><BrandMark brand={b} size="lg" /></div>)}
-          </Reveal>
-          <Stagger className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
-            {packs.map((p) => (
-              <Item key={p.id}><ProductArt product={p} brand={brandOf(p.brandId)} className="aspect-[4/5] w-full rounded-[16px]" size="lg" /></Item>
+          <Stagger className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {s.brands.map((b) => (
+              <Item key={b.id}>
+                <div className="pan shine lift flex h-24 items-end rounded-[18px] p-4 text-[16px] font-medium tracking-tight" style={{ backgroundImage: `linear-gradient(135deg, ${vivid(b.id).from} 0%, ${vivid(b.id).to} 60%, ${vivid(b.id).from} 120%)`, color: vivid(b.id).on }}>{L(b.localisedName)}</div>
+              </Item>
             ))}
           </Stagger>
         </div>
+        <Marquee duration={55} reverse className="mt-8">
+          {[...packs, ...packs].map((p, i) => (
+            <div key={`${p.id}-${i}`} className="mx-2.5 w-40 shrink-0"><ProductArt product={p} brand={brandOf(p.brandId)} className="aspect-[4/5] w-full rounded-[18px]" size="lg" /></div>
+          ))}
+        </Marquee>
       </section>
 
       {/* ---------- CTA ---------- */}
       <section className="mx-auto max-w-[1400px] px-4 py-20 md:px-6 lg:py-28">
-        <Reveal className="accent-fill relative overflow-hidden rounded-[1.75rem] p-8 md:p-14">
+        <Reveal className="relative overflow-hidden rounded-[1.75rem]"><div className="pan p-8 text-white md:p-14" style={{ backgroundImage: vividGradient("squad", 120).replace("100%)", "55%, #14b85f 120%)") }}>
           <div className="relative flex flex-col items-start gap-8 md:flex-row md:items-end md:justify-between">
             <div>
               <h2 className="max-w-[14ch] text-4xl md:text-6xl">{t("lpCtaTitle")}</h2>
               <p className="mt-4 max-w-[46ch] text-lg opacity-80">{t("lpCtaSub", { n: s.creators.length })}</p>
             </div>
-            <Button size="lg" to="/join" className="!bg-[#111114] !text-[#f4f4f5]" iconEnd={<ArrowUpRight size={18} className="rtl:-scale-x-100" />}>{t("heroCta")}</Button>
+            <Button size="lg" variant="accent" to="/join" className="group" iconEnd={<ArrowUpRight size={18} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:-scale-x-100" />}>{t("heroCta")}</Button>
           </div>
+        </div>
         </Reveal>
       </section>
 

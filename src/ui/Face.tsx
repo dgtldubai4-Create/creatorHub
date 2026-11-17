@@ -1,19 +1,19 @@
 /**
- * Monogram portraits. Until a creator uploads a photo, they get a quiet tonal
- * disc with their initials: one of eight muted tones, picked from their name so
- * it never changes. No illustration, no characters.
+ * Monogram portraits. Until a creator uploads a photo, they get a lit disc
+ * with their initials in one of eight colours from the Dabur family, picked
+ * from their name so it never changes. No illustration, no characters.
  */
 import { cn } from "./cn";
 
 const TONES: [string, string][] = [
-  ["#8f877b", "#5b554d"], // stone
-  ["#7c8792", "#4c555e"], // slate
-  ["#7f8c79", "#4e594a"], // sage
-  ["#9a7f70", "#634e44"], // clay
-  ["#857f96", "#534e62"], // dusk
-  ["#99895c", "#62573a"], // sand
-  ["#6f8a85", "#445754"], // sea
-  ["#93737f", "#5d4750"], // mauve
+  ["#2fd07a", "#067a3a"], // Dabur green
+  ["#ffb83d", "#e07a00"], // saffron
+  ["#ff7a5c", "#c2301e"], // red
+  ["#f56bb0", "#a81f66"], // pink
+  ["#5cc0f5", "#1f63ad"], // blue
+  ["#24cdb8", "#0b6e66"], // teal
+  ["#ff9a4a", "#c9480c"], // orange
+  ["#9b8cf2", "#4c3fb0"], // violet
 ];
 
 function hash(s: string): number {
@@ -33,7 +33,8 @@ export function initials(name: string): string {
 }
 
 export function toneFor(name: string, hue = 0): [string, string] {
-  return TONES[hash(name + hue) % TONES.length];
+  const h = hash(name + hue);
+  return TONES[((h >>> 11) ^ (h >>> 3)) % TONES.length];
 }
 
 export function Face({ name, hue = 0, size = 40, className, style }: { name: string; hue?: number; size?: number | string; className?: string; style?: React.CSSProperties }) {
@@ -43,7 +44,7 @@ export function Face({ name, hue = 0, size = 40, className, style }: { name: str
     <span
       aria-hidden
       className={cn("relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full font-medium leading-none text-white/95", className)}
-      style={{ width: size, height: size, containerType: "inline-size", background: `radial-gradient(120% 120% at 28% 18%, ${a} 0%, ${b} 72%)`, boxShadow: "inset 0 0 0 1px rgb(255 255 255 / 0.14)", fontSize: px ? Math.max(10, px * 0.36) : undefined, letterSpacing: "0.02em", ...style }}
+      style={{ width: size, height: size, containerType: "inline-size", background: `radial-gradient(120% 120% at 28% 18%, ${a} 0%, ${b} 72%)`, boxShadow: "inset 0 0 0 1px rgb(255 255 255 / 0.22), inset 0 -6px 12px rgb(0 0 0 / 0.12)", fontSize: px ? Math.max(10, px * 0.36) : undefined, letterSpacing: "0.02em", ...style }}
     >
       <span style={px ? undefined : { fontSize: "36cqw" }}>{initials(name)}</span>
     </span>

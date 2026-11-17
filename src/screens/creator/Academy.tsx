@@ -32,7 +32,7 @@ function AcademyHub() {
       <PageHeader title={t("academy")} sub={t("academySub")} actions={<div className="flex items-center gap-2"><LevelChip level={lv.level} />{certs.length > 0 && <Chip tone="leaf" icon={<CertificateIcon size={14} weight="fill" />}>{certs.length} {t("certificates").toLowerCase()}</Chip>}</div>} />
 
       <Section title={t("tracks")}>
-        <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {s.academy.tracks.map((tr) => {
             const p = trackProgress(s, me.id, tr.id);
             const ok = meetsLevel(s, me.id, tr.levelRequired);
@@ -40,7 +40,7 @@ function AcademyHub() {
               <Item key={tr.id}>
                 <Link to={`/creator/academy/${tr.id}`} className="block h-full">
                   <Label className={cn("lift flex h-full gap-4 p-4", !ok && "opacity-70")} watermark={false}>
-                    <div className="h-32 w-24 shrink-0 overflow-hidden rounded-[6px]"><ArtSlot id={`track-${tr.id.replace("tr_", "")}`} compact /></div>
+                    <div className="h-32 w-24 shrink-0 overflow-hidden rounded-[14px]"><ArtSlot id={`track-${tr.id.replace("tr_", "")}`} compact /></div>
                     <div className="flex min-w-0 flex-1 flex-col">
                       <h2 className="text-lg leading-tight">{L(tr.title)}</h2>
                       <p className="mt-1 text-[13.5px] text-ink-2">{L(tr.blurb)}</p>
@@ -59,7 +59,7 @@ function AcademyHub() {
 
       {certs.length > 0 && (
         <Section title={t("certificates")} sub={t("certificateHint")}>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             {certs.map((id) => {
               const tr = s.academy.tracks.find((x) => x.id === id)!;
               const at = s.academy.progress[me.id]?.[tr.modules[tr.modules.length - 1].id] ?? s.now;
@@ -70,7 +70,7 @@ function AcademyHub() {
       )}
 
       <Section title={t("mentoring")} sub={t("mentoringSub")}>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {s.mentorSessions.map((ms) => {
             const booked = ms.bookedBy.includes(me.id);
             const ok = meetsLevel(s, me.id, ms.levelRequired);
@@ -90,7 +90,7 @@ function AcademyHub() {
       </Section>
 
       <Section title={t("empowerment")}>
-        <div className="label-card grid divide-y divide-line sm:grid-cols-2 sm:divide-x sm:divide-y-0 xl:grid-cols-4 rtl:sm:divide-x-reverse">
+        <div className="label-card grid grid-cols-1 divide-y divide-line sm:grid-cols-2 sm:divide-x sm:divide-y-0 xl:grid-cols-4 rtl:sm:divide-x-reverse">
           {perks.map((p) => (
             <div key={p} className="p-5">
               <h3 className="text-[15px] font-semibold">{t(`emp_${p}` as const)}</h3>
@@ -128,7 +128,7 @@ function TrackDetail({ id }: { id: string }) {
   return (
     <div className="flex flex-col gap-8">
       <Link to="/creator/academy" className="inline-flex items-center gap-1.5 text-[13.5px] font-medium text-ink-2 hover:text-ink"><ArrowLeft size={16} weight="bold" className="rtl:rotate-180" />{t("academy")}</Link>
-      <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start">
         <div className="lg:col-span-8">
           <Label className="flex gap-5 p-6" watermark={false}>
             <div className="hidden h-40 w-32 shrink-0 overflow-hidden rounded-[6px] sm:block"><ArtSlot id={`track-${tr.id.replace("tr_", "")}`} compact /></div>
@@ -138,7 +138,7 @@ function TrackDetail({ id }: { id: string }) {
               <p className="mt-3 max-w-[60ch] text-ink-2">{L(tr.blurb)}</p>
             </div>
           </Label>
-          <ol className="mt-4 grid gap-3">
+          <ol className="mt-4 grid grid-cols-1 gap-3">
             {tr.modules.map((m, i) => {
               const done = progress[m.id];
               return (

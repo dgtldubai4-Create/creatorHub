@@ -12,10 +12,10 @@ type Variant = "primary" | "secondary" | "ghost" | "accent" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const VARIANT: Record<Variant, string> = {
-  primary: "inverse-fill hover:opacity-90",
+  primary: "brand-fill shine shadow-[0_10px_24px_-12px_var(--brand)] hover:brightness-105",
   secondary: "bg-surface text-ink border border-line-2 hover:bg-surface-2",
   ghost: "bg-transparent text-ink-2 hover:bg-surface-2 hover:text-ink",
-  accent: "accent-fill hover:brightness-105",
+  accent: "accent-fill shine hover:brightness-105",
   danger: "danger-fill hover:brightness-105",
 };
 const SIZE: Record<Size, string> = { sm: "h-9 px-3.5 text-[13px] gap-1.5", md: "h-11 px-5 text-[15px] gap-2", lg: "h-13 px-7 text-base gap-2.5" };
@@ -62,15 +62,15 @@ export function IconButton({ label, className, children, active, ...rest }: Butt
 export type Tone = "neutral" | "leaf" | "marigold" | "rose" | "sky" | "ink" | "lime" | "tangerine" | "bubblegum" | "grape" | "lemon";
 const TONE: Record<Tone, string> = {
   neutral: "bg-surface-2 text-ink-2",
-  leaf: "bg-leaf-soft text-leaf-ink",
+  leaf: "bg-brand-soft text-brand-text",
   marigold: "bg-accent-soft text-accent-text",
   rose: "bg-rose-soft text-rose",
   sky: "bg-surface-2 text-ink-2",
   ink: "inverse-fill",
   lime: "accent-fill",
-  tangerine: "bg-surface-2 text-ink",
+  tangerine: "hot-fill",
   bubblegum: "bg-surface-2 text-ink-2",
-  grape: "inverse-fill",
+  grape: "brand-fill",
   lemon: "bg-accent-soft text-accent-text",
 };
 
@@ -85,7 +85,7 @@ export function Chip({ tone = "neutral", className, children, icon }: { tone?: T
 
 export function ChipButton({ selected, className, children, ...rest }: ButtonHTMLAttributes<HTMLButtonElement> & { selected?: boolean }) {
   return (
-    <button className={cn("press h-9 whitespace-nowrap rounded-full border px-3.5 text-[13.5px] font-medium", selected ? "inverse-fill border-transparent" : "border-line-2 bg-surface text-ink-2 hover:bg-surface-2 hover:text-ink", className)} {...rest}>
+    <button className={cn("press h-9 whitespace-nowrap rounded-full border px-3.5 text-[13.5px] font-medium", selected ? "brand-fill border-transparent" : "border-line-2 bg-surface text-ink-2 hover:bg-surface-2 hover:text-ink", className)} {...rest}>
       {children}
     </button>
   );
@@ -159,7 +159,7 @@ export function PageHeader({ title, sub, actions, eyebrow, className }: { title:
 
 export function Section({ title, sub, action, children, className }: { title?: ReactNode; sub?: ReactNode; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={cn("flex flex-col gap-4", className)}>
+    <section className={cn("flex min-w-0 flex-col gap-4", className)}>
       {(title || action) && (
         <div className="flex items-end justify-between gap-4">
           <div>
@@ -177,7 +177,7 @@ export function Section({ title, sub, action, children, className }: { title?: R
 export function EmptyState({ icon, title, body, action, className }: { icon?: ReactNode; title: string; body?: string; action?: ReactNode; className?: string }) {
   return (
     <div className={cn("label-card flex flex-col items-center gap-3 px-6 py-12 text-center", className)}>
-      {icon && <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-2">{icon}</div>}
+      {icon && <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-soft text-brand-text">{icon}</div>}
       <h3 className="text-lg">{title}</h3>
       {body && <p className="max-w-[40ch] text-[14px] text-ink-2">{body}</p>}
       {action && <div className="mt-2">{action}</div>}
@@ -191,10 +191,10 @@ export function Skeleton({ className }: { className?: string }) {
 
 export function Stat({ label, value, hint, tone = "neutral", to }: { label: string; value: ReactNode; hint?: string; tone?: "neutral" | "leaf" | "marigold"; to?: string }) {
   const body = (
-    <div className={cn("flex h-full flex-col justify-between gap-3 p-5", tone === "leaf" ? "accent-fill rounded-card shadow-card" : "label-card", to && "lift")}>
-      <span className={cn("meta", tone === "leaf" && "!text-accent-ink/70")}>{label}</span>
+    <div className={cn("flex h-full flex-col justify-between gap-3 p-5", tone === "leaf" ? "brand-fill shine rounded-card shadow-card" : "label-card", to && "lift")}>
+      <span className={cn("meta", tone === "leaf" && "!text-brand-ink/75")}>{label}</span>
       <span className={cn("text-4xl font-medium tabular leading-none tracking-tight", tone === "marigold" && "text-accent-text")}>{value}</span>
-      {hint && <span className={cn("text-[12.5px]", tone === "leaf" ? "text-accent-ink/70" : "text-ink-3")}>{hint}</span>}
+      {hint && <span className={cn("text-[12.5px]", tone === "leaf" ? "text-brand-ink/75" : "text-ink-3")}>{hint}</span>}
     </div>
   );
   return to ? <Link to={to}>{body}</Link> : body;
@@ -203,9 +203,9 @@ export function Stat({ label, value, hint, tone = "neutral", to }: { label: stri
 export function Segmented<T extends string>({ value, onChange, options, className }: { value: T; onChange: (v: T) => void; options: { value: T; label: ReactNode }[]; className?: string }) {
   const id = useId();
   return (
-    <div className={cn("relative inline-flex rounded-full bg-surface-2 p-1", className)} role="tablist">
+    <div className={cn("hide-scrollbar relative inline-flex max-w-full overflow-x-auto rounded-full bg-surface-2 p-1", className)} role="tablist">
       {options.map((o) => (
-        <button key={o.value} role="tab" aria-selected={value === o.value} onClick={() => onChange(o.value)} className={cn("relative z-10 h-9 whitespace-nowrap rounded-full px-4 text-[13.5px] font-medium transition-colors", value === o.value ? "text-ink" : "text-ink-3 hover:text-ink")}>
+        <button key={o.value} role="tab" aria-selected={value === o.value} onClick={() => onChange(o.value)} className={cn("relative z-10 h-9 shrink-0 whitespace-nowrap rounded-full px-4 text-[13.5px] font-medium transition-colors", value === o.value ? "text-ink" : "text-ink-3 hover:text-ink")}>
           {value === o.value && <motion.span layoutId={`seg-${id}`} className="absolute inset-0 -z-10 rounded-full bg-surface shadow-card" transition={springSnappy} />}
           {o.label}
         </button>
@@ -221,7 +221,7 @@ export function ProgressRing({ value, size = 56, stroke = 6, className, children
     <div className={cn("relative inline-flex items-center justify-center", className)} style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--line)" strokeWidth={stroke} />
-        <motion.circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--accent)" strokeWidth={stroke} strokeLinecap="round" strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: c * (1 - Math.max(0, Math.min(1, value))) }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }} />
+        <motion.circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--brand)" strokeWidth={stroke} strokeLinecap="round" strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: c * (1 - Math.max(0, Math.min(1, value))) }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }} />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">{children}</div>
     </div>
@@ -269,7 +269,7 @@ export function ToastViewport({ items, onDismiss }: { items: ToastItem[]; onDism
       <AnimatePresence>
         {items.map((tst) => (
           <motion.button key={tst.id} onClick={() => onDismiss(tst.id)} layout initial={{ opacity: 0, y: 16, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.96 }} transition={spring} className={cn("pointer-events-auto flex max-w-md items-center gap-2.5 rounded-full px-4 py-2.5 text-[14px] font-medium shadow-float", tst.kind === "error" ? "danger-fill" : "inverse-fill")}>
-            {tst.kind === "error" ? <Warning size={18} weight="fill" /> : tst.kind === "success" ? <CheckCircle size={18} weight="fill" className="text-accent" /> : <Info size={18} weight="fill" />}
+            {tst.kind === "error" ? <Warning size={18} weight="fill" /> : tst.kind === "success" ? <CheckCircle size={18} weight="fill" className="text-brand-bright" /> : <Info size={18} weight="fill" />}
             <span className="text-start">{tst.text}</span>
           </motion.button>
         ))}

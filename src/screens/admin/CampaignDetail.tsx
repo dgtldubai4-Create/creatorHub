@@ -62,9 +62,9 @@ export function AdminCampaignDetail() {
         }
       />
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="label-card p-5 lg:col-span-2">
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
               <h3 className="text-[14px] font-semibold">{t("deliverable")}</h3>
               <p className="mt-1 text-[14px] text-ink-2">{L(c.brief.deliverable)}</p>
@@ -83,11 +83,11 @@ export function AdminCampaignDetail() {
         </div>
         <div className="label-card p-5">
           <h3 className="text-[14px] font-semibold">{t("funnel")}</h3>
-          <ul className="mt-3 grid gap-1.5">
+          <ul className="mt-3 grid grid-cols-1 gap-1.5">
             {(["invite", "kit", "create", "review", "publish", "done"] as const).map((ph) => (
               <li key={ph} className="flex items-center gap-3 text-[13.5px]">
                 <span className="w-16 text-ink-2">{t(`phase_${ph}` as const)}</span>
-                <span className="h-2 rounded-full bg-ink" style={{ width: `${(fn.counts[ph] / Math.max(1, fn.total)) * 100}%`, minWidth: fn.counts[ph] ? 8 : 0 }} />
+                <span className="h-2 rounded-full bg-brand" style={{ width: `${(fn.counts[ph] / Math.max(1, fn.total)) * 100}%`, minWidth: fn.counts[ph] ? 8 : 0 }} />
                 <span className="tabular text-ink-3">{fn.counts[ph]}</span>
               </li>
             ))}
@@ -110,7 +110,7 @@ export function AdminCampaignDetail() {
           ps.length === 0 ? (
             <EmptyState title={t("nothingHere")} action={can(role, "invite") && <Button variant="secondary" onClick={() => setView("shortlist")}>{t("shortlist")}</Button>} />
           ) : (
-            <Stagger className="grid gap-2">
+            <Stagger className="grid grid-cols-1 gap-2">
               {ps.map((p) => {
                 const cr = s.creators.find((x) => x.id === p.creatorId)!;
                 const last = p.stageLog[p.stageLog.length - 1];
@@ -134,13 +134,13 @@ export function AdminCampaignDetail() {
             </Stagger>
           )
         ) : (
-          <Stagger className="grid gap-2" gap={0.02}>
+          <Stagger className="grid grid-cols-1 gap-2" gap={0.02}>
             {ranked.map(({ cr, m }) => {
               const on = onCampaign.has(cr.id);
               const sel = picked.has(cr.id);
               return (
                 <Item key={cr.id}>
-                  <label className={cn("label-card flex cursor-pointer flex-wrap items-center gap-4 p-3 pe-4", sel && "border-ink bg-surface-2", on && "opacity-60")}>
+                  <label className={cn("label-card flex cursor-pointer flex-wrap items-center gap-4 p-3 pe-4", sel && "border-brand bg-brand-soft", on && "opacity-60")}>
                     <input type="checkbox" className="h-5 w-5 accent-[var(--leaf)]" disabled={on} checked={sel} onChange={() => setPicked((set) => { const n = new Set(set); if (n.has(cr.id)) n.delete(cr.id); else n.add(cr.id); return n; })} />
                     <Avatar name={cr.name} hue={cr.hue} size={38} />
                     <div className="min-w-40"><div className="text-[14px] font-medium">{cr.name}</div><div className="text-[12px] text-ink-3">{t(`niche_${cr.niche}` as const)} · {t(`tier_${cr.tier}` as const)} · {cr.city}</div></div>

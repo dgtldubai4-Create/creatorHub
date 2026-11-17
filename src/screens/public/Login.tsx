@@ -40,7 +40,7 @@ export function Login() {
             <motion.div key="seat" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={spring}>
               <h1 className="text-4xl md:text-5xl">{t("loginTitle")}</h1>
               <p className="mt-3 max-w-[50ch] text-ink-2">{t("loginSub")}</p>
-              <Stagger className="mt-10 grid gap-5 md:grid-cols-2">
+              <Stagger className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
                 <Item>
                   <Tilt className="rounded-[var(--radius-card)]">
                     <button onClick={() => setSeat("creator")} className="label-card lift flex h-full w-full flex-col items-start gap-10 p-7 text-start">
@@ -74,7 +74,7 @@ export function Login() {
                 <MagnifyingGlass size={16} className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-ink-3" />
                 <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("search")} className="ps-10" autoFocus />
               </div>
-              <Stagger className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3" gap={0.03}>
+              <Stagger className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3" gap={0.03}>
                 {creators.map((c) => (
                   <Item key={c.id}>
                     <button onClick={() => go("creator", { creatorId: c.id })} className="label-card lift flex w-full items-center gap-3 p-3 text-start">
@@ -92,7 +92,7 @@ export function Login() {
             <motion.div key="brand" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={spring}>
               <button onClick={() => setSeat(null)} className="mb-6 inline-flex items-center gap-1.5 text-[13.5px] font-medium text-ink-2 hover:text-ink"><ArrowLeft size={16} weight="bold" className="rtl:rotate-180" />{t("back")}</button>
               <h1 className="text-3xl md:text-4xl">{t("pickRole")}</h1>
-              <Stagger className="mt-6 grid gap-3 sm:grid-cols-2" gap={0.05}>
+              <Stagger className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2" gap={0.05}>
                 {ROLES.map((r) => {
                   const user = s.brandUsers.find((u) => u.role === r);
                   return (

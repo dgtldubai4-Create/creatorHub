@@ -23,7 +23,7 @@ export function AdminSeasons() {
   return (
     <div className="flex flex-col gap-10">
       <PageHeader title={t("seasons")} sub={t("levelsReset")} />
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {s.seasons.map((sn) => {
           const amb = sn.ambassadors;
           const isCurrent = sn.id === current.id;
@@ -48,13 +48,13 @@ export function AdminSeasons() {
                 <div className="border-t border-line p-5">
                   <div className="mb-1 text-[14px] font-semibold">{t("selectCohort")}</div>
                   <p className="mb-3 text-[12.5px] text-ink-3">{t("selectCohortHint")}</p>
-                  <ul className="grid gap-1.5">
+                  <ul className="grid grid-cols-1 gap-1.5">
                     {candidates.sort((a, b) => votes[b] - votes[a]).map((id) => {
                       const c = s.creators.find((x) => x.id === id)!;
                       const sel = picked.has(id);
                       return (
                         <li key={id}>
-                          <label className={cn("flex cursor-pointer items-center gap-2 rounded-[8px] border p-2", sel ? "border-ink bg-surface-2" : "border-line")}>
+                          <label className={cn("flex cursor-pointer items-center gap-2 rounded-[8px] border p-2", sel ? "border-brand bg-brand-soft" : "border-line")}>
                             <input type="checkbox" className="h-4 w-4 accent-[var(--leaf)]" checked={sel} onChange={() => setPicked((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; })} />
                             <Avatar name={c.name} hue={c.hue} size={28} />
                             <span className="min-w-0 flex-1 truncate text-[13.5px] font-medium">{c.name}</span>

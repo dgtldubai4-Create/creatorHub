@@ -42,7 +42,7 @@ export function Profile() {
           <Chip>{t(`tier_${me.tier}` as const)} · {num(me.followers)} {t("followers")}</Chip>
         </div>
       </div>
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <Section title={t("verification")} sub={t("verificationHint")} action={<SimulatedTag />}>
           <div className="label-card flex flex-col gap-4 p-5">
             <div className="flex flex-wrap gap-2">
@@ -63,7 +63,7 @@ export function Profile() {
           </div>
         </Section>
         <Section title={t("connectedAccounts")} sub={t("connectHint")} action={<SimulatedTag />}>
-          <div className="label-card grid gap-3 p-5">
+          <div className="label-card grid grid-cols-1 gap-3 p-5">
             {(["instagram", "tiktok"] as const).map((pl) => {
               const acc = me.connected[pl];
               const Icon = pl === "instagram" ? InstagramLogo : TiktokLogo;
@@ -84,16 +84,16 @@ export function Profile() {
           </div>
         </Section>
         <Section title={t("address")}>
-          <div className="label-card grid gap-4 p-5">
+          <div className="label-card grid grid-cols-1 gap-4 p-5">
             <Field label={t("addressLine")} required><Input value={f.line1} onChange={(e) => set("line1")(e.target.value)} autoComplete="street-address" /></Field>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label={t("city")} required><Input value={f.city} onChange={(e) => set("city")(e.target.value)} /></Field>
               <Field label={t("phone")} required><Input value={f.phone} onChange={(e) => set("phone")(e.target.value)} inputMode="tel" autoComplete="tel" dir="ltr" /></Field>
             </div>
           </div>
         </Section>
         <Section title={t("vibe")}>
-          <div className="label-card grid gap-4 p-5">
+          <div className="label-card grid grid-cols-1 gap-4 p-5">
             <Field label={t("vibe")}><Input value={f.vibe} onChange={(e) => set("vibe")(e.target.value)} maxLength={80} /></Field>
             <Field label={t("bio")}><Textarea value={f.bio} onChange={(e) => set("bio")(e.target.value)} maxLength={140} className="min-h-16" /></Field>
             <Field label={t("languages")}><div className="flex gap-2">{(["ar", "en"] as Language[]).map((l) => <ChipButton key={l} type="button" selected={f.languages.includes(l)} onClick={() => toggleLang(l)}>{t(`lang_${l}` as const)}</ChipButton>)}</div></Field>
@@ -103,7 +103,7 @@ export function Profile() {
       </div>
       <div className="flex justify-end"><Button onClick={save} icon={<FloppyDisk size={16} weight="bold" />}>{t("save")}</Button></div>
 
-      <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-start">
         <Section title={t("level")} sub={t("levelsReset")}><LevelChecklist creatorId={me.id} /></Section>
         <Section title={t("charterTitle")} sub={t("charterSub")}>
           <div className="label-card flex flex-col gap-4 p-5">

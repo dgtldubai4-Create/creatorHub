@@ -2,6 +2,7 @@ import type { Brand, Product } from "../domain/types";
 import { cn } from "./cn";
 import { useL } from "../i18n";
 import { brandGlyph } from "./kit";
+import { vivid } from "./brandColor";
 
 /**
  * Pack shot built in code: the pack silhouette in the brand colour with a properly
@@ -10,7 +11,7 @@ import { brandGlyph } from "./kit";
  */
 export function ProductArt({ product, brand, className, size = "md" }: { product: Product; brand?: Brand; className?: string; size?: "sm" | "md" | "lg" }) {
   const L = useL();
-  const hue = brand?.hue ?? "#1c8a4c";
+  const hue = brand ? vivid(brand.id).solid : "#0a9a4d";
   const dims = size === "sm" ? "h-16 w-16" : size === "lg" ? "aspect-[4/5] w-full" : "h-28 w-28";
   if (product.image) {
     return <img src={product.image} alt={L(product.names)} className={cn("rounded-[10px] object-cover", dims, className)} loading="lazy" />;
@@ -20,7 +21,7 @@ export function ProductArt({ product, brand, className, size = "md" }: { product
   const kind = product.type;
   const Glyph = brandGlyph(brand?.id);
   return (
-    <div className={cn("group relative flex items-end justify-center overflow-hidden rounded-[10px] bg-surface-2", dims, className)} aria-label={L(product.names)} role="img">
+    <div className={cn("group relative flex items-end justify-center overflow-hidden rounded-[10px]", dims, className)} style={{ background: `linear-gradient(160deg, color-mix(in oklab, ${hue} 16%, var(--surface)) 0%, color-mix(in oklab, ${hue} 30%, var(--surface-2)) 100%)` }} aria-label={L(product.names)} role="img">
       <span className="pointer-events-none absolute inset-x-[16%] bottom-[6%] h-[7%] rounded-[50%] bg-black/20 blur-[4px]" />
       <Pack type={product.packType} hue={hue} small={size === "sm"}>
         <span className="absolute inset-x-[10%] top-[26%] flex h-[48%] flex-col overflow-hidden rounded-[6%] bg-[#fbfaf6] text-[#132419] shadow-[inset_0_0_0_1px_rgb(0_0_0/0.08)]">

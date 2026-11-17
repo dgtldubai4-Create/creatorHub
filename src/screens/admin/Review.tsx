@@ -47,13 +47,13 @@ export function AdminReview() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title={t("review")} sub={t("reviewSub")} />
-      <div className="grid gap-6 lg:grid-cols-12">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         <aside className="lg:col-span-4 xl:col-span-3">
           <h2 className="mb-3 text-[14px] font-semibold text-ink-2">{t("queue")} · {queue.length}</h2>
           {queue.length === 0 ? (
             <EmptyState icon={<PlayCircle size={22} />} title={t("emptyQueue")} body={t("emptyQueueBody")} />
           ) : (
-            <Stagger className="grid gap-2" gap={0.03}>
+            <Stagger className="grid grid-cols-1 gap-2" gap={0.03}>
               {queue.map((q) => {
                 const qc = s.campaigns.find((x) => x.id === q.campaignId)!;
                 const qcr = s.creators.find((x) => x.id === q.creatorId)!;
@@ -61,7 +61,7 @@ export function AdminReview() {
                 const active = q.id === p?.id;
                 return (
                   <Item key={q.id}>
-                    <Link to={`/admin/review/${q.id}/${qs.id}`} className={cn("label-card lift flex items-center gap-3 p-3 ", active && "border-ink bg-surface-2")}>
+                    <Link to={`/admin/review/${q.id}/${qs.id}`} className={cn("label-card lift flex items-center gap-3 p-3 ", active && "border-brand bg-brand-soft")}>
                       <Avatar name={qcr.name} hue={qcr.hue} size={36} />
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-[14px] font-medium">{qcr.name}</div>
@@ -77,7 +77,7 @@ export function AdminReview() {
         </aside>
 
         {p && sub && c && cr ? (
-          <div className="grid gap-4 lg:col-span-8 xl:col-span-9">
+          <div className="grid grid-cols-1 gap-4 lg:col-span-8 xl:col-span-9">
             <div className="label-card p-5">
               <div className="flex flex-wrap items-center gap-3">
                 <Avatar name={cr.name} hue={cr.hue} size={40} />
@@ -99,7 +99,7 @@ export function AdminReview() {
                 <Button variant="secondary" disabled={!draft.trim()} onClick={() => { setNotes((n) => [...n, { t: Math.round(pos), text: draft.trim() }].sort((a, b) => a.t - b.t)); setDraft(""); }} icon={<Plus size={15} weight="bold" />}>{t("noteText")}</Button>
               </div>
               {notes.length > 0 && (
-                <ul className="mt-3 grid gap-1.5">
+                <ul className="mt-3 grid grid-cols-1 gap-1.5">
                   {notes.map((n, i) => (
                     <li key={i} className="flex items-center gap-2 rounded-[8px] bg-surface-2 px-3 py-2 text-[13.5px]">
                       <button className="rounded-md bg-surface px-1.5 py-0.5 text-[12px] font-semibold tabular hover:text-accent-text" onClick={() => setPos(n.t)}>{clock(n.t)}</button>
@@ -111,14 +111,14 @@ export function AdminReview() {
               )}
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="label-card p-5">
                 <div className="flex items-center justify-between"><h3 className="text-[14px] font-semibold">{t("autoCheck")}</h3><SimulatedTag /></div>
                 <div className="mt-3 flex items-center gap-4">
                   <ProgressRing value={sub.check.score / 100} size={60} stroke={7}><span className="text-[13px] font-medium tabular">{sub.check.score}</span></ProgressRing>
                   <Chip tone={sub.check.passed ? "leaf" : "rose"}>{sub.check.passed ? t("passed") : t("needsWork")}</Chip>
                 </div>
-                <ul className="mt-3 grid gap-1.5">
+                <ul className="mt-3 grid grid-cols-1 gap-1.5">
                   {sub.check.results.map((r) => (
                     <li key={r.key} className="flex items-start gap-2 text-[13px]"><span className={cn("mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full", r.passed ? "bg-leaf-soft text-leaf" : "bg-rose-soft text-rose")}>{r.passed ? <Check size={10} weight="bold" /> : <X size={10} weight="bold" />}</span><span className="text-ink-2">{L(r.note)}</span></li>
                   ))}

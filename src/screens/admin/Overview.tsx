@@ -53,7 +53,7 @@ export function AdminOverview() {
         </Section>
       )}
 
-      <div className="grid gap-10 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-5">
         <Section title={t("journeyMap")} className="lg:col-span-3">
           <Reveal className="label-card overflow-hidden">
             <div className="grid grid-cols-6 divide-x divide-line rtl:divide-x-reverse">
@@ -98,7 +98,7 @@ export function AdminOverview() {
 
       {can(role, "campaigns") && (
         <Section title={t("campaigns")} action={<Link to="/admin/campaigns" className="text-[13px] font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink">{t("viewAll")}</Link>}>
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             {s.campaigns.filter((c) => c.status !== "draft" && c.status !== "completed").slice(0, 6).map((c) => {
               const b = s.brands.find((x) => x.id === c.brandId)!;
               const ps = s.participations.filter((p) => p.campaignId === c.id);

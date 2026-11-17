@@ -83,23 +83,23 @@ function BriefTab({ c }: { c: Campaign }) {
   const t = useT();
   const L = useL();
   return (
-    <div className="grid gap-4 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <div className="label-card p-6 lg:col-span-2">
         <h2 className="text-xl">{t("deliverable")}</h2>
         <p className="mt-2 text-[15px] text-ink-2">{L(c.brief.deliverable)}</p>
-        <div className="mt-6 grid gap-6 sm:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <h3 className="mb-2 text-[14px] font-semibold"><FilmSlate size={16} className="me-1.5 inline text-leaf" />{t("shotList")}</h3>
-            <ol className="grid gap-1.5 text-[14.5px]">{c.brief.shotList.map((x, i) => <li key={i} className="flex gap-2"><span className="w-5 shrink-0 font-semibold text-ink-3">{i + 1}</span>{L(x)}</li>)}</ol>
+            <ol className="grid grid-cols-1 gap-1.5 text-[14.5px]">{c.brief.shotList.map((x, i) => <li key={i} className="flex gap-2"><span className="w-5 shrink-0 font-semibold text-ink-3">{i + 1}</span>{L(x)}</li>)}</ol>
           </div>
-          <div className="grid gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <h3 className="mb-2 text-[14px] font-semibold text-leaf"><Check size={16} weight="bold" className="me-1.5 inline" />{t("dos")}</h3>
-              <ul className="grid gap-1.5 text-[14.5px]">{c.brief.dos.map((x, i) => <li key={i}>{L(x)}</li>)}</ul>
+              <ul className="grid grid-cols-1 gap-1.5 text-[14.5px]">{c.brief.dos.map((x, i) => <li key={i}>{L(x)}</li>)}</ul>
             </div>
             <div>
               <h3 className="mb-2 text-[14px] font-semibold text-rose"><X size={16} weight="bold" className="me-1.5 inline" />{t("donts")}</h3>
-              <ul className="grid gap-1.5 text-[14.5px]">{c.brief.donts.map((x, i) => <li key={i}>{L(x)}</li>)}</ul>
+              <ul className="grid grid-cols-1 gap-1.5 text-[14.5px]">{c.brief.donts.map((x, i) => <li key={i}>{L(x)}</li>)}</ul>
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@ function BriefTab({ c }: { c: Campaign }) {
       <div className="label-card p-6">
         <h2 className="text-xl">{t("acceptance")}</h2>
         <p className="mt-1 text-[13px] text-ink-3">{t("duration")}: {c.brief.durationSec.min}-{c.brief.durationSec.max} {t("seconds")}</p>
-        <ul className="mt-4 grid gap-2">
+        <ul className="mt-4 grid grid-cols-1 gap-2">
           {c.brief.acceptance.map((a) => (
             <li key={a.key} className="flex items-center justify-between gap-3 rounded-[8px] bg-surface-2 px-3 py-2 text-[13.5px]">
               <span>{L(a.label)}</span>
@@ -131,7 +131,7 @@ function KitTab({ p, c }: { p: Participation; c: Campaign }) {
   const addressReady = !!me.address.line1 && !!me.address.phone;
   const shipmentIdx = p.shipment ? SHIPMENT_ORDER.indexOf(p.shipment.status) : -1;
   return (
-    <div className="grid gap-4 lg:grid-cols-5">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
       <div className="label-card p-6 lg:col-span-3">
         <h2 className="text-xl">{t("kitIncludes")}</h2>
         <div className="mt-4"><KitList campaign={c} /></div>
@@ -143,7 +143,7 @@ function KitTab({ p, c }: { p: Participation; c: Campaign }) {
         </div>
         {p.stage === "invited" && <p className="text-[14px] text-ink-2">{t("kitWaiting")}</p>}
         {p.stage === "accepted" && (
-          <div className="grid gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <div className="rounded-[8px] bg-surface-2 p-4 text-[14px]">
               <div className="mb-1 flex items-center gap-1.5 font-medium"><MapPin size={16} className="text-ink-2" />{t("deliverTo")}</div>
               {addressReady ? <div className="text-ink-2">{me.address.line1}, {me.address.city}<br /><span dir="ltr">{me.address.phone}</span></div> : <div className="text-rose">{t("addressMissing")}</div>}
@@ -161,14 +161,14 @@ function KitTab({ p, c }: { p: Participation; c: Campaign }) {
               <div><div className="text-[12px] text-ink-3">{t("courier")}</div><div className="font-medium">{p.shipment.courier}</div></div>
               <div><div className="text-[12px] text-ink-3">{t("tracking")}</div><div className="font-medium tabular">{p.shipment.trackingNumber}</div></div>
             </div>
-            <ol className="relative grid gap-3 border-s border-line ps-5">
+            <ol className="relative grid grid-cols-1 gap-3 border-s border-line ps-5">
               {SHIPMENT_ORDER.map((st, i) => {
                 const done = i <= shipmentIdx;
                 const active = i === shipmentIdx;
                 const entry = p.stageLog.find((e) => e.stage === (st === "address_confirmed" ? "profile_confirmed" : st));
                 return (
                   <li key={st} className="relative text-[14px]">
-                    <span className={cn("absolute -start-[27px] top-1 flex h-4 w-4 items-center justify-center rounded-full border", done ? "border-ink bg-ink" : "border-line-2 bg-surface")}>{active && <motion.span layoutId="ship-dot" className="h-1.5 w-1.5 rounded-full bg-white" transition={spring} />}</span>
+                    <span className={cn("absolute -start-[27px] top-1 flex h-4 w-4 items-center justify-center rounded-full border", done ? "border-brand bg-brand" : "border-line-2 bg-surface")}>{active && <motion.span layoutId="ship-dot" className="h-1.5 w-1.5 rounded-full bg-white" transition={spring} />}</span>
                     <span className={cn(active ? "font-semibold" : done ? "" : "text-ink-3")}>{t(`sh_${st}` as const)}</span>
                     {entry && <span className="ms-2 text-[12px] text-ink-3">{date(entry.at, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>}
                   </li>
@@ -178,7 +178,7 @@ function KitTab({ p, c }: { p: Participation; c: Campaign }) {
           </>
         )}
         {p.stage === "delivered" && (
-          <div className="grid gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <p className="text-[14px] text-ink-2">{t("kitDelivered")}</p>
             <Button onClick={() => { dispatch({ type: "startShoot", participationId: p.id }); toast(t("stage_shoot"), "success"); }} icon={<Camera size={16} weight="bold" />}>{t("startShoot")}</Button>
           </div>
@@ -234,21 +234,21 @@ function UploadTab({ p, c }: { p: Participation; c: Campaign }) {
   };
 
   return (
-    <div className="grid gap-4 lg:grid-cols-5">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
       <div className="label-card p-6 lg:col-span-2">
         <h2 className="text-xl">{t("uploadTitle")}</h2>
         <p className="mt-1 text-[13.5px] text-ink-3">{t("uploadHint")}</p>
         {!canUpload ? (
           <p className="mt-5 rounded-[8px] bg-surface-2 p-4 text-[14px] text-ink-2">{stageOrder(p.stage) < stageOrder("shoot") ? t("notYetShoot") : p.stage === "manual_review" || p.stage === "auto_check" ? t("inReviewNow", { n: latest?.version ?? 1 }) : t("uploadClosed")}</p>
         ) : (
-          <div className="mt-5 grid gap-4">
+          <div className="mt-5 grid grid-cols-1 gap-4">
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
               onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
               onDragLeave={() => setDrag(false)}
               onDrop={(e) => { e.preventDefault(); setDrag(false); pick(e.dataTransfer.files?.[0]); }}
-              className={cn("flex flex-col items-center gap-2 rounded-[8px] border border-dashed p-8 text-center transition-colors", drag ? "border-ink bg-surface-2" : "border-line-2 hover:border-ink-3")}
+              className={cn("flex flex-col items-center gap-2 rounded-[8px] border border-dashed p-8 text-center transition-colors", drag ? "border-brand bg-brand-soft" : "border-line-2 hover:border-ink-3")}
             >
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-2"><Upload size={22} /></span>
               <span className="text-[14px] font-medium">{file ? file.name : t("chooseFile")}</span>
@@ -282,7 +282,7 @@ function UploadTab({ p, c }: { p: Participation; c: Campaign }) {
                   <div className="mt-1 truncate text-[13px] text-ink-3">{sub.filename} · {bytes(sub.sizeBytes)} · {clock(sub.durationSec)}</div>
                 </div>
               </div>
-              <ul className="mt-4 grid gap-1.5">
+              <ul className="mt-4 grid grid-cols-1 gap-1.5">
                 {sub.check.results.map((r) => (
                   <li key={r.key} className="flex items-start gap-2 text-[13.5px]">
                     <span className={cn("mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full", r.passed ? "bg-leaf-soft text-leaf" : "bg-rose-soft text-rose")}>{r.passed ? <Check size={11} weight="bold" /> : <X size={11} weight="bold" />}</span>
@@ -303,7 +303,7 @@ function FeedbackTab({ p }: { p: Participation }) {
   const { relative, clock } = useFormat();
   if (p.reviews.length === 0) return <EmptyState icon={<ChatCenteredText size={22} />} title={t("noFeedback")} body={t("noFeedbackBody")} />;
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-1 gap-4">
       {p.reviews.slice().reverse().map((r) => {
         const sub = p.submissions.find((x) => x.id === r.submissionId);
         return (
@@ -317,7 +317,7 @@ function FeedbackTab({ p }: { p: Participation }) {
             {r.notes.length > 0 && (
               <div className="mt-4">
                 <div className="mb-2 text-[13px] font-medium text-ink-2">{t("timedNotes")}</div>
-                <ul className="grid gap-1.5">
+                <ul className="grid grid-cols-1 gap-1.5">
                   {r.notes.map((n, i) => (
                     <li key={i} className="flex items-start gap-2 text-[14px]"><span className="rounded-md bg-surface-2 px-1.5 py-0.5 text-[12.5px] font-semibold tabular">{clock(n.t)}</span>{n.text}</li>
                   ))}
@@ -348,12 +348,12 @@ function PublishTab({ p, c }: { p: Participation; c: Campaign }) {
     toast(t("linkSent"), "success");
   };
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <div className="label-card p-6">
         <h2 className="text-xl">{t("publishTitle")}</h2>
         <p className="mt-1 text-[13.5px] text-ink-3">{t("publishHint")}</p>
         {ready ? (
-          <div className="mt-5 grid gap-4">
+          <div className="mt-5 grid grid-cols-1 gap-4">
             <Field label={t("platform")}>
               <Select value={platform} onChange={(e) => setPlatform(e.target.value as Platform)}>
                 <option value="instagram">Instagram</option>
@@ -367,7 +367,7 @@ function PublishTab({ p, c }: { p: Participation; c: Campaign }) {
           <p className="mt-5 rounded-[8px] bg-surface-2 p-4 text-[14px] text-ink-2">{t("notApproved")}</p>
         )}
         {p.publish && (
-          <div className="mt-5 grid gap-3">
+          <div className="mt-5 grid grid-cols-1 gap-3">
             <a href={p.publish.url} target="_blank" rel="noreferrer" className="truncate rounded-[8px] bg-surface-2 p-4 text-[14px] font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink">{p.publish.url}</a>
             <div className="flex flex-wrap items-center gap-2">
               <Chip>{p.publish.platform}</Chip>
@@ -384,7 +384,7 @@ function PublishTab({ p, c }: { p: Participation; c: Campaign }) {
           <QuoteBreakdown quote={p.award ?? campaignQuote(c, me, platform)} className="mt-3" />
           {p.clawedBack && <p className="mt-3 text-[13px] font-medium text-rose">{t("postRemovedBody", { n: p.clawedBack.amount })}</p>}
         </div>
-        <ol className="grid gap-2 text-[14px]">
+        <ol className="grid grid-cols-1 gap-2 text-[14px]">
           {(["link_submitted", "post_verified", "points_released", "completed"] as const).map((st) => {
             const done = stageOrder(p.stage) >= stageOrder(st);
             return <li key={st} className={cn("flex items-center gap-2", !done && "opacity-50")}><span className={cn("flex h-5 w-5 items-center justify-center rounded-full", done ? "positive-fill" : "border border-current")}>{done && <Check size={12} weight="bold" />}</span>{t(`stage_${st}` as const)}</li>;

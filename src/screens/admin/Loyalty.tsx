@@ -39,10 +39,10 @@ export function AdminLoyalty() {
   return (
     <div className="flex flex-col gap-10">
       <PageHeader title={t("loyalty")} sub={t("loyaltySub")} />
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <Section title={`${t("releaseQueue")} · ${release.length}`}>
           {release.length === 0 ? <EmptyState icon={<Coins size={22} />} title={t("nothingHere")} /> : (
-            <Stagger className="grid gap-2">
+            <Stagger className="grid grid-cols-1 gap-2">
               {release.map((p) => {
                 const cr = s.creators.find((x) => x.id === p.creatorId)!;
                 const c = s.campaigns.find((x) => x.id === p.campaignId)!;
@@ -61,7 +61,7 @@ export function AdminLoyalty() {
         </Section>
         <Section title={`${t("fulfilQueue")} · ${fulfil.length}`}>
           {fulfil.length === 0 ? <EmptyState icon={<Gift size={22} />} title={t("nothingHere")} /> : (
-            <Stagger className="grid gap-2">
+            <Stagger className="grid grid-cols-1 gap-2">
               {fulfil.map((rd) => {
                 const cr = s.creators.find((x) => x.id === rd.creatorId)!;
                 const r = s.rewards.find((x) => x.id === rd.rewardId);
@@ -80,7 +80,7 @@ export function AdminLoyalty() {
         </Section>
       </div>
       <Section title={t("housekeeping")} sub={t("housekeepingSub")} action={<SimulatedTag />}>
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <div className="label-card flex flex-col gap-3 p-5">
             <div className="flex items-start gap-3"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border border-line bg-surface-2 text-on"><LinkSimple size={22} weight="bold" /></span><div className="min-w-0 flex-1"><div className="font-semibold">{t("linkCheck")}</div><div className="text-[13px] text-ink-2">{t("linkCheckSub", { n: due.length })}</div></div></div>
             {due.length > 0 && (
@@ -92,7 +92,7 @@ export function AdminLoyalty() {
             {returned.length > 0 && (
               <div>
                 <div className="meta mb-2 flex items-center gap-1.5"><ArrowCounterClockwise size={13} weight="bold" />{t("clawbackLog")}</div>
-                <ul className="grid gap-1.5">{returned.slice(0, 5).map((l) => { const cr = s.creators.find((x) => x.id === l.creatorId); return <li key={l.id} className="flex items-center gap-2 text-[13px]">{cr && <Avatar name={cr.name} hue={cr.hue} size={22} />}<span className="min-w-0 flex-1 truncate">{cr?.name} · {L(l.reason)}</span><span className="shrink-0 font-semibold tabular text-rose">{num(l.delta)}</span></li>; })}</ul>
+                <ul className="grid grid-cols-1 gap-1.5">{returned.slice(0, 5).map((l) => { const cr = s.creators.find((x) => x.id === l.creatorId); return <li key={l.id} className="flex items-center gap-2 text-[13px]">{cr && <Avatar name={cr.name} hue={cr.hue} size={22} />}<span className="min-w-0 flex-1 truncate">{cr?.name} · {L(l.reason)}</span><span className="shrink-0 font-semibold tabular text-rose">{num(l.delta)}</span></li>; })}</ul>
               </div>
             )}
           </div>

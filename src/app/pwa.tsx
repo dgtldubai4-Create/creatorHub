@@ -143,7 +143,7 @@ export function AppAlertsCard({ creatorId }: { creatorId: string }) {
   const turnOff = () => dispatch({ type: "setAlerts", creatorId, drops: false });
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div className="label-card flex flex-col gap-3 p-5">
         <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-[14px] inverse-fill"><DeviceMobile size={22} weight="fill" /></span><div className="min-w-0"><div className="font-semibold">{t("installTitle")}</div><div className="text-[13px] text-ink-2">{t("installBody")}</div></div></div>
         {state === "installed" ? (

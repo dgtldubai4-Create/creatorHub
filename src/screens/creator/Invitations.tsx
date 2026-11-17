@@ -43,7 +43,7 @@ export function Invitations() {
       {list.length === 0 ? (
         <EmptyState icon={<Sparkle size={24} />} title={t("noInvitations")} body={t("noInvitationsBody")} action={<Button variant="secondary" to="/creator/side-quests">{t("sideQuests")}</Button>} />
       ) : (
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           <AnimatePresence>
             {list.map((p, i) => {
               const c = campaignById(s, p.campaignId)!;

@@ -4,7 +4,7 @@ import { ArrowRight, Compass, Sparkle, Repeat, SealCheck, Broadcast, Confetti, T
 import { useStore } from "../../app/store";
 import { useFormat, useL, useT } from "../../i18n";
 import { Button, Section, EmptyState, Chip } from "../../ui/primitives";
-import { Counter, Item, Reveal, Stagger, Tilt } from "../../ui/motion";
+import { Counter, Item, Reveal, Stagger, Tilt, Words } from "../../ui/motion";
 import { Face } from "../../ui/Face";
 import { PhaseTrail } from "../../ui/JourneyTrail";
 import { Label, MembershipCard, Stamp, StampCard, Ticket } from "../../ui/kit";
@@ -14,6 +14,8 @@ import { ExpiryNote, LevelChecklist, LevelKitCard } from "../shared/program";
 import { KIT_LEVELS } from "../../domain/policy";
 import type { Badge } from "../../domain/types";
 import { cn } from "../../ui/cn";
+import { vivid, vividGradient } from "../../ui/brandColor";
+import { SocialWall, hasSocial } from "../../ui/Social";
 
 const BADGE_ICONS: Record<string, Icon> = { Sparkle, Repeat, Compass, Fire, SealCheck, Broadcast, Confetti, Target, SunHorizon, Coins, GraduationCap, Star, UsersThree, Handshake };
 function BadgeIcon({ badge, size = 20 }: { badge: Badge; size?: number }) {
@@ -67,14 +69,16 @@ export function CreatorHome() {
   return (
     <div className="flex flex-col gap-12">
       {/* Hello */}
-      <section className="relative pb-2 pt-2 md:pt-6">
-        <div className="relative mx-auto grid max-w-[1400px] items-center gap-8 lg:grid-cols-12">
+      <section className="brand-fill pan relative overflow-hidden rounded-[1.75rem] p-6 md:p-10" style={{ backgroundImage: "linear-gradient(120deg, #14b85f 0%, #00753a 45%, #004d24 80%, #0f9a52 130%)", color: "#ffffff" }}>
+        <span aria-hidden className="blob" style={{ background: "#ffa81f", width: "38%", paddingBottom: "38%", right: "-6%", top: "-40%", opacity: 0.45 }} />
+        <span aria-hidden className="blob" style={{ background: "#3fe08a", width: "34%", paddingBottom: "34%", left: "-8%", bottom: "-60%", opacity: 0.4, animationDelay: "-6s" }} />
+        <div className="relative mx-auto grid grid-cols-1 max-w-[1400px] items-center gap-8 lg:grid-cols-12">
           <Reveal inView={false} className="flex items-center gap-5 lg:col-span-7">
-            <Face name={me.name} hue={me.hue} size={96} className="hidden shrink-0 sm:inline-flex" />
+            <Face name={me.name} hue={me.hue} size={96} className="hidden shrink-0 ring-4 ring-white/25 sm:inline-flex" />
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2"><LevelChip level={lv.level} /><Chip>{me.city}</Chip></div>
-              <h1 className="mt-4 text-4xl md:text-6xl">{greeting}, <bdi>{me.name.split(" ")[0]}</bdi>.</h1>
-              <p className="mt-3 max-w-[48ch] text-[16px] text-ink-2">{t(`lvUnlock_${lv.level}` as const)}</p>
+              <div className="flex flex-wrap items-center gap-2"><LevelChip level={lv.level} /><Chip className="!bg-white/15 !text-white">{me.city}</Chip></div>
+              <h1 className="mt-4 text-4xl md:text-6xl"><Words text={`${greeting},`} /> <bdi><Words text={`${me.name.split(" ")[0]}.`} delay={0.2} /></bdi></h1>
+              <p className="mt-3 max-w-[48ch] text-[16px] text-white/80">{t(`lvUnlock_${lv.level}` as const)}</p>
               <div className="mt-7 flex flex-wrap gap-x-10 gap-y-4">
                 {[
                   { v: bal, l: t("homeSparksBalance"), accent: true },
@@ -82,22 +86,22 @@ export function CreatorHome() {
                   { v: rank, l: t("homeRank"), raw: true },
                 ].map((x) => (
                   <div key={x.l}>
-                    <div className={cn("text-3xl font-medium tabular leading-none tracking-tight", x.accent && "text-accent-text")}>{x.raw ? `#${x.v}` : <Counter value={x.v} />}</div>
-                    <div className="mt-2 text-[13px] text-ink-3">{x.l}</div>
+                    <div className={cn("text-3xl font-medium tabular leading-none tracking-tight", x.accent && "text-[#ffc94f]")}>{x.raw ? `#${x.v}` : <Counter value={x.v} />}</div>
+                    <div className="mt-2 text-[13px] text-white/70">{x.l}</div>
                   </div>
                 ))}
               </div>
             </div>
           </Reveal>
           <Reveal inView={false} delay={0.1} className="lg:col-span-5">
-            <Link to="/creator/season" className="lift block"><Tilt max={6}><MembershipCard id={me.id} hue={me.hue} name={me.name} handle={me.handle} level={lv.level} since={date(me.joinedAt, { month: "short", year: "numeric" })} sparks={bal} /></Tilt></Link>
+            <Link to="/creator/season" className="float-y block"><Tilt max={7}><MembershipCard id={me.id} hue={me.hue} name={me.name} handle={me.handle} level={lv.level} since={date(me.joinedAt, { month: "short", year: "numeric" })} sparks={bal} /></Tilt></Link>
           </Reveal>
         </div>
       </section>
 
       {/* A note from the team: the next best action as a message */}
       <Reveal inView={false} delay={0.15}>
-        <div className="grid gap-6 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="lg:col-span-8">
             <div className="mb-3 flex items-center gap-2.5"><Face name={noteFrom.name} hue={200} size={28} /><span className="text-[13.5px] text-ink-2">{t("homeNote", { name: noteFrom.name.split(" ")[0] })}</span></div>
             <Ticket
@@ -135,7 +139,7 @@ export function CreatorHome() {
 
       {/* Next level and the box that comes with it */}
       <Reveal inView={false} delay={0.2}>
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-7"><LevelChecklist creatorId={me.id} /></div>
           <div className="flex flex-col gap-3 lg:col-span-5">
             {kit ? <LevelKitCard level={kit.level} kit={kit} creatorId={me.id} hero={!kit.shipment} /> : nextKit ? <><div className="meta">{t("kitNext")}</div><LevelKitCard level={nextKit} creatorId={me.id} /></> : null}
@@ -145,15 +149,18 @@ export function CreatorHome() {
         </div>
       </Reveal>
 
+      {/* From Dabur's own feed: renders only when posts have been imported */}
+      {hasSocial() && <Section title={t("socialTitle")} sub={t("socialSub")}><SocialWall max={5} /></Section>}
+
       {/* Your people */}
       <Section title={t("homeSquad")} sub={t("homeSquadSub")} action={<Button size="sm" variant="ghost" to="/creator/season">{t("viewAll")}</Button>}>
-        <Stagger className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <Stagger className="grid grid-cols-2 gap-3 lg:grid-cols-5">
           {neighbours.map((row) => {
             const isMe = row.creator.id === me.id;
             const pos = board.findIndex((x) => x.creator.id === row.creator.id) + 1;
             return (
               <Item key={row.creator.id}>
-                <div className={cn("label-card lift flex flex-col items-center gap-2 p-4 text-center", isMe && "!bg-accent-soft")}>
+                <div className={cn("label-card lift flex flex-col items-center gap-2 p-4 text-center", isMe && "!border-brand !bg-brand-soft")}>
                   <span className="meta self-start !text-inherit opacity-70">#{pos}</span>
                   <Face name={row.creator.name} hue={row.creator.hue} size={56} />
                   <div className="truncate font-semibold">{isMe ? t("thatsYou") : row.creator.name.split(" ")[0]}</div>
@@ -168,13 +175,13 @@ export function CreatorHome() {
         </Stagger>
       </Section>
 
-      <div className="grid gap-10 lg:grid-cols-5">
-        <div className="flex flex-col gap-10 lg:col-span-3">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-5">
+        <div className="flex min-w-0 flex-col gap-10 lg:col-span-3">
           <Section title={t("yourJourneys")} action={<Button size="sm" variant="ghost" to="/creator/campaigns">{t("viewAll")}</Button>}>
             {active.length === 0 ? (
               <EmptyState icon={<Compass size={24} />} title={t("noCampaigns")} body={t("noCampaignsBody")} action={<Button variant="secondary" to="/creator/invitations">{t("invitations")}</Button>} />
             ) : (
-              <Stagger className="grid gap-3">
+              <Stagger className="grid grid-cols-1 gap-3">
                 {active.slice(0, 4).map((p) => {
                   const c = campaignById(s, p.campaignId)!;
                   const b = s.brands.find((x) => x.id === c.brandId)!;
@@ -183,13 +190,13 @@ export function CreatorHome() {
                     <Item key={p.id}>
                       <Link to={`/creator/campaigns/${p.id}`} className="block">
                         <Label brandId={b.id} className="lift flex items-center gap-4 p-4">
-                          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[13px] bg-surface-2 text-ink-2"><Lightning size={20} /></span>
+                          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[13px]" style={{ backgroundImage: vividGradient(b.id), color: vivid(b.id).on }}><Lightning size={20} weight="fill" /></span>
                           <div className="min-w-0 flex-1">
                             <div className="flex flex-wrap items-center gap-2"><BrandMark brand={b} size="sm" /><span className="text-[12px] font-medium text-ink-3">{relative(last.at)}</span></div>
                             <div className="mt-1 truncate text-[17px] font-semibold">{L(c.title)}</div>
-                            <div className="mt-2 flex items-center gap-3"><PhaseTrail stage={p.stage} /><StageChip stage={p.stage} /></div>
+                            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2"><PhaseTrail stage={p.stage} /><StageChip stage={p.stage} /></div>
                           </div>
-                          <Points value={p.award?.total ?? campaignQuote(c, me).total} className="shrink-0" />
+                          <Points value={p.award?.total ?? campaignQuote(c, me).total} className="hidden shrink-0 sm:inline-flex" />
                         </Label>
                       </Link>
                     </Item>
@@ -204,7 +211,7 @@ export function CreatorHome() {
                 const on = earnedIds.has(b.id);
                 return (
                   <div key={b.id} title={`${L(b.title)}: ${L(b.description)}`} className="flex flex-col items-center gap-1.5 text-center">
-                    <Stamp pressed={on} size={50} animate={false} tone="ink" icon={on ? <BadgeIcon badge={b} /> : undefined} />
+                    <Stamp pressed={on} size={50} animate={false} tone="leaf" icon={on ? <BadgeIcon badge={b} /> : undefined} />
                     <span className={cn("text-[11px] font-medium leading-tight", on ? "" : "text-ink-3")}>{L(b.title)}</span>
                   </div>
                 );
@@ -212,7 +219,7 @@ export function CreatorHome() {
             </div>
           </Section>
         </div>
-        <div className="flex flex-col gap-10 lg:col-span-2">
+        <div className="flex min-w-0 flex-col gap-10 lg:col-span-2">
           <Section title={t("thisSeason")} sub={`${L(season.name)} · ${t("seasonEndsIn", { n: daysLeftInSeason(s, season) })}`} action={<Link to="/creator/season" className="text-[13px] font-medium text-ink-2 hover:text-ink">{t("view")}</Link>}>
             <StampCard total={8} filled={Math.min(8, stamps)} size={44} label={<><span className="font-semibold">{num(lv.seasonSparks)} {t("sparks")}</span><span className="meta">{t("stampCard")}</span></>} />
           </Section>

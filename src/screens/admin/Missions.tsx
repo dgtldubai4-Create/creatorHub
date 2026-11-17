@@ -58,7 +58,7 @@ export function AdminMissions() {
       {list.length === 0 ? (
         <EmptyState icon={<Lightning size={24} />} title={f === "review" ? t("emptyQueue") : t("nothingHere")} body={f === "review" ? t("emptyQueueBody") : undefined} />
       ) : (
-        <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" gap={0.03}>
+        <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3" gap={0.03}>
           {list.map((m) => {
             const b = s.brands.find((x) => x.id === m.brandId);
             const entries = Object.values(m.entries);
@@ -66,7 +66,7 @@ export function AdminMissions() {
             return (
               <Item key={m.id}>
                 <Link to={`/admin/missions/${m.id}`} className="label-card lift flex h-full flex-col overflow-hidden ">
-                  <div className="relative h-28"><ArtSlot id={`mission-${m.type}`} /><div className="absolute start-3 top-3 flex gap-1.5"><MissionTypeChip type={m.type} /><Chip tone={m.status === "live" ? "leaf" : m.status === "draft" ? "neutral" : "ink"}>{t(`mStatus_${m.status}` as const)}</Chip></div></div>
+                  <div className="relative h-28"><ArtSlot id={`mission-${m.type}`} brandId={m.brandId} /><div className="absolute start-3 top-3 flex gap-1.5"><MissionTypeChip type={m.type} /><Chip tone={m.status === "live" ? "leaf" : m.status === "draft" ? "neutral" : "ink"}>{t(`mStatus_${m.status}` as const)}</Chip></div></div>
                   <div className="flex flex-1 flex-col gap-2 p-4">
                     <div className="flex items-center justify-between gap-2">{b ? <BrandMark brand={b} size="sm" /> : <span className="text-[12.5px] font-medium text-ink-2">{t("appName")}</span>}{toReview > 0 && <Chip tone="marigold">{toReview} {t("review").toLowerCase()}</Chip>}</div>
                     <h2 className="text-lg">{L(m.title)}</h2>
@@ -97,7 +97,7 @@ export function AdminMissions() {
 
       <Sheet open={!!open} onClose={() => nav("/admin/missions")} wide title={open ? L(open.title) : ""}>
         {open && (
-          <div className="grid gap-5">
+          <div className="grid grid-cols-1 gap-5">
             <div className="flex flex-wrap items-center gap-2">
               <MissionTypeChip type={open.type} /><Chip tone={open.status === "live" ? "leaf" : "neutral"}>{t(`mStatus_${open.status}` as const)}</Chip><Chip>{date(open.window.start)} - {date(open.window.end)}</Chip><Chip>{open.sparks} {t("sparks")}</Chip><Chip>{t(`lv_${open.levelRequired}` as const)}</Chip>
               {open.requiredHashtags.length > 0 && <Chip>{open.requiredHashtags.join(" ")}</Chip>}
@@ -109,10 +109,10 @@ export function AdminMissions() {
             </div>
             <p className="text-[14.5px] text-ink-2">{L(open.prompt)}</p>
             {open.type === "team" && (
-              <div className="grid gap-2 sm:grid-cols-3">{squadTotals(open).map(({ squad, sparks, submitted }) => <div key={squad.id} className="rounded-[8px] bg-surface-2 p-3 text-[13px]"><div className="font-semibold">{L(squad.name)}</div><div className="text-ink-3">{squad.memberIds.length} {t("members")} · {submitted} {t("es_submitted").toLowerCase()} · {sparks} {t("sparks")}</div></div>)}</div>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">{squadTotals(open).map(({ squad, sparks, submitted }) => <div key={squad.id} className="rounded-[8px] bg-surface-2 p-3 text-[13px]"><div className="font-semibold">{L(squad.name)}</div><div className="text-ink-3">{squad.memberIds.length} {t("members")} · {submitted} {t("es_submitted").toLowerCase()} · {sparks} {t("sparks")}</div></div>)}</div>
             )}
             <div className="flex items-center justify-between"><h3 className="text-[15px] font-semibold">{t("entries")} · {Object.keys(open.entries).length}</h3><SimulatedTag /></div>
-            <ul className="grid gap-2">
+            <ul className="grid grid-cols-1 gap-2">
               {Object.entries(open.entries).sort(([, a], [, b]) => (a.state === "submitted" ? -1 : 1) - (b.state === "submitted" ? -1 : 1)).map(([creatorId, e]) => {
                 const cr = s.creators.find((c) => c.id === creatorId)!;
                 const sub = e.submissions[e.submissions.length - 1];
@@ -126,7 +126,7 @@ export function AdminMissions() {
                       {e.awarded && <span className="text-[13px] font-semibold tabular text-leaf">+{e.awarded}</span>}
                     </div>
                     {sub && (
-                      <div className="mt-3 grid gap-2">
+                      <div className="mt-3 grid grid-cols-1 gap-2">
                         <div className="flex flex-wrap items-center gap-2 text-[12.5px]">
                           <a href={sub.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-medium text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink"><LinkSimple size={13} />{t("openPost")}</a>
                           <span className="text-ink-3">{relative(sub.at)}</span>
@@ -204,8 +204,8 @@ function MissionEditor({ open, onClose, mission }: { open: boolean; onClose: () 
   };
   return (
     <Sheet open={open} onClose={onClose} wide title={mission ? t("editMission") : t("newMission")}>
-      <div className="grid gap-5">
-        <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Field label={t("missionType")}><Select value={f.type} onChange={(e) => set("type", e.target.value as MissionType)}>{MISSION_TYPES.filter((x) => x !== "routine").map((x) => <option key={x} value={x}>{t(`mt_${x}` as const)}</option>)}</Select></Field>
           <Field label={t("brand")}><Select value={f.brandId} onChange={(e) => set("brandId", e.target.value)}><option value="">{t("appName")}</option>{s.brands.map((b) => <option key={b.id} value={b.id}>{L(b.localisedName)}</option>)}</Select></Field>
           <Field label={t("sparksValue")} required><Input inputMode="numeric" value={f.sparks} onChange={(e) => set("sparks", e.target.value.replace(/\D/g, ""))} /></Field>
@@ -213,11 +213,11 @@ function MissionEditor({ open, onClose, mission }: { open: boolean; onClose: () 
           <Field label={`${t("campaignTitle")} (AR)`}><Input dir="rtl" value={f.titleAr} onChange={(e) => set("titleAr", e.target.value)} /></Field>
           <Field label={t("levelRequired")}><Select value={f.level} onChange={(e) => set("level", e.target.value as Level)}>{LEVELS.map((l) => <option key={l} value={l}>{t(`lv_${l}` as const)}</option>)}</Select></Field>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label={`${t("campaignHook")} (EN)`} required><Textarea value={f.promptEn} onChange={(e) => set("promptEn", e.target.value)} /></Field>
           <Field label={`${t("campaignHook")} (AR)`}><Textarea dir="rtl" value={f.promptAr} onChange={(e) => set("promptAr", e.target.value)} /></Field>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Field label={t("windowStart")}><Input type="date" value={f.start} onChange={(e) => set("start", e.target.value)} /></Field>
           <Field label={t("windowEnd")}><Input type="date" value={f.end} onChange={(e) => set("end", e.target.value)} /></Field>
           <Field label={t("requiredHashtags")}><Input value={f.hashtags} onChange={(e) => set("hashtags", e.target.value)} dir="ltr" /></Field>
@@ -226,9 +226,9 @@ function MissionEditor({ open, onClose, mission }: { open: boolean; onClose: () 
         {f.type === "academy" && <Field label={t("tracks")}><Select value={f.trackId} onChange={(e) => set("trackId", e.target.value)}><option value="">-</option>{s.academy.tracks.map((tr) => <option key={tr.id} value={tr.id}>{L(tr.title)}</option>)}</Select></Field>}
         {f.type === "team" && !mission?.squads?.length && <Field label={t("squads")} hint="One squad name per line"><Textarea value={f.squads} onChange={(e) => set("squads", e.target.value)} /></Field>}
         <Field label={t("marketsTarget")}><div className="flex flex-wrap gap-2">{MARKETS.map((m) => <ChipButton key={m} type="button" selected={f.markets.includes(m)} onClick={() => toggle("markets", m)}>{t(`market_${m}` as const)}</ChipButton>)}</div></Field>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label={t("languagesTarget")}><div className="flex gap-2">{(["ar", "en"] as Language[]).map((l) => <ChipButton key={l} type="button" selected={f.languages.includes(l)} onClick={() => toggle("languages", l)}>{t(`lang_${l}` as const)}</ChipButton>)}</div></Field>
-          <div className="grid gap-2 self-end text-[14px]">
+          <div className="grid grid-cols-1 gap-2 self-end text-[14px]">
             <label className="flex items-center gap-2"><input type="checkbox" className="h-4 w-4 accent-[var(--leaf)]" checked={f.paid} onChange={(e) => set("paid", e.target.checked)} />{t("isPaid")}</label>
             <label className="flex items-center gap-2"><input type="checkbox" className="h-4 w-4 accent-[var(--leaf)]" checked={f.drop} onChange={(e) => set("drop", e.target.checked)} />{t("surpriseDrop")}</label>
           </div>

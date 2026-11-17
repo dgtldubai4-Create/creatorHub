@@ -62,7 +62,7 @@ export function SparksPage() {
         </div>
       </Reveal>
 
-      <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Item>
           <Table title={t("sp_format")} icon={<FilmSlate size={20} weight="fill" />} tone="bg-surface-2">
             {FORMATS.map((f) => <Row key={f} label={t(`fmt_${f}` as const)} mult={FORMAT_MULT[f]} note={f === "story" ? t("fmtStoryNote") : undefined} />)}
@@ -89,11 +89,11 @@ export function SparksPage() {
       </Stagger>
 
       <Section title={t("calcTitle")}>
-        <div className="label-card grid gap-6 p-5 lg:grid-cols-2">
-          <div className="grid gap-4">
+        <div className="label-card grid grid-cols-1 gap-6 p-5 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4">
             <Field label={t("calcBase")}><div className="flex flex-wrap gap-2">{bases.map((b) => <ChipButton key={b} type="button" selected={base === b} onClick={() => setBase(b)}>{num(b)}</ChipButton>)}</div></Field>
             <Field label={t("postFormat")}><Segmented value={format} onChange={setFormat} options={FORMATS.map((f) => ({ value: f, label: t(`fmt_${f}` as const) }))} className="max-w-full flex-wrap" /></Field>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label={t("calcFollowers")}><Input inputMode="numeric" value={followers} onChange={(e) => setFollowers(e.target.value.replace(/\D/g, ""))} dir="ltr" /></Field>
               <Field label={t("calcEngagement")}><Input inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value.replace(/[^\d.]/g, ""))} dir="ltr" /></Field>
             </div>
@@ -111,7 +111,7 @@ export function SparksPage() {
       </Section>
 
       <Section title={t("rulesTitle")}>
-        <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
             { icon: LinkSimple, tone: "bg-surface-2", title: t("ruleLive"), body: t("ruleLiveBody"), tag: `${LIVE_DAYS}` },
             { icon: HourglassMedium, tone: "bg-surface-2", title: t("ruleExpiry"), body: t("ruleExpiryBody"), tag: `${EXPIRY_DAYS}` },

@@ -21,14 +21,14 @@ export function AdminAcademy() {
         <Stat label={t("creators")} value={num(learners)} />
       </div>
       <Section title={t("tracks")}>
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
           {s.academy.tracks.map((tr) => {
             const rows = s.creators.map((c) => ({ c, p: trackProgress(s, c.id, tr.id) })).filter((x) => x.p.done > 0).sort((a, b) => b.p.done - a.p.done);
             return (
               <div key={tr.id} className="label-card flex flex-col gap-3 p-5">
                 <div className="flex items-center justify-between gap-2"><h3 className="text-lg">{L(tr.title)}</h3><Chip>{t(`lv_${tr.levelRequired}` as const)}</Chip></div>
                 <div className="text-[12.5px] text-ink-3">{tr.modules.length} {t("modules")} · {rows.filter((r) => r.p.complete).length} {t("certificates").toLowerCase()}</div>
-                <ul className="grid gap-1.5">
+                <ul className="grid grid-cols-1 gap-1.5">
                   {rows.slice(0, 6).map(({ c, p }) => <li key={c.id} className="flex items-center gap-2 text-[13px]"><Avatar name={c.name} hue={c.hue} size={24} /><span className="min-w-0 flex-1 truncate">{c.name}</span>{p.complete ? <Certificate size={16} weight="fill" className="text-leaf" /> : <span className="tabular text-ink-3">{p.done}/{p.total}</span>}</li>)}
                   {rows.length === 0 && <li className="text-[13px] text-ink-3">{t("nothingHere")}</li>}
                 </ul>

@@ -35,7 +35,7 @@ export function AdminCampaigns() {
       {list.length === 0 ? (
         <EmptyState icon={<Megaphone size={24} />} title={t("nothingHere")} action={<Button onClick={() => setCreating(true)}>{t("newCampaign")}</Button>} />
       ) : (
-        <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {list.map((c) => {
             const b = s.brands.find((x) => x.id === c.brandId)!;
             const fn = campaignFunnel(s, c.id);

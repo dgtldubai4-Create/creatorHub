@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "sync:products": "tsx scripts/sync-products.ts",
-    "art": "tsx scripts/generate-art.ts"
+    "art": "tsx scripts/generate-art.ts",
+    "social": "tsx scripts/import-social.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",

@@ -60,16 +60,16 @@ export function Label({ children, className, brandId: _brandId, watermark: _wate
 // ---------- Stamp ----------
 
 /** A seal. Empty until earned; a pressed seal lands once, the first time it appears. */
-export function Stamp({ pressed, children, size = 64, tone = "leaf", className, icon, animate = true }: { pressed: boolean; children?: ReactNode; size?: number; tone?: "leaf" | "marigold" | "rose" | "ink"; className?: string; icon?: ReactNode; animate?: boolean }) {
+export function Stamp({ pressed, children, size = 64, tone = "leaf", className, icon, animate = true, delay = 0 }: { pressed: boolean; children?: ReactNode; size?: number; tone?: "leaf" | "marigold" | "rose" | "ink"; className?: string; icon?: ReactNode; animate?: boolean; delay?: number }) {
   const reduce = useReducedMotion();
-  const color = { leaf: "border-leaf text-leaf bg-leaf-soft", marigold: "border-accent text-accent-text bg-accent-soft", rose: "border-rose text-rose bg-rose-soft", ink: "border-line-2 text-ink-2 bg-surface-2" }[tone];
+  const color = { leaf: "border-brand text-brand-text bg-brand-soft", marigold: "border-accent text-accent-text bg-accent-soft", rose: "border-rose text-rose bg-rose-soft", ink: "border-line-2 text-ink-2 bg-surface-2" }[tone];
   return (
     <span className={cn("relative inline-flex shrink-0 items-center justify-center", className)} style={{ width: size, height: size }}>
       {!pressed && <span className="absolute inset-0 rounded-full border border-dashed border-line-2" />}
       {pressed && (
         <span
           className={cn("absolute inset-0 flex items-center justify-center rounded-full border text-center font-medium uppercase leading-none", color)}
-          style={{ animation: animate && !reduce ? "stamp-press 420ms cubic-bezier(0.22, 1, 0.36, 1) both" : undefined, fontSize: size * 0.15, letterSpacing: "0.06em" }}
+          style={{ animation: animate && !reduce ? "stamp-press 420ms cubic-bezier(0.22, 1, 0.36, 1) both" : undefined, fontSize: size * 0.15, letterSpacing: "0.06em", animationDelay: `${delay}ms` }}
         >
           <span className="relative px-1">{icon ?? children ?? <Check weight="bold" size={size * 0.36} />}</span>
         </span>
@@ -108,9 +108,9 @@ const LEVEL_LABEL: Record<Level, string> = { member: "MEMBER", insider: "INSIDER
 /** Card stock per level. Fixed colours: a card looks the same in a light or a dark room. */
 const STOCK: Record<Level, { bg: string; fg: string; edge: string; mark: string }> = {
   member: { bg: "linear-gradient(140deg, #f1f1f3 0%, #dcdce2 100%)", fg: "#111114", edge: "rgb(17 17 20 / 0.1)", mark: "#111114" },
-  insider: { bg: "linear-gradient(140deg, #4a4a52 0%, #2a2a30 100%)", fg: "#f4f4f5", edge: "rgb(255 255 255 / 0.12)", mark: "#f4f4f5" },
-  pro: { bg: "linear-gradient(140deg, #222226 0%, #0c0c0e 100%)", fg: "#f4f4f5", edge: "rgb(255 255 255 / 0.12)", mark: "#f2b23a" },
-  ambassador: { bg: "linear-gradient(140deg, #f6c058 0%, #dc9520 100%)", fg: "#1c1303", edge: "rgb(28 19 3 / 0.16)", mark: "#1c1303" },
+  insider: { bg: "linear-gradient(140deg, #1fc46b 0%, #00642f 100%)", fg: "#ffffff", edge: "rgb(255 255 255 / 0.18)", mark: "#ffffff" },
+  pro: { bg: "radial-gradient(120% 140% at 100% 0%, #0f5a33 0%, #101013 55%, #0a0a0c 100%)", fg: "#f4f4f5", edge: "rgb(255 255 255 / 0.12)", mark: "#ffb22e" },
+  ambassador: { bg: "linear-gradient(140deg, #ffc94f 0%, #f58a07 100%)", fg: "#1c1303", edge: "rgb(28 19 3 / 0.16)", mark: "#1c1303" },
 };
 
 export function MembershipCard({ name, handle, level, since, sparks, className, compact, id, hue = 0 }: { name: string; handle: string; level: Level; since: string; sparks: number; className?: string; compact?: boolean; id: string; hue?: number }) {
@@ -170,7 +170,7 @@ export function StampCard({ total, filled, className, label, size = 44 }: { tota
     <div className={cn("label-card p-4", className)}>
       {label && <div className="mb-3 flex items-center justify-between gap-3 text-[13px]">{label}</div>}
       <div className="flex flex-wrap gap-2">
-        {Array.from({ length: total }, (_, i) => <Stamp key={i} pressed={i < filled} size={size} tone="marigold" animate={i === filled - 1} />)}
+        {Array.from({ length: total }, (_, i) => <Stamp key={i} pressed={i < filled} size={size} tone="marigold" delay={200 + i * 90} />)}
       </div>
     </div>
   );
@@ -215,16 +215,16 @@ export function KitBox({ children, className, open: openProp }: { children: Reac
           })}
         </div>
         {/* box body */}
-        <div className="absolute inset-x-[6%] bottom-[6%] h-[40%] rounded-b-[18px] rounded-t-[6px] shadow-float" style={{ zIndex: 20, background: "linear-gradient(180deg, #232327 0%, #121214 100%)", boxShadow: "inset 0 0 0 1px rgb(255 255 255 / 0.08), var(--shadow-float)" }}>
+        <div className="absolute inset-x-[6%] bottom-[6%] h-[40%] rounded-b-[18px] rounded-t-[6px] shadow-float" style={{ zIndex: 20, background: "linear-gradient(180deg, #0f7a3f 0%, #05431f 100%)", boxShadow: "inset 0 0 0 1px rgb(255 255 255 / 0.08), var(--shadow-float)" }}>
           <div className="absolute inset-x-0 top-0 h-[14%] bg-black/30" />
           <div className="absolute inset-x-[8%] top-[34%] flex items-center justify-between text-white/85">
-            <span className="flex items-center gap-2 text-[12px] font-medium tracking-[0.14em]"><Leaf size={15} weight="fill" style={{ color: "#f2b23a" }} />DABUR SQUAD</span>
+            <span className="flex items-center gap-2 text-[12px] font-medium tracking-[0.14em]"><Leaf size={15} weight="fill" style={{ color: "#3fe08a" }} />DABUR SQUAD</span>
             <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-white/50">Welcome kit</span>
           </div>
           <div className="absolute inset-x-[8%] bottom-[14%] h-px bg-white/10" />
         </div>
         {/* lid */}
-        <div className="absolute inset-x-[6%] bottom-[46%] h-[10%] rounded-[6px]" style={{ zIndex: 30, background: "linear-gradient(180deg, #3a3a41 0%, #2a2a30 100%)", boxShadow: "inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 10px 30px -12px rgb(0 0 0 / 0.5)", transformOrigin: "50% 100%", transformStyle: "preserve-3d", transform: open ? "rotateX(-112deg)" : "rotateX(0deg)", transition: reduce ? "none" : "transform 900ms cubic-bezier(0.22, 1, 0.36, 1)" }}>
+        <div className="absolute inset-x-[6%] bottom-[46%] h-[10%] rounded-[6px]" style={{ zIndex: 30, background: "linear-gradient(180deg, #1fc46b 0%, #0f8a47 100%)", boxShadow: "inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 10px 30px -12px rgb(0 0 0 / 0.5)", transformOrigin: "50% 100%", transformStyle: "preserve-3d", transform: open ? "rotateX(-112deg)" : "rotateX(0deg)", transition: reduce ? "none" : "transform 900ms cubic-bezier(0.22, 1, 0.36, 1)" }}>
           <div className="absolute inset-x-[8%] top-1/2 h-px -translate-y-1/2 bg-white/10" />
         </div>
         {/* shadow on the table */}
@@ -237,7 +237,7 @@ export function KitBox({ children, className, open: openProp }: { children: Reac
 // ---------- Level badge on paper ----------
 
 export function LevelSeal({ level, size = 44, className }: { level: Level; size?: number; className?: string }) {
-  const tone = level === "ambassador" || level === "pro" ? "marigold" : "ink";
+  const tone = level === "ambassador" || level === "pro" ? "marigold" : level === "insider" ? "leaf" : "ink";
   return <Stamp pressed size={size} tone={tone} animate={false} className={className}><span style={{ fontSize: size * 0.17 }}>{LEVEL_LABEL[level]}</span></Stamp>;
 }
 
